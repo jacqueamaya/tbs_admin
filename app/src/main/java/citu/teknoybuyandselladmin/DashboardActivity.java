@@ -2,7 +2,9 @@ package citu.teknoybuyandselladmin;
 
 import android.content.Intent;
 import android.app.FragmentTransaction;
+import android.content.res.Configuration;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.widget.TextView;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -23,6 +25,7 @@ import citu.teknoybuyandselladmin.fragments.TransactionsFragment;
 public class DashboardActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     Toolbar mToolbar;
+    ActionBarDrawerToggle mDrawerToggle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +35,8 @@ public class DashboardActivity extends AppCompatActivity {
         String admin = intent.getStringExtra("admin");
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = setupDrawerToggle();
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -53,6 +58,10 @@ public class DashboardActivity extends AppCompatActivity {
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
+    }
+
+    private ActionBarDrawerToggle setupDrawerToggle() {
+        return new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open,  R.string.drawer_close);
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -139,12 +148,16 @@ public class DashboardActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        /*int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }*/
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -152,5 +165,12 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 }

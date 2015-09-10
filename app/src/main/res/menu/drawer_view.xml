@@ -4,12 +4,12 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_notifications"
-            android:icon="@drawable/glyph_user"
-            android:title="@string/menu_notifications"/>
+            android:icon="@drawable/notif_user"
+            android:title="@string/menu_notifications" />
         <item
             android:id="@+id/nav_items_queue"
             android:icon="@drawable/glyph_queue"
-            android:title="@string/menu_itemsQueue"/>
+            android:title="@string/menu_itemsQueue" />
         <item
             android:id="@+id/nav_reserved_items"
             android:icon="@drawable/glyph_reserved"
