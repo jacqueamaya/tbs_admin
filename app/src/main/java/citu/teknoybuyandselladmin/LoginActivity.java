@@ -1,38 +1,37 @@
 package citu.teknoybuyandselladmin;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
+import android.view.View;
+import android.widget.Button;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-public class NotificationActivity extends ActionBarActivity {
-
-
+public class LoginActivity extends AppCompatActivity {
+    Button btnLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notification);
+        setContentView(R.layout.activity_login);
 
-        List<String> notifications = new ArrayList<String>();
-        notifications.add("Janna bought Louie's item");
-        notifications.add("Louie sold an item and is waiting for your approval");
-        notifications.add("Jacque donated an item and is waiting for your approval");
-
-        ListView lv = (ListView)findViewById(R.id.listViewNotif);
-        CustomListAdapterNotification listAdapter = new CustomListAdapterNotification(NotificationActivity.this, R.layout.activity_notification_item , notifications);
-        lv.setAdapter(listAdapter);
+        btnLogin = (Button) findViewById(R.id.btnLogin);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent;
+                intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                intent.putExtra("admin", "Admin");
+                startActivity(intent);
+            }
+        });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_notification, menu);
+        getMenuInflater().inflate(R.menu.menu_login, menu);
         return true;
     }
 
@@ -44,7 +43,9 @@ public class NotificationActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-
+        if (id == R.id.action_settings) {
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

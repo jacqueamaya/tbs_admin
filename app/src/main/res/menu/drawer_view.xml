@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_notifications"
+            android:icon="@drawable/glyph_user"
+            android:title="@string/menu_notifications"/>
+        <item
+            android:id="@+id/nav_items_queue"
+            android:icon="@drawable/glyph_queue"
+            android:title="@string/menu_itemsQueue"/>
+        <item
+            android:id="@+id/nav_reserved_items"
+            android:icon="@drawable/glyph_reserved"
+            android:title="@string/menu_reservedItems" />
+        <item
+            android:id="@+id/nav_donations"
+            android:icon="@drawable/glyph_donation"
+            android:title="@string/menu_donations" />
+        <item
+            android:id="@+id/nav_transactions"
+            android:icon="@drawable/glyph_queue"
+            android:title="@string/menu_transactions" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/glyph_logout"
+            android:title="@string/menu_logout" />
+    </group>
+
+</menu>

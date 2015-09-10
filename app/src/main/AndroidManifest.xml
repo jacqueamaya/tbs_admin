@@ -4,12 +4,12 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_tbs_logo"
         android:label=""
-        android:theme="@style/Theme.AppCompat.Light" >
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         <activity
             android:name=".MainActivity"
-            android:label="" >
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".NotificationActivity"
@@ -26,15 +26,20 @@
         <activity
             android:name=".DonationsActivity"
             android:label="@string/title_activity_donations" >
-
         </activity>
         <activity
             android:name=".Transactions"
             android:label="@string/title_activity_transactions" >
-
+        </activity>
+        <activity
+            android:name=".DashboardActivity"
+            android:label="@string/title_activity_dashboard" >
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
