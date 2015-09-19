@@ -5,16 +5,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import citu.teknoybuyandselladmin.ListAdapters.NotificationListAdapter;
 import citu.teknoybuyandselladmin.models.Notification;
 
 
@@ -27,7 +26,7 @@ public class NotificationActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
-        Log.v(TAG,"This should be printed first");
+       /** Log.v(TAG,"This should be printed first");
 
         List<String> notifications = new ArrayList<String>();
         notifications.add("Janna bought Louie's item dsagddfhghfgjhgjytut");
@@ -36,13 +35,12 @@ public class NotificationActivity extends ActionBarActivity {
 
         ListView lv = (ListView)findViewById(R.id.listViewNotif);
         CustomListAdapterNotification listAdapter = new CustomListAdapterNotification(NotificationActivity.this, R.layout.activity_notification_item , notifications);
-        lv.setAdapter(listAdapter);
+        lv.setAdapter(listAdapter);*/
 
         getNotifications();
     }
 
     public void getNotifications(){
-        Log.v(TAG,"notificATION activity");
         String username = "admin";
         Server.getNotifications(username, new Ajax.Callbacks() {
             @Override

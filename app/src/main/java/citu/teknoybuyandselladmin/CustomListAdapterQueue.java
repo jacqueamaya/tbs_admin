@@ -36,7 +36,7 @@ public class CustomListAdapterQueue extends ArrayAdapter{
             mView = vi.inflate(id, null);
         }
 
-        TextView text = (TextView) mView.findViewById(R.id.textViewQueue);
+        TextView text = (TextView) mView.findViewById(R.id.textViewItem);
 
         if(items.get(position) != null )
         {

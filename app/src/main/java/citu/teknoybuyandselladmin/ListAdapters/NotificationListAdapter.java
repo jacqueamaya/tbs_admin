@@ -1,4 +1,4 @@
-package citu.teknoybuyandselladmin;
+package citu.teknoybuyandselladmin.ListAdapters;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.models.Notification;
 
 

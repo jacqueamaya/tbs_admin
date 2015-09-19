@@ -102,7 +102,6 @@ public class Notification {
 
     public static ArrayList<Notification> allNotifications(JSONArray jsonArray) {
         ArrayList<Notification> notifications = new ArrayList<Notification>(jsonArray.length());
-        // Process each result in json array, decode and convert to business object
         for (int i=0; i < jsonArray.length(); i++) {
             JSONObject notificationObject = null;
             try {
