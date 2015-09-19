@@ -1,17 +1,29 @@
 package citu.teknoybuyandselladmin.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import citu.teknoybuyandselladmin.Ajax;
 import citu.teknoybuyandselladmin.CustomListAdapterNotification;
+import citu.teknoybuyandselladmin.DashboardActivity;
+import citu.teknoybuyandselladmin.LoginActivity;
 import citu.teknoybuyandselladmin.R;
+import citu.teknoybuyandselladmin.Server;
 
 
 /**
@@ -22,6 +34,8 @@ import citu.teknoybuyandselladmin.R;
  * create an instance of this fragment.
  */
 public class NotificationsFragment extends Fragment {
+
+    private static final String TAG = "NotificationsFragment";
 
     /**
      * Use this factory method to create a new instance of
@@ -55,4 +69,5 @@ public class NotificationsFragment extends Fragment {
         lv.setAdapter(listAdapter);
         return view;
     }
+
 }
