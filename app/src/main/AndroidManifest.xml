@@ -38,6 +38,10 @@
         <activity
             android:name=".DonationsActivity"
             android:label="DonatedItems" >
+        </activity>
+        <activity
+            android:name=".TransactionActivity"
+            android:label="Transactions" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -8,150 +8,76 @@
     tools:context="citu.teknoybuyandselladmin.Transactions">
 
     <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/transactionTable"
         android:stretchColumns="*"
+        android:orientation="vertical"
+        android:id="@+id/transactionTable"
         android:background="@color/White">
 
+
         <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/row"
-            android:background="@drawable/border" >
+            android:background="@drawable/border">
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/transactionId"
                 android:text="@string/theader_id"
-                android:paddingTop="5dip"
-                android:paddingBottom="5dip"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:layout_gravity="center"
                 android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:layout_weight=".1"
                 />
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/seller"
                 android:text="@string/theader_seller"
-                android:paddingTop="5dip"
-                android:paddingBottom="5dip"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:layout_weight=".3"
+                />
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/buyer"
                 android:text="@string/theader_buyer"
-                android:paddingTop="5dip"
-                android:paddingBottom="5dip"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:layout_weight=".3"
+                />
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/transactionDate"
                 android:text="@string/theader_date"
-                android:paddingTop="5dip"
-                android:paddingBottom="5dip"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:layout_weight=".3"
+                />
         </TableRow>
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/row1"
-            android:background="@drawable/border">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/transactionId1"
-                android:text="1"
-                android:paddingTop="5dip"
-                android:paddingBottom="5dip"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:layout_gravity="center" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/seller1"
-                android:text="Louie"
-                android:paddingTop="5dip"
-                android:paddingBottom="5dip"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/buyer1"
-                android:text="Janna"
-                android:paddingTop="5dip"
-                android:paddingBottom="5dip"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/transactionDate1"
-                android:text="2015-08-25"
-                android:paddingTop="5dip"
-                android:paddingBottom="5dip"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp" />
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/row2"
-            android:background="@drawable/border">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/transactionId2"
-                android:text="2"
-                android:paddingTop="5dip"
-                android:paddingBottom="5dip"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:layout_gravity="center" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/seller2"
-                android:text="Jacquelyn"
-                android:paddingTop="5dip"
-                android:paddingBottom="5dip"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/buyer2"
-                android:text="Sheila Mae"
-                android:paddingTop="5dip"
-                android:paddingBottom="5dip"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/transactionDate2"
-                android:text="2015-09-08"
-                android:paddingTop="5dip"
-                android:paddingBottom="5dip"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp" />
-        </TableRow>
 
     </TableLayout>
 

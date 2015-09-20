@@ -16,6 +16,7 @@
     <string name="title_activity_dashboard">DashboardActivity</string>
 
     <string name="theader_id">ID</string>
+    <string name="theader_type">TYPE</string>
     <string name="theader_seller">SELLER</string>
     <string name="theader_buyer">BUYER</string>
     <string name="theader_date">DATE</string>

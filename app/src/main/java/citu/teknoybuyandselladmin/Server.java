@@ -11,6 +11,7 @@ public class Server {
     private static final String URL_RESERVED_ITEMS = "http://10.0.3.2:8000/api-x/reservation_requests/";
     private static final String URL_SELL_REQUEST = "http://10.0.3.2:8000/api-x/sell_requests/";
     private static final String URL_DONATE_REQUEST = "http://10.0.3.2:8000/api-x/donate_requests/";
+    private static final String URL_TRANSACTIONS = "http://10.0.3.2:8000/api-x/transactions/";
 
     private static final String TAG = "Server";
 
@@ -41,6 +42,10 @@ public class Server {
 
     public static void getDonateRequests (Ajax.Callbacks callbacks) {
         Ajax.get(URL_DONATE_REQUEST, callbacks);
+    }
+
+    public static void getTransactions (Ajax.Callbacks callbacks) {
+        Ajax.get(URL_TRANSACTIONS, callbacks);
     }
 
 }
