@@ -26,10 +26,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText txtUsername;
     private EditText txtPassword;
 
-    Button btnLogin;
-
-    private String loginMessage;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,9 +33,6 @@ public class LoginActivity extends AppCompatActivity {
 
         txtUsername = (EditText) findViewById(R.id.txtUsername);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
-
-        btnLogin = (Button) findViewById(R.id.btnLogin);
-
     }
 
     public void onLogin(View view){
@@ -58,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.v(TAG,"Successful Login");
                         Intent intent;
                         intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                        intent.putExtra("admin", "Admin");
                         startActivity(intent);
                     }
                     else{
@@ -92,10 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        return id == R.id.action_settings ? true : super.onOptionsItemSelected(item);
 
-        return super.onOptionsItemSelected(item);
     }
 }

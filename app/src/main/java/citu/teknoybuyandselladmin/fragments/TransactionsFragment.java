@@ -2,11 +2,22 @@ package citu.teknoybuyandselladmin.fragments;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+
+import citu.teknoybuyandselladmin.Ajax;
+import citu.teknoybuyandselladmin.ListAdapters.TransactionAdapter;
 import citu.teknoybuyandselladmin.R;
+import citu.teknoybuyandselladmin.Server;
+import citu.teknoybuyandselladmin.models.Transaction;
 
 
 /**
@@ -15,9 +26,9 @@ import citu.teknoybuyandselladmin.R;
  * create an instance of this fragment.
  */
 public class TransactionsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String TAG = "NotificationsFragment";
+    private View view = null;
+    private TableLayout tableLayout;
 
     /**
      * Use this factory method to create a new instance of
@@ -39,6 +50,31 @@ public class TransactionsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_transactions, container, false);
+        view = inflater.inflate(R.layout.fragment_transactions, container, false);
+        tableLayout = (TableLayout) view.findViewById(R.id.transactionTable);
+        Server.getTransactions(new Ajax.Callbacks() {
+            @Override
+            public void success(String responseBody) {
+                ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+                Log.v(TAG, responseBody);
+                JSONArray jsonArray = null;
+
+                try {
+                    jsonArray = new JSONArray(responseBody);
+                    transactions = Transaction.allTransactions(jsonArray);
+                    TransactionAdapter transAdapter = new TransactionAdapter(getActivity().getBaseContext(), transactions);
+                    transAdapter.addRows(tableLayout);
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+            @Override
+            public void error(int statusCode, String responseBody, String statusText) {
+                Log.v(TAG, "Request error");
+            }
+        });
+        return view;
     }
 }
