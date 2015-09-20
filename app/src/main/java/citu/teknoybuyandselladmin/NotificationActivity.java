@@ -1,11 +1,15 @@
 package citu.teknoybuyandselladmin;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,6 +60,34 @@ public class NotificationActivity extends ActionBarActivity {
                     ListView lv = (ListView)findViewById(R.id.listViewNotif);
                     NotificationListAdapter listAdapter = new NotificationListAdapter(NotificationActivity.this, R.layout.activity_notification_item , notifications);
                     lv.setAdapter(listAdapter);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Notification notif = (Notification) parent.getItemAtPosition(position);
+                            String notificationType = notif.getNotification_type();
+                            Log.v(TAG,notificationType);
+
+                            if(notificationType.equals("sell")){
+                                Log.v(TAG,"sell");
+                                Intent intent;
+                                intent = new Intent(NotificationActivity.this, ItemsOnQueueActivity.class);
+                                startActivity(intent);
+                            }
+                            else if(notificationType.equals("buy")){
+                                Log.v(TAG,"buy");
+                                Intent intent;
+                                intent = new Intent(NotificationActivity.this, ReservedItemsActivity.class);
+                                startActivity(intent);
+                            }
+                            else if(notificationType.equals("donate")){
+                                Log.v(TAG,"donate");
+                                Intent intent;
+                                intent = new Intent(NotificationActivity.this, DonationsActivity.class);
+                                startActivity(intent);
+                            }
+
+                        }
+                    });
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();
