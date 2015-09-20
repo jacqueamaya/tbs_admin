@@ -2,16 +2,24 @@ package citu.teknoybuyandselladmin.fragments;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import citu.teknoybuyandselladmin.Ajax;
 import citu.teknoybuyandselladmin.CustomListAdapterQueue;
+import citu.teknoybuyandselladmin.ListAdapters.SellApprovalAdapter;
 import citu.teknoybuyandselladmin.R;
+import citu.teknoybuyandselladmin.Server;
+import citu.teknoybuyandselladmin.models.SellApproval;
 
 
 /**
@@ -20,6 +28,8 @@ import citu.teknoybuyandselladmin.R;
  * create an instance of this fragment.
  */
 public class ItemsQueueFragment extends Fragment {
+    private View view = null;
+    private static final String TAG = "ItemsQueueFragment";
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -41,16 +51,34 @@ public class ItemsQueueFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_items_queue, container, false);
-        View view = null;
-        view = inflater.inflate(R.layout.fragment_items_queue, container, false);
-        List<String> soldItems = new ArrayList<String>();
-        soldItems.add("PE T-shirt");
-        soldItems.add("Rizal Book");
-        soldItems.add("Uniform");
 
-        ListView lv = (ListView) view.findViewById(R.id.listViewQueue);
-        CustomListAdapterQueue listAdapter = new CustomListAdapterQueue(getActivity().getBaseContext(), R.layout.activity_item, soldItems);
-        lv.setAdapter(listAdapter);
+        view = inflater.inflate(R.layout.fragment_items_queue, container, false);
+        Server.getSellRequests(new Ajax.Callbacks() {
+            @Override
+            public void success(String responseBody) {
+                ArrayList<SellApproval> request = new ArrayList<SellApproval>();
+                Log.v(TAG, responseBody);
+                JSONArray jsonArray = null;
+
+                try {
+                    jsonArray = new JSONArray(responseBody);
+                    request = SellApproval.allSellRequest(jsonArray);
+
+                    ListView lv = (ListView) view.findViewById(R.id.listViewQueue);
+                    SellApprovalAdapter listAdapter = new SellApprovalAdapter(getActivity().getBaseContext(), R.layout.activity_item, request);
+                    lv.setAdapter(listAdapter);
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+            @Override
+            public void error(int statusCode, String responseBody, String statusText) {
+                Log.v(TAG, "Request error");
+                // Toast.makeText(LoginActivity.this, "Error: Invalid username or password", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return view;
     }
