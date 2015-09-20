@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,9 +22,11 @@ import java.util.Map;
 import citu.teknoybuyandselladmin.Ajax;
 import citu.teknoybuyandselladmin.CustomListAdapterNotification;
 import citu.teknoybuyandselladmin.DashboardActivity;
+import citu.teknoybuyandselladmin.ListAdapters.NotificationListAdapter;
 import citu.teknoybuyandselladmin.LoginActivity;
 import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.Server;
+import citu.teknoybuyandselladmin.models.Notification;
 
 
 /**
@@ -36,6 +39,7 @@ import citu.teknoybuyandselladmin.Server;
 public class NotificationsFragment extends Fragment {
 
     private static final String TAG = "NotificationsFragment";
+    private View view = null;
 
     /**
      * Use this factory method to create a new instance of
@@ -57,16 +61,36 @@ public class NotificationsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_notifications, container, false);
-        View view = null;
-        view = inflater.inflate(R.layout.fragment_notifications, container, false);
-        List<String> notifications = new ArrayList<String>();
-        notifications.add("Janna bought Louie's item");
-        notifications.add("Louie sold an item and is waiting for your approval");
-        notifications.add("Jacque donated an item and is waiting for your approval");
 
-        ListView lv = (ListView) view.findViewById(R.id.listViewNotif);
-        CustomListAdapterNotification listAdapter = new CustomListAdapterNotification(getActivity().getBaseContext(), R.layout.activity_notification_item , notifications);
-        lv.setAdapter(listAdapter);
+        view = inflater.inflate(R.layout.fragment_notifications, container, false);
+        String username = "admin";
+        Server.getNotifications(username, new Ajax.Callbacks() {
+            @Override
+            public void success(String responseBody) {
+                ArrayList<Notification> notifications = new ArrayList<Notification>();
+                Log.v(TAG, responseBody);
+                JSONArray jsonArray = null;
+
+                try {
+                    jsonArray = new JSONArray(responseBody);
+                    notifications = Notification.allNotifications(jsonArray);
+
+                    ListView lv = (ListView) view.findViewById(R.id.listViewNotif);
+                    NotificationListAdapter listAdapter = new NotificationListAdapter(getActivity().getBaseContext(), R.layout.activity_notification_item, notifications);
+                    lv.setAdapter(listAdapter);
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void error(int statusCode, String responseBody, String statusText) {
+                Log.v(TAG, "Request error");
+                // Toast.makeText(LoginActivity.this, "Error: Invalid username or password", Toast.LENGTH_SHORT).show();
+            }
+        });
         return view;
     }
 
