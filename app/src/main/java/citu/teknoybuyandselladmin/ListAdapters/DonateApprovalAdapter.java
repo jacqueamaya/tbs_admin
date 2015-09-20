@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,8 +25,10 @@ public class DonateApprovalAdapter extends ArrayAdapter<DonateApproval>{
     private static final String TAG = "DonateApprovalAdapter";
     private Context mContext;
     private int id;
-    private ArrayList<DonateApproval> items ;
+    private ArrayList<DonateApproval> items;
+    private String requestDate;
     private Date request_date;
+    private DateFormat df = new SimpleDateFormat("E, y-M-d 'at' h:m:s a");
 
     public DonateApprovalAdapter(Context context, int textViewResourceId, ArrayList<DonateApproval> list)
     {
@@ -50,12 +53,12 @@ public class DonateApprovalAdapter extends ArrayAdapter<DonateApproval>{
         {
             try {
                 request_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(items.get(position).getRequest_date());
-                // String notificationDate = new SimpleDateFormat("yyyy-MM-dd").format(notif_date);
+                requestDate =df.format(request_date);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             String message;
-            message = "<b>"+items.get(position).getItemName()+"</b><br><small> Date: "+request_date+"</small>";
+            message = "<b>"+items.get(position).getItemName()+"</b><br><small>"+requestDate+"</small>";
             text.setText(Html.fromHtml(message));
         }
 

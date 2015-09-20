@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
     private ArrayList<Notification> items ;
     private String notificationDate;
     private Date notif_date;
+    private DateFormat df = new SimpleDateFormat("E, y-M-d 'at' h:m:s a");
 
     public NotificationListAdapter(Context context, int textViewResourceId, ArrayList<Notification> list)
     {
@@ -54,19 +56,19 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
         {
             try {
                 notif_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(items.get(position).getNotification_date());
-               // String notificationDate = new SimpleDateFormat("yyyy-MM-dd").format(notif_date);
+                notificationDate = df.format(notif_date);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             String message;
             switch(items.get(position).getNotification_type()){
-                case "sell": message = "<b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b> (ID: "+items.get(position).getOwnerIdNumber()+") wants to <b>sell</b> his/her <b>"+items.get(position).getItemName()+"</b>.<br><small> Date: "+notif_date+"</small>";
+                case "sell": message = "<b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b> wants to <b>sell</b> his/her <b>"+items.get(position).getItemName()+"</b>.<br><small>"+notificationDate+"</small>";
                         text.setText(Html.fromHtml(message));
                         break;
-                case "donate": message = "<b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b> (ID: "+items.get(position).getOwnerIdNumber()+") wants to <b>donate</b> his/her <b>"+items.get(position).getItemName()+"</b>.<br><small> Date:"+notif_date+"</small>";
+                case "donate": message = "<b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b> wants to <b>donate</b> his/her <b>"+items.get(position).getItemName()+"</b>.<br><small>"+notificationDate+"</small>";
                     text.setText(Html.fromHtml(message));
                     break;
-                case "buy": message = "<b>"+items.get(position).getMakerFirstName()+" "+items.get(position).getMakerLastName()+"</b> (ID: "+items.get(position).getMakerIdNumber()+") wants to <b>buy</b> the <b>"+items.get(position).getItemName()+"</b> owned by <b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b> (ID: "+items.get(position).getOwnerIdNumber()+").<br><small> Date:"+notif_date+"</small>";
+                case "buy": message = "<b>"+items.get(position).getMakerFirstName()+" "+items.get(position).getMakerLastName()+"</b> wants to <b>buy</b> the <b>"+items.get(position).getItemName()+"</b> owned by <b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b>.<br><small>"+notificationDate+"</small>";
                     text.setText(Html.fromHtml(message));
                     break;
                 default: message = "<i>This is a default notification message</i>";

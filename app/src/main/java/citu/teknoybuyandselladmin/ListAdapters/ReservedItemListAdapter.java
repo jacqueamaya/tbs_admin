@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,8 +24,10 @@ public class ReservedItemListAdapter extends ArrayAdapter<ReservedItem>{
     private Context mContext;
     private int id;
     private ArrayList<ReservedItem> items ;
-    private String notificationDate;
+    private String reservedDate;
     private Date reserved_date;
+    private Date request_date;
+    private DateFormat df = new SimpleDateFormat("E, y-M-d 'at' h:m:s a");
 
     public ReservedItemListAdapter(Context context, int textViewResourceId, ArrayList<ReservedItem> list)
     {
@@ -49,12 +52,12 @@ public class ReservedItemListAdapter extends ArrayAdapter<ReservedItem>{
         {
             try {
                 reserved_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(items.get(position).getReserved_date());
-                // String notificationDate = new SimpleDateFormat("yyyy-MM-dd").format(notif_date);
+                reservedDate = df.format(reserved_date);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             String message;
-            message = "<b>"+items.get(position).getItemName()+"</b><br><small> Date: "+reserved_date+"</small>";
+            message = "<b>"+items.get(position).getItemName()+"</b><br><small>"+reservedDate+"</small>";
             text.setText(Html.fromHtml(message));
         }
 
