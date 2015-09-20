@@ -7,10 +7,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by Batistil on 9/19/2015.
+ * Created by Batistil on 9/20/2015.
  */
-public class SellApproval {
-
+public class DonateApproval {
     private String itemName;
     private String request_date;
 
@@ -22,25 +21,25 @@ public class SellApproval {
         return request_date;
     }
 
-    public static SellApproval getRequest(JSONObject jsonObject){
-        SellApproval sell = new SellApproval();
+    public static DonateApproval getRequest(JSONObject jsonObject){
+        DonateApproval donate = new DonateApproval();
         JSONObject item;
 
         try {
-            sell.request_date = jsonObject.getString("request_date");
+            donate.request_date = jsonObject.getString("request_date");
 
             if(!jsonObject.isNull("item")){
                 item = jsonObject.getJSONObject("item");
-                sell.itemName = item.getString("name");
+                donate.itemName = item.getString("name");
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return sell;
+        return donate;
     }
 
-    public static ArrayList<SellApproval> allSellRequest(JSONArray jsonArray){
-        ArrayList<SellApproval> reserved = new ArrayList<SellApproval>(jsonArray.length());
+    public static ArrayList<DonateApproval> allDonateRequest(JSONArray jsonArray){
+        ArrayList<DonateApproval> donatedItems = new ArrayList<DonateApproval>(jsonArray.length());
         for (int i=0; i < jsonArray.length(); i++) {
             JSONObject requestObject = null;
             try {
@@ -50,12 +49,12 @@ public class SellApproval {
                 continue;
             }
 
-            SellApproval sell = SellApproval.getRequest(requestObject);
-            if (sell != null) {
-                reserved.add(sell);
+            DonateApproval donate = DonateApproval.getRequest(requestObject);
+            if (donate != null) {
+                donatedItems.add(donate);
             }
         }
-        return reserved;
+        return donatedItems;
 
     }
 }

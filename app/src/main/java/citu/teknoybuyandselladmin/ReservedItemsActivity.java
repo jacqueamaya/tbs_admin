@@ -55,9 +55,7 @@ public class ReservedItemsActivity extends ActionBarActivity {
                 } catch (JSONException e1) {
                     e1.printStackTrace();
                 }
-
             }
-
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
