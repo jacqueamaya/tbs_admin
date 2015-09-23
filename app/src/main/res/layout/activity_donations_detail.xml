@@ -1,0 +1,136 @@
+   <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:background="@color/Louie"
+        android:fillViewport="true"
+        android:orientation="vertical"
+       tools:context="citu.teknoybuyandselladmin.DonationsDetailActivity">
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="20dp"
+            card_view:cardCornerRadius="10dp"
+            card_view:cardElevation="5dp"
+            card_view:cardUseCompatPadding="true">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="25dp">
+
+                <ImageView
+                    android:id="@+id/imgThumbnail"
+                    android:layout_width="100dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/rizal_book" />
+
+                <TextView
+                    android:id="@+id/txtTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="23dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@id/imgThumbnail"
+                    android:textColor="@color/Black"
+                    android:textSize="25dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtPriceLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtTitle"
+                    android:layout_marginLeft="23dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_toRightOf="@id/imgThumbnail"
+                    android:textColor="@color/Gray"
+                    android:textSize="20dp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/lblDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imgThumbnail"
+                    android:layout_marginRight="18dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Details:"
+                    android:textColor="@color/Black"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lblDetails"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/Gray"
+                    android:textSize="16dp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/lblStarsRequired"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtDetails"
+                    android:layout_marginRight="18dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Stars Required:"
+                    android:textColor="@color/Black"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+                <ImageView
+                    android:id="@+id/imgStars"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/star"
+                    android:layout_below="@+id/lblStarsRequired"
+                    android:layout_alignRight="@+id/lblStarsRequired"
+                    android:layout_alignEnd="@+id/lblStarsRequired" />
+
+                <EditText
+                    android:id="@+id/txtNumOfStars"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:textSize="40dp"
+                    android:ems="10"
+                    android:hint="00"
+                    android:layout_marginLeft="40dp"
+                    android:layout_above="@+id/imgDeny"
+                    android:layout_toRightOf="@+id/imgStars" />
+
+                <ImageView
+                    android:id="@+id/imgApprove"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="140dp"
+                    android:src="@drawable/approve"
+                    android:layout_below="@+id/imgStars"
+                    android:onClick="onApprove"
+                    />
+                <ImageView
+                    android:id="@+id/imgDeny"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="140dp"
+                    android:layout_below="@+id/imgStars"
+                    android:src="@drawable/deny"
+                    android:onClick="onDeny"/>
+
+
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+    </FrameLayout>

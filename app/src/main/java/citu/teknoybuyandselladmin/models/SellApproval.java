@@ -13,6 +13,11 @@ public class SellApproval {
 
     private String itemName;
     private String request_date;
+    private int itemId;
+    private int requestId;
+    private float price;
+    private String details;
+
 
     public String getItemName() {
         return itemName;
@@ -22,16 +27,36 @@ public class SellApproval {
         return request_date;
     }
 
+    public int getItemId() {
+        return itemId;
+    }
+
+    public int getRequestId() {
+        return requestId;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
     public static SellApproval getRequest(JSONObject jsonObject){
         SellApproval sell = new SellApproval();
         JSONObject item;
 
         try {
             sell.request_date = jsonObject.getString("request_date");
+            sell.requestId = jsonObject.getInt("id");
 
             if(!jsonObject.isNull("item")){
                 item = jsonObject.getJSONObject("item");
                 sell.itemName = item.getString("name");
+                sell.itemId = item.getInt("id");
+                sell.price = (float)item.getDouble("price");
+                sell.details = item.getString("description");
             }
         } catch (JSONException e) {
             e.printStackTrace();

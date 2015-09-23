@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import citu.teknoybuyandselladmin.R;
+import citu.teknoybuyandselladmin.Utils;
 import citu.teknoybuyandselladmin.models.Notification;
 
 
@@ -68,7 +69,7 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
                 case "donate": message = "<b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b> wants to <b>donate</b> his/her <b>"+items.get(position).getItemName()+"</b>.<br><small>"+notificationDate+"</small>";
                     text.setText(Html.fromHtml(message));
                     break;
-                case "buy": message = "<b>"+items.get(position).getMakerFirstName()+" "+items.get(position).getMakerLastName()+"</b> wants to <b>buy</b> the <b>"+items.get(position).getItemName()+"</b> owned by <b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b>.<br><small>"+notificationDate+"</small>";
+                case "buy": message = "<b>"+ Utils.capitalize(items.get(position).getMakerUsername())+" "+"</b> wants to <b>buy</b> the <b>"+items.get(position).getItemName()+"</b> owned by <b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b>.<br><small>"+notificationDate+"</small>";
                     text.setText(Html.fromHtml(message));
                     break;
                 default: message = "<i>This is a default notification message</i>";

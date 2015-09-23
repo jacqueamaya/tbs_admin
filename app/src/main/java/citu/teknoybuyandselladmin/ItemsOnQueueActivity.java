@@ -1,21 +1,21 @@
 package citu.teknoybuyandselladmin;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import citu.teknoybuyandselladmin.ListAdapters.ReservedItemListAdapter;
 import citu.teknoybuyandselladmin.ListAdapters.SellApprovalAdapter;
-import citu.teknoybuyandselladmin.models.ReservedItem;
 import citu.teknoybuyandselladmin.models.SellApproval;
 
 
@@ -41,7 +41,7 @@ public class ItemsOnQueueActivity extends ActionBarActivity {
     public void getReservedItems(){
         Server.getSellRequests(new Ajax.Callbacks() {
             @Override
-            public void success(String responseBody) {
+            public void success(final String responseBody) {
                 ArrayList<SellApproval> request = new ArrayList<SellApproval>();
                 Log.v(TAG, responseBody);
                 JSONArray jsonArray = null;
@@ -53,6 +53,23 @@ public class ItemsOnQueueActivity extends ActionBarActivity {
                     ListView lv = (ListView) findViewById(R.id.listViewQueue);
                     SellApprovalAdapter listAdapter = new SellApprovalAdapter(ItemsOnQueueActivity.this, R.layout.activity_item, request);
                     lv.setAdapter(listAdapter);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            SellApproval sell = (SellApproval) parent.getItemAtPosition(position);
+                            int itemId = sell.getItemId();
+                            int requestId = sell.getRequestId();
+                            Log.v(TAG,"Item id: "+itemId);
+                            Log.v(TAG,"Request id: "+ requestId);
+
+                            Intent intent;
+                            intent = new Intent(ItemsOnQueueActivity.this, QueueItemDetailActivity.class);
+                            intent.putExtra("itemId",itemId);
+                            intent.putExtra("requestId",requestId);
+                            startActivity(intent);
+
+                        }
+                    });
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();

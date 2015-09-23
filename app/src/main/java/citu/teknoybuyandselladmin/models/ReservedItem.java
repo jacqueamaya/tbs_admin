@@ -14,6 +14,8 @@ public class ReservedItem {
     private String itemName;
     private String status;
     private String reserved_date;
+    private int requestId;
+    private int itemId;
 
     public String getItemName() {
         return itemName;
@@ -27,6 +29,14 @@ public class ReservedItem {
         return reserved_date;
     }
 
+    public int getRequestId() {
+        return requestId;
+    }
+
+    public int getItemId() {
+        return itemId;
+    }
+
     public static ReservedItem getReservedItems(JSONObject jsonObject){
         ReservedItem ri = new ReservedItem();
         JSONObject item;
@@ -34,10 +44,12 @@ public class ReservedItem {
         try {
             ri.status = jsonObject.getString("status");
             ri.reserved_date = jsonObject.getString("reserved_date");
+            ri.requestId = jsonObject.getInt("id");
 
             if(!jsonObject.isNull("item")){
                 item = jsonObject.getJSONObject("item");
                 ri.itemName = item.getString("name");
+                ri.itemId = item.getInt("id");
             }
         } catch (JSONException e) {
             e.printStackTrace();

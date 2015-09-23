@@ -14,9 +14,7 @@ public class Notification {
     private String ownerFirstName;
     private String ownerLastName;
     private String ownerIdNumber;
-    private String makerFirstName;
-    private String makerLastName;
-    private String makerIdNumber;
+    private String makerUsername;
     private String itemName;
     private String notification_type;
     private String notification_date;
@@ -33,16 +31,8 @@ public class Notification {
         return ownerIdNumber;
     }
 
-    public String getMakerFirstName() {
-        return makerFirstName;
-    }
-
-    public String getMakerLastName() {
-        return makerLastName;
-    }
-
-    public String getMakerIdNumber() {
-        return makerIdNumber;
+    public String getMakerUsername() {
+        return makerUsername;
     }
 
     public String getItemName() {
@@ -84,14 +74,8 @@ public class Notification {
             }
             if(!jsonObject.isNull("maker")){
                 maker = jsonObject.getJSONObject("maker");
-
-                if(!maker.isNull("student")){
-                    maker_student = maker.getJSONObject("student");
-
-                    n.makerFirstName = maker_student.getString("first_name");
-                    n.makerLastName =  maker_student.getString("last_name");
-                    n.makerIdNumber = maker_student.getString("id_number");
-                }
+                n.makerUsername = maker.getString("username");
+                Log.v(TAG,maker.getString("username"));
             }
         } catch (JSONException e) {
             e.printStackTrace();

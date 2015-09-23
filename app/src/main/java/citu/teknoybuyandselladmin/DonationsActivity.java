@@ -1,10 +1,13 @@
 package citu.teknoybuyandselladmin;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -54,6 +57,23 @@ public class DonationsActivity extends ActionBarActivity {
                     ListView lv = (ListView) findViewById(R.id.listViewDonations);
                     DonateApprovalAdapter listAdapter = new DonateApprovalAdapter(DonationsActivity.this, R.layout.activity_item, request);
                     lv.setAdapter(listAdapter);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            DonateApproval donate = (DonateApproval) parent.getItemAtPosition(position);
+                            int itemId = donate.getItemId();
+                            int requestId = donate.getRequestId();
+                            Log.v(TAG,"Item id: "+itemId);
+                            Log.v(TAG,"Request id: "+ requestId);
+
+                            Intent intent;
+                            intent = new Intent(DonationsActivity.this, DonationsDetailActivity.class);
+                            intent.putExtra("itemId",itemId);
+                            intent.putExtra("requestId",requestId);
+                            startActivity(intent);
+
+                        }
+                    });
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();

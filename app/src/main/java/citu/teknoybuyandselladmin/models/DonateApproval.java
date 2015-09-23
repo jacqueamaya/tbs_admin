@@ -12,6 +12,12 @@ import java.util.ArrayList;
 public class DonateApproval {
     private String itemName;
     private String request_date;
+    private String details;
+
+    private int requestId;
+    private int itemId;
+
+    private float price;
 
     public String getItemName() {
         return itemName;
@@ -21,16 +27,36 @@ public class DonateApproval {
         return request_date;
     }
 
+    public int getRequestId() {
+        return requestId;
+    }
+
+    public int getItemId() {
+        return itemId;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
     public static DonateApproval getRequest(JSONObject jsonObject){
         DonateApproval donate = new DonateApproval();
         JSONObject item;
 
         try {
             donate.request_date = jsonObject.getString("request_date");
+            donate.requestId = jsonObject.getInt("id");
 
             if(!jsonObject.isNull("item")){
                 item = jsonObject.getJSONObject("item");
                 donate.itemName = item.getString("name");
+                donate.itemId = item.getInt("id");
+                donate.details = item.getString("description");
+                donate.price = (float)item.getDouble("price");
             }
         } catch (JSONException e) {
             e.printStackTrace();
