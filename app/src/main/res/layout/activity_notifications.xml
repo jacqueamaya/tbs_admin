@@ -32,7 +32,7 @@
                 android:visibility="gone" />
 
             <ListView
-                android:id="@+id/listViewReserved"
+                android:id="@+id/listViewNotif"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"

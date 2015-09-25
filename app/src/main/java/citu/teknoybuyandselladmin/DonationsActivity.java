@@ -22,7 +22,7 @@ import citu.teknoybuyandselladmin.models.DonateApproval;
 import citu.teknoybuyandselladmin.models.SellApproval;
 
 
-public class DonationsActivity extends ActionBarActivity {
+public class DonationsActivity extends BaseActivity {
 
     private static final String TAG = "DonatedActivity";
 
@@ -30,15 +30,8 @@ public class DonationsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_donations);
+        setupUI();
 
-        /*List<String> soldItems = new ArrayList<String>();
-        soldItems.add("PE T-shirt");
-        soldItems.add("Rizal Book");
-        soldItems.add("Uniform");
-
-        ListView lv = (ListView)findViewById(R.id.listViewDonations);
-        CustomListAdapterQueue listAdapter = new CustomListAdapterQueue(DonationsActivity.this, R.layout.activity_item, soldItems);
-        lv.setAdapter(listAdapter);*/
         getReservedItems();
     }
 
@@ -108,5 +101,10 @@ public class DonationsActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean checkItemClicked(MenuItem menuItem) {
+        return menuItem.getItemId() != R.id.nav_donations;
     }
 }

@@ -22,7 +22,7 @@ import citu.teknoybuyandselladmin.models.DonateApproval;
 import citu.teknoybuyandselladmin.models.SellApproval;
 
 
-public class DonationsDetailActivity extends ActionBarActivity {
+public class DonationsDetailActivity extends BaseActivity {
     private static final String REQUEST_ID = "request_id";
     private static final String TAG = "DonationsDetailActivity";
     private static final String ITEM_ID = "item_id";
@@ -31,6 +31,7 @@ public class DonationsDetailActivity extends ActionBarActivity {
 
     private int requestId;
     private int itemId;
+    private String mItemName;
 
     private TextView txtTitle;
     private TextView txtPrice;
@@ -41,6 +42,7 @@ public class DonationsDetailActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_donations_detail);
+        setupUI();
 
         Intent intent = getIntent();
 
@@ -52,6 +54,7 @@ public class DonationsDetailActivity extends ActionBarActivity {
         txtDetails = (TextView) findViewById(R.id.txtDetails);
         txtStars = (TextView) findViewById(R.id.txtNumOfStars);
         getDonatedItemDetails(requestId);
+
     }
 
     public void getDonatedItemDetails(int request){
@@ -70,7 +73,11 @@ public class DonationsDetailActivity extends ActionBarActivity {
                     jsonArray = new JSONArray(responseBody);
                     request = DonateApproval.allDonateRequest(jsonArray);
                     donate = request.get(0);
-                    txtTitle.setText(donate.getItemName());
+
+                    mItemName = donate.getItemName();
+                    setTitle(mItemName);
+
+                    txtTitle.setText(mItemName);
                     txtPrice.setText("Price: PHP " + donate.getPrice());
                     txtDetails.setText(donate.getDetails());
 
@@ -178,5 +185,10 @@ public class DonationsDetailActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean checkItemClicked(MenuItem menuItem) {
+        return menuItem.getItemId() != R.id.nav_donations;
     }
 }

@@ -19,36 +19,40 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name" >
-        </activity>
-
-        <activity
-            android:name=".NotificationActivity"
-            android:label="Notifications" >
-        </activity>
-        <activity
-            android:name=".ReservedItemsActivity"
-            android:label="ReservedItems" >
-
-        </activity>
-        <activity
-            android:name=".ItemsOnQueueActivity"
-            android:label="Sell approval" >
-        </activity>
-        <activity
-            android:name=".DonationsActivity"
-            android:label="DonatedItems" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".NotificationsActivity"
+            android:label="@string/title_activity_notifications" >
+        </activity>
+        <activity
+            android:name=".ReservedItemsActivity"
+            android:label="@string/title_activity_reserved_items" >
+
+        </activity>
+        <activity
+            android:name=".ItemsOnQueueActivity"
+            android:label="@string/title_activity_items_on_queue" >
+        </activity>
+        <activity
+            android:name=".DonationsActivity"
+            android:label="@string/title_activity_donations" >
+        </activity>
         <activity
             android:name=".QueueItemDetailActivity"
-            android:label="ItemsOnQueue" >
+            android:label="@string/title_activity_queue_item_detail" >
         </activity>
         <activity
             android:name=".DonationsDetailActivity"
-            android:label="DonationDetails" >
+            android:label="@string/title_activity_donations_detail" >
+        </activity>
+        <activity
+            android:name=".TransactionsActivity"
+            android:label="@string/title_activity_transactions" >
         </activity>
     </application>
 

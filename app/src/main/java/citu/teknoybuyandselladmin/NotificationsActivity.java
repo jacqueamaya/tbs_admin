@@ -1,7 +1,6 @@
 package citu.teknoybuyandselladmin;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -9,37 +8,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import citu.teknoybuyandselladmin.ListAdapters.NotificationListAdapter;
 import citu.teknoybuyandselladmin.models.Notification;
 
 
-public class NotificationActivity extends ActionBarActivity {
+public class NotificationsActivity extends BaseActivity {
 
-    private static final String TAG = "NotificationActivity";
-    private String ownerFirstName,ownerLastName,ownerIdNumber,buyerFirstName,buyerLastName,buyerIdNumber,itemName,type,notification_date;
+    private static final String TAG = "NotificationsActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notification);
-       /** Log.v(TAG,"This should be printed first");
-
-        List<String> notifications = new ArrayList<String>();
-        notifications.add("Janna bought Louie's item dsagddfhghfgjhgjytut");
-        notifications.add("Louie sold an item and is waiting for your approval");
-        notifications.add("Jacque donated an item and is waiting for your approval");
-
-        ListView lv = (ListView)findViewById(R.id.listViewNotif);
-        CustomListAdapterNotification listAdapter = new CustomListAdapterNotification(NotificationActivity.this, R.layout.activity_notification_item , notifications);
-        lv.setAdapter(listAdapter);*/
+        setContentView(R.layout.activity_notifications);
+        setupUI();
 
         getNotifications();
     }
@@ -50,7 +37,6 @@ public class NotificationActivity extends ActionBarActivity {
             @Override
             public void success(String responseBody) {
                 ArrayList<Notification> notifications = new ArrayList<Notification>();
-                Log.v(TAG, responseBody);
                 JSONArray jsonArray = null;
 
                 try {
@@ -58,7 +44,7 @@ public class NotificationActivity extends ActionBarActivity {
                     notifications = Notification.allNotifications(jsonArray);
 
                     ListView lv = (ListView)findViewById(R.id.listViewNotif);
-                    NotificationListAdapter listAdapter = new NotificationListAdapter(NotificationActivity.this, R.layout.activity_notification_item , notifications);
+                    NotificationListAdapter listAdapter = new NotificationListAdapter(NotificationsActivity.this, R.layout.item_notification , notifications);
                     lv.setAdapter(listAdapter);
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -70,19 +56,19 @@ public class NotificationActivity extends ActionBarActivity {
                             if(notificationType.equals("sell")){
                                 Log.v(TAG,"sell");
                                 Intent intent;
-                                intent = new Intent(NotificationActivity.this, ItemsOnQueueActivity.class);
+                                intent = new Intent(NotificationsActivity.this, ItemsOnQueueActivity.class);
                                 startActivity(intent);
                             }
                             else if(notificationType.equals("buy")){
                                 Log.v(TAG,"buy");
                                 Intent intent;
-                                intent = new Intent(NotificationActivity.this, ReservedItemsActivity.class);
+                                intent = new Intent(NotificationsActivity.this, ReservedItemsActivity.class);
                                 startActivity(intent);
                             }
                             else if(notificationType.equals("donate")){
                                 Log.v(TAG,"donate");
                                 Intent intent;
-                                intent = new Intent(NotificationActivity.this, DonationsActivity.class);
+                                intent = new Intent(NotificationsActivity.this, DonationsActivity.class);
                                 startActivity(intent);
                             }
 
@@ -122,5 +108,10 @@ public class NotificationActivity extends ActionBarActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean checkItemClicked(MenuItem menuItem) {
+        return menuItem.getItemId() != R.id.nav_notifications;
     }
 }

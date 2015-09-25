@@ -1,6 +1,7 @@
 package citu.teknoybuyandselladmin;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
+    public static final String MY_PREFS_NAME = "MyPreferences";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     private static final String TAG = "LoginActivity";
@@ -48,9 +50,15 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     JSONObject json = new JSONObject(responseBody);
                     if(json.getInt("status") == 200){
-                        Log.v(TAG,"Successful Login");
+                        Log.d(TAG, json.toString());
+                        Log.v(TAG, "Successful Login");
+
+                        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                        editor.putString("username", "Admin");
+                        editor.apply();
+
                         Intent intent;
-                        intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                        intent = new Intent(LoginActivity.this, NotificationsActivity.class);
                         intent.putExtra("admin", "Admin");
                         startActivity(intent);
                     }

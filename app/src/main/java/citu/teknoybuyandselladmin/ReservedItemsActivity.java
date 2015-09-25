@@ -16,7 +16,7 @@ import citu.teknoybuyandselladmin.ListAdapters.ReservedItemListAdapter;
 import citu.teknoybuyandselladmin.models.ReservedItem;
 
 
-public class ReservedItemsActivity extends ActionBarActivity {
+public class ReservedItemsActivity extends BaseActivity {
 
     private static final String TAG = "ReservedActivity";
 
@@ -24,15 +24,7 @@ public class ReservedItemsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reserved_items);
-
-        /*List<String> soldItems = new ArrayList<String>();
-        soldItems.add("PE T-shirt");
-        soldItems.add("Rizal Book");
-        soldItems.add("Uniform");
-
-        ListView lv = (ListView)findViewById(R.id.listViewReserved);
-        CustomListAdapterQueue listAdapter = new CustomListAdapterQueue(ReservedItemsActivity.this, R.layout.activity_item, soldItems);
-        lv.setAdapter(listAdapter);*/
+        setupUI();
         getReservedItems();
     }
 
@@ -59,7 +51,6 @@ public class ReservedItemsActivity extends ActionBarActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                // Toast.makeText(LoginActivity.this, "Error: Invalid username or password", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -86,5 +77,10 @@ public class ReservedItemsActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean checkItemClicked(MenuItem menuItem) {
+        return menuItem.getItemId() != R.id.nav_reserved_items;
     }
 }

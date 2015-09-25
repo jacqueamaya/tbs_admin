@@ -25,7 +25,7 @@ import citu.teknoybuyandselladmin.models.DonateApproval;
 import citu.teknoybuyandselladmin.models.SellApproval;
 
 
-public class QueueItemDetailActivity extends ActionBarActivity {
+public class QueueItemDetailActivity extends BaseActivity {
 
     private static final String TAG = "QueueItemDetailActivity";
     private static final String REQUEST_ID = "request_id";
@@ -34,6 +34,7 @@ public class QueueItemDetailActivity extends ActionBarActivity {
 
     private int requestId;
     private int itemId;
+    private String mItemName;
 
     private TextView txtTitle;
     private TextView txtPrice;
@@ -41,14 +42,13 @@ public class QueueItemDetailActivity extends ActionBarActivity {
 
     private Spinner category;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_items_on_queue_detail);
-        Intent intent = getIntent();
+        setupUI();
 
+        Intent intent = getIntent();
         requestId = intent.getIntExtra("requestId",0);
         itemId = intent.getIntExtra("itemId",0);
 
@@ -57,7 +57,6 @@ public class QueueItemDetailActivity extends ActionBarActivity {
         txtDetails = (TextView) findViewById(R.id.txtDetails);
         category = (Spinner) findViewById(R.id.spinner);
 
-        //getQueueItemDetails(txtTitle,txtPrice,txtDetails,requestId);
         getQueueItemDetails(requestId);
     }
 
@@ -77,7 +76,11 @@ public class QueueItemDetailActivity extends ActionBarActivity {
                     jsonArray = new JSONArray(responseBody);
                     request = SellApproval.allSellRequest(jsonArray);
                     sell = request.get(0);
-                    txtTitle.setText(sell.getItemName());
+
+                    mItemName = sell.getItemName();
+                    setTitle(mItemName);
+
+                    txtTitle.setText(mItemName);
                     txtPrice.setText("Price: PHP "+ sell.getPrice());
                     txtDetails.setText(sell.getDetails());
 
@@ -183,5 +186,10 @@ public class QueueItemDetailActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean checkItemClicked(MenuItem menuItem) {
+        return menuItem.getItemId() != R.id.nav_items_queue;
     }
 }

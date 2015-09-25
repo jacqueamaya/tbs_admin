@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="citu.teknoybuyandselladmin">
 
-    <item android:id="@+id/notification"
-        android:title="@string/notification"
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
         android:color="@color/Gold"
         app:showAsAction="ifRoom" />
 </menu>

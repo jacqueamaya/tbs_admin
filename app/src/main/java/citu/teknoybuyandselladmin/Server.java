@@ -5,19 +5,19 @@ import android.util.Log;
 import java.util.Map;
 
 public class Server {
-
-    private static final String URL_LOGIN = "http://10.0.3.2:8000/api/admin_login";
-    private static final String URL_NOTIFICATION = "http://10.0.3.2:8000/api-x/admin_notifications";
-    private static final String URL_RESERVED_ITEMS = "http://10.0.3.2:8000/api-x/reservation_requests/";
-    private static final String URL_SELL_REQUEST = "http://10.0.3.2:8000/api-x/sell_requests/";
-    private static final String URL_DONATE_REQUEST = "http://10.0.3.2:8000/api-x/donate_requests/";
-    private static final String URL_TRANSACTIONS = "http://10.0.3.2:8000/api-x/transactions/";
-    private static final String URL_ITEMS_ON_QUEUE_DETAILS = "http://10.0.3.2:8000/api-x/sell_requests/";
-    private static final String URL_DONATED_ITEMS_DETAILS = "http://10.0.3.2:8000/api-x/donate_requests/";
-    private static final String URL_APPROVE_SELL = "http://10.0.3.2:8000/api/admin_approveItem";
-    private static final String URL_DISAPPROVE_SELL = "http://10.0.3.2:8000/api/admin_disapproveItem";
-    private static final String URL_APPROVE_DONATION = "http://10.0.3.2:8000/api/admin_approveDonation";
-    private static final String URL_DISAPPROVE_DONATION = "http://10.0.3.2:8000/api/admin_disapproveDonation";
+    private static final String URL = "192.168.0.12:8000";
+    private static final String URL_LOGIN = "http://"+URL+"/api/admin_login";
+    private static final String URL_NOTIFICATION = "http://"+URL+"/api-x/admin_notifications";
+    private static final String URL_RESERVED_ITEMS = "http://"+URL+"/api-x/reservation_requests/";
+    private static final String URL_SELL_REQUEST = "http://"+URL+"/api-x/sell_requests/";
+    private static final String URL_DONATE_REQUEST = "http://"+URL+"/api-x/donate_requests/";
+    private static final String URL_TRANSACTIONS = "http://"+URL+"/api-x/transactions/";
+    private static final String URL_ITEMS_ON_QUEUE_DETAILS = "http://"+URL+"/api-x/sell_requests/";
+    private static final String URL_DONATED_ITEMS_DETAILS = "http://"+URL+"/api-x/donate_requests/";
+    private static final String URL_APPROVE_SELL = "http://"+URL+"/api/admin_approveItem";
+    private static final String URL_DISAPPROVE_SELL = "http://"+URL+"/api/admin_disapproveItem";
+    private static final String URL_APPROVE_DONATION = "http://"+URL+"/api/admin_approveDonation";
+    private static final String URL_DISAPPROVE_DONATION = "http://"+URL+"/api/admin_disapproveDonation";
 
     private static final String TAG = "Server";
 

@@ -1,22 +1,13 @@
 package citu.teknoybuyandselladmin;
 
-import android.app.ActionBar;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -24,14 +15,16 @@ import citu.teknoybuyandselladmin.ListAdapters.TransactionAdapter;
 import citu.teknoybuyandselladmin.models.Transaction;
 
 
-public class TransactionActivity extends ActionBarActivity {
-    private static final String TAG = "TransactionActivity";
+public class TransactionsActivity extends BaseActivity {
+    private static final String TAG = "TransactionsActivity";
     TableLayout table_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transactions);
+        setupUI();
+
         table_layout = (TableLayout) findViewById(R.id.transactionTable);
         getTransactions(table_layout);
     }
@@ -48,8 +41,7 @@ public class TransactionActivity extends ActionBarActivity {
                     jsonArray = new JSONArray(responseBody);
                     transactions = Transaction.allTransactions(jsonArray);
 
-                    //ListView lv = (ListView)findViewById(R.id.listViewReserved);
-                    TransactionAdapter transAdapter = new TransactionAdapter(TransactionActivity.this,transactions);
+                    TransactionAdapter transAdapter = new TransactionAdapter(TransactionsActivity.this,transactions);
                     transAdapter.addRows(tl);
 
                 } catch (JSONException e1) {
@@ -59,14 +51,9 @@ public class TransactionActivity extends ActionBarActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                // Toast.makeText(LoginActivity.this, "Error: Invalid username or password", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,5 +75,10 @@ public class TransactionActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean checkItemClicked(MenuItem menuItem) {
+        return menuItem.getItemId() != R.id.nav_transactions;
     }
 }

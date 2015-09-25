@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent;
-                intent = new Intent(MainActivity.this, NotificationActivity.class);
+                intent = new Intent(MainActivity.this, NotificationsActivity.class);
                 intent.putExtra("admin", "Admin");
                 startActivity(intent);
             }
