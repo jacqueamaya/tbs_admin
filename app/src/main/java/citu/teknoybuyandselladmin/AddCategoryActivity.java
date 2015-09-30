@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class AddCategoryActivity extends ActionBarActivity {
 
-    public static final String CATEGORY = "category_name";
+    public static final String CATEGORY = "category";
     private static final String TAG = "AddCategoryActivity";
 
     private EditText txtcategory;
@@ -45,8 +45,8 @@ public class AddCategoryActivity extends ActionBarActivity {
                     if (json.getInt("status") == 200) {
                         Log.v(TAG, "Category Added Successfully");
                     } else {
-                        Log.v(TAG, "Failed to add category");
-                        Toast.makeText(AddCategoryActivity.this, "Error: Unable to add category", Toast.LENGTH_SHORT).show();
+                        Log.v(TAG, "Failed to add activity_category");
+                        Toast.makeText(AddCategoryActivity.this, "Error: Unable to add activity_category", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

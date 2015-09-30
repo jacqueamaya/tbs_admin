@@ -27,7 +27,7 @@ public class DonationsDetailActivity extends BaseActivity {
     private static final String TAG = "DonationsDetailActivity";
     private static final String ITEM_ID = "item_id";
     private static final String STARS_REQUIRED = "stars_required";
-    private static final String CATEGORY = "category";
+    private static final String CATEGORY = "activity_category";
 
     private int requestId;
     private int itemId;
@@ -102,9 +102,9 @@ public class DonationsDetailActivity extends BaseActivity {
         data.put(REQUEST_ID,this.requestId+"");
         data.put(STARS_REQUIRED,txtStars.getText().toString());
 
-        //static category**** to be modified
-        data.put(CATEGORY,"Static category");
-        //Log.v(TAG,category.getSelectedItem().toString());
+        //static activity_category**** to be modified
+        data.put(CATEGORY,"Static activity_category");
+        //Log.v(TAG,activity_category.getSelectedItem().toString());
 
         Server.approveDonatedItem(data, new Ajax.Callbacks() {
             @Override

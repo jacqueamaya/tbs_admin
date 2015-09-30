@@ -48,7 +48,7 @@
                 android:layout_alignLeft="@+id/txtAddCategory"
                 android:layout_alignStart="@+id/txtAddCategory"
                 android:width="300dp"
-                android:onClick="onAdd"/>
+                />
 
             <Button
                 android:layout_width="300dp"
@@ -59,7 +59,8 @@
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 android:background="@color/Louie"
-                android:textColor="@color/White"/>
+                android:textColor="@color/White"
+                android:onClick="onAdd"/>
 
 
         </RelativeLayout>

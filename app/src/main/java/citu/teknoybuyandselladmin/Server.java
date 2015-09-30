@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.Map;
 
 public class Server {
-    private static final String URL = "192.168.0.12:8000";
+    private static final String URL = "10.0.3.2:8000";
     private static final String URL_LOGIN = "http://"+URL+"/api/admin_login";
     private static final String URL_NOTIFICATION = "http://"+URL+"/api-x/admin_notifications";
     private static final String URL_RESERVED_ITEMS = "http://"+URL+"/api-x/reservation_requests/";
@@ -21,6 +21,7 @@ public class Server {
     private static final String URL_ITEM_AVAILABLE = "http://"+URL+"/api/item_available";
     private static final String URL_ITEM_CLAIMED = "http://"+URL+"/api/item_claimed";
     private static final String URL_ADD_CATEGORY = "http://"+URL+"/api/add_category";
+    private static final String URL_CATEGORIES = "http://"+URL+"/api-x/categories/";
 
     private static final String TAG = "Server";
 
@@ -71,7 +72,7 @@ public class Server {
     public static void approveQueuedItem(Map<String, String> data, Ajax.Callbacks callbacks) {
         if (  ! data.containsKey("request_id") ||
                 !data.containsKey("item_id") ||
-                !data.containsKey("category")) {
+                !data.containsKey("activity_category")) {
             throw new RuntimeException("Missing data.");
         }
 
@@ -101,7 +102,7 @@ public class Server {
     public static void approveDonatedItem(Map<String, String> data, Ajax.Callbacks callbacks) {
         if (  ! data.containsKey("request_id") ||
                 !data.containsKey("item_id") ||
-                !data.containsKey("category") ||
+                !data.containsKey("activity_category") ||
                 !data.containsKey("stars_required")) {
             throw new RuntimeException("Missing data.");
         }
@@ -155,4 +156,7 @@ public class Server {
         Ajax.post(URL_ADD_CATEGORY, data, callbacks);
     }
 
+    public static void getCategories (Ajax.Callbacks callbacks) {
+        Ajax.get(URL_CATEGORIES, callbacks);
+    }
 }

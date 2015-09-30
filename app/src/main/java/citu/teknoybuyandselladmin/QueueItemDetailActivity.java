@@ -2,12 +2,11 @@ package citu.teknoybuyandselladmin;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,8 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import citu.teknoybuyandselladmin.ListAdapters.DonateApprovalAdapter;
-import citu.teknoybuyandselladmin.models.DonateApproval;
+import citu.teknoybuyandselladmin.models.Category;
 import citu.teknoybuyandselladmin.models.SellApproval;
 
 
@@ -30,7 +28,7 @@ public class QueueItemDetailActivity extends BaseActivity {
     private static final String TAG = "QueueItemDetailActivity";
     private static final String REQUEST_ID = "request_id";
     private static final String ITEM_ID = "item_id";
-    private static final String CATEGORY = "category";
+    private static final String CATEGORY = "activity_category";
 
     private int requestId;
     private int itemId;
@@ -58,6 +56,7 @@ public class QueueItemDetailActivity extends BaseActivity {
         category = (Spinner) findViewById(R.id.spinner);
 
         getQueueItemDetails(requestId);
+        getCategories();
     }
 
     public void getQueueItemDetails(int request){
@@ -81,8 +80,37 @@ public class QueueItemDetailActivity extends BaseActivity {
                     setTitle(mItemName);
 
                     txtTitle.setText(mItemName);
-                    txtPrice.setText("Price: PHP "+ sell.getPrice());
+                    txtPrice.setText("Price: PHP " + sell.getPrice());
                     txtDetails.setText(sell.getDetails());
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+            @Override
+            public void error(int statusCode, String responseBody, String statusText) {
+                Log.v(TAG, "Request error");
+                // Toast.makeText(LoginActivity.this, "Error: Invalid username or password", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void getCategories(){
+        Server.getCategories(new Ajax.Callbacks(){
+            @Override
+            public void success(String responseBody) {
+                ArrayList<String> categories = new ArrayList<String>();
+                Log.v(TAG, responseBody);
+                JSONArray jsonArray = null;
+
+                try {
+                    jsonArray = new JSONArray(responseBody);
+                    categories = Category.allCategories(jsonArray);
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(QueueItemDetailActivity.this,R.layout.activity_category,R.id.txtCategory,categories);
+                    spinnerAdapter.setDropDownViewResource(R.layout.activity_category);
+                    category.setAdapter(spinnerAdapter);
+                    spinnerAdapter.notifyDataSetChanged();
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();
