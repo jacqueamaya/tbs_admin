@@ -14,8 +14,11 @@ public class ReservedItem {
     private String itemName;
     private String status;
     private String reserved_date;
+    private String details;
     private int requestId;
     private int itemId;
+    private float price;
+
 
     public String getItemName() {
         return itemName;
@@ -37,6 +40,14 @@ public class ReservedItem {
         return itemId;
     }
 
+    public String getDetails() {
+        return details;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
     public static ReservedItem getReservedItems(JSONObject jsonObject){
         ReservedItem ri = new ReservedItem();
         JSONObject item;
@@ -50,6 +61,8 @@ public class ReservedItem {
                 item = jsonObject.getJSONObject("item");
                 ri.itemName = item.getString("name");
                 ri.itemId = item.getInt("id");
+                ri.details = item.getString("description");
+                ri.price = (float) item.getDouble("price");
             }
         } catch (JSONException e) {
             e.printStackTrace();

@@ -52,4 +52,6 @@
         <item>Gadgets</item>
         <item>Others</item>
     </string-array>
+    <string name="title_activity_add_category">AddCategoryActivity</string>
+    <string name="title_activity_reserved_detail">ReservedDetailActivity</string>
 </resources>
