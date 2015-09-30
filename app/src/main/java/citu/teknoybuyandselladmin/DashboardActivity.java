@@ -15,12 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import citu.teknoybuyandselladmin.fragments.DonationsFragment;
-import citu.teknoybuyandselladmin.fragments.ItemsQueueFragment;
-import citu.teknoybuyandselladmin.fragments.NotificationsFragment;
-import citu.teknoybuyandselladmin.fragments.ReservedItemsFragment;
-import citu.teknoybuyandselladmin.fragments.TransactionsFragment;
-
 public class DashboardActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     Toolbar mToolbar;
@@ -77,7 +71,7 @@ public class DashboardActivity extends AppCompatActivity {
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the planet to show based on position
         Fragment fragment = null;
-
+/*
         Class fragmentClass = null;
         switch(menuItem.getItemId()) {
             case R.id.nav_notifications:
@@ -114,7 +108,7 @@ public class DashboardActivity extends AppCompatActivity {
             Intent intent;
             intent = new Intent(DashboardActivity.this, LoginActivity.class);
             startActivity(intent);
-        }
+        }*/
 
         // Highlight the selected item, update the title, and close the drawer
         menuItem.setChecked(true);

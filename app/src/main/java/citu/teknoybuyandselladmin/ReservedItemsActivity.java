@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,29 +42,32 @@ public class ReservedItemsActivity extends BaseActivity {
 
                 try {
                     jsonArray = new JSONArray(responseBody);
-                    reserved = ReservedItem.allReservedItems(jsonArray);
+                    if (jsonArray.length() == 0) {
+                        TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
+                        txtMessage.setText("No reserved items");
+                        txtMessage.setVisibility(View.VISIBLE);
+                    } else {
+                        reserved = ReservedItem.allReservedItems(jsonArray);
 
-                    ListView lv = (ListView)findViewById(R.id.listViewReserved);
-                    ReservedItemListAdapter listAdapter = new ReservedItemListAdapter(ReservedItemsActivity.this, R.layout.activity_item , reserved);
-                    lv.setAdapter(listAdapter);
-                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            ReservedItem reserve = (ReservedItem) parent.getItemAtPosition(position);
-                            int itemId = reserve.getItemId();
-                            int requestId = reserve.getRequestId();
-                            Log.v(TAG, "Item id: " + itemId);
-                            Log.v(TAG, "Request id: " + requestId);
+                        ListView lv = (ListView) findViewById(R.id.listViewReserved);
+                        ReservedItemListAdapter listAdapter = new ReservedItemListAdapter(ReservedItemsActivity.this, R.layout.activity_item, reserved);
+                        lv.setAdapter(listAdapter);
+                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                ReservedItem reserve = (ReservedItem) parent.getItemAtPosition(position);
+                                int itemId = reserve.getItemId();
+                                int requestId = reserve.getRequestId();
 
-                            Intent intent;
-                            intent = new Intent(ReservedItemsActivity.this, ReservedDetailActivity.class);
-                            intent.putExtra("itemId", itemId);
-                            intent.putExtra("requestId", requestId);
-                            startActivity(intent);
+                                Intent intent;
+                                intent = new Intent(ReservedItemsActivity.this, ReservedDetailActivity.class);
+                                intent.putExtra("itemId", itemId);
+                                intent.putExtra("requestId", requestId);
+                                startActivity(intent);
 
-                        }
-                    });
-
+                            }
+                        });
+                    }
                 } catch (JSONException e1) {
                     e1.printStackTrace();
                 }

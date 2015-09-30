@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,39 +42,45 @@ public class NotificationsActivity extends BaseActivity {
 
                 try {
                     jsonArray = new JSONArray(responseBody);
-                    notifications = Notification.allNotifications(jsonArray);
+                    if (jsonArray.length() == 0) {
+                        TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
+                        txtMessage.setText("No new notifications");
+                        txtMessage.setVisibility(View.VISIBLE);
+                    } else {
+                        notifications = Notification.allNotifications(jsonArray);
 
-                    ListView lv = (ListView)findViewById(R.id.listViewNotif);
-                    NotificationListAdapter listAdapter = new NotificationListAdapter(NotificationsActivity.this, R.layout.item_notification , notifications);
-                    lv.setAdapter(listAdapter);
-                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Notification notif = (Notification) parent.getItemAtPosition(position);
-                            String notificationType = notif.getNotification_type();
-                            Log.v(TAG,notificationType);
+                        ListView lv = (ListView)findViewById(R.id.listViewNotif);
+                        NotificationListAdapter listAdapter = new NotificationListAdapter(NotificationsActivity.this, R.layout.item_notification , notifications);
+                        lv.setAdapter(listAdapter);
+                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Notification notif = (Notification) parent.getItemAtPosition(position);
+                                String notificationType = notif.getNotification_type();
+                                Log.v(TAG,notificationType);
 
-                            if(notificationType.equals("sell")){
-                                Log.v(TAG,"sell");
-                                Intent intent;
-                                intent = new Intent(NotificationsActivity.this, ItemsOnQueueActivity.class);
-                                startActivity(intent);
-                            }
-                            else if(notificationType.equals("buy")){
-                                Log.v(TAG,"buy");
-                                Intent intent;
-                                intent = new Intent(NotificationsActivity.this, ReservedItemsActivity.class);
-                                startActivity(intent);
-                            }
-                            else if(notificationType.equals("donate")){
-                                Log.v(TAG,"donate");
-                                Intent intent;
-                                intent = new Intent(NotificationsActivity.this, DonationsActivity.class);
-                                startActivity(intent);
-                            }
+                                if(notificationType.equals("sell")){
+                                    Log.v(TAG,"sell");
+                                    Intent intent;
+                                    intent = new Intent(NotificationsActivity.this, ItemsOnQueueActivity.class);
+                                    startActivity(intent);
+                                }
+                                else if(notificationType.equals("buy")){
+                                    Log.v(TAG,"buy");
+                                    Intent intent;
+                                    intent = new Intent(NotificationsActivity.this, ReservedItemsActivity.class);
+                                    startActivity(intent);
+                                }
+                                else if(notificationType.equals("donate")){
+                                    Log.v(TAG,"donate");
+                                    Intent intent;
+                                    intent = new Intent(NotificationsActivity.this, DonationsActivity.class);
+                                    startActivity(intent);
+                                }
 
-                        }
-                    });
+                            }
+                        });
+                    }
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();

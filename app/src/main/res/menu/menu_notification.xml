@@ -5,6 +5,5 @@
 
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
-        android:color="@color/Gold"
-        app:showAsAction="ifRoom" />
+        android:orderInCategory="100" app:showAsAction="never"/>
 </menu>

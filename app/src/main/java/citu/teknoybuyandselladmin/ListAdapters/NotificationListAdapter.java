@@ -69,7 +69,16 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
                 case "donate": message = "<b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b> wants to <b>donate</b> his/her <b>"+items.get(position).getItemName()+"</b>.<br><small>"+notificationDate+"</small>";
                     text.setText(Html.fromHtml(message));
                     break;
-                case "buy": message = "<b>"+ Utils.capitalize(items.get(position).getMakerUsername())+" "+"</b> wants to <b>buy</b> the <b>"+items.get(position).getItemName()+"</b> owned by <b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b>.<br><small>"+notificationDate+"</small>";
+                case "buy": message = "<b>"+ items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+" "+"</b> wants to <b>buy</b> the <b>"+items.get(position).getItemName()+"</b> owned by <b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b>.<br><small>"+notificationDate+"</small>";
+                    text.setText(Html.fromHtml(message));
+                    break;
+                case "cancel": message = "<b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+" "+"cancels</b> his/her reservation for <b>"+items.get(position).getItemName()+"</b> owned by <b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b>.<br><small>"+notificationDate+"</small>";
+                    text.setText(Html.fromHtml(message));
+                    break;
+                case "get": message = "<b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+" "+"</b> wants to <b>reserve</b> the donated item, <b>"+items.get(position).getItemName()+"</b> owned by <b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+"</b>.<br><small>"+notificationDate+"</small>";
+                    text.setText(Html.fromHtml(message));
+                    break;
+                case "delete": message = "<b>"+items.get(position).getOwnerFirstName()+" "+items.get(position).getOwnerLastName()+" "+"deleted</b> his/her pending item, <b>"+items.get(position).getItemName()+"</b>"+"</b>.<br><small>"+notificationDate+"</small>";
                     text.setText(Html.fromHtml(message));
                     break;
                 default: message = "<i>This is a default notification message</i>";

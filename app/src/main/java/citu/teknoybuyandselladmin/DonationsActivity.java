@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,29 +46,32 @@ public class DonationsActivity extends BaseActivity {
 
                 try {
                     jsonArray = new JSONArray(responseBody);
-                    request = DonateApproval.allDonateRequest(jsonArray);
+                    if (jsonArray.length() == 0) {
+                        TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
+                        txtMessage.setText("No donate requests available");
+                        txtMessage.setVisibility(View.VISIBLE);
+                    } else {
+                        request = DonateApproval.allDonateRequest(jsonArray);
 
-                    ListView lv = (ListView) findViewById(R.id.listViewDonations);
-                    DonateApprovalAdapter listAdapter = new DonateApprovalAdapter(DonationsActivity.this, R.layout.activity_item, request);
-                    lv.setAdapter(listAdapter);
-                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            DonateApproval donate = (DonateApproval) parent.getItemAtPosition(position);
-                            int itemId = donate.getItemId();
-                            int requestId = donate.getRequestId();
-                            Log.v(TAG,"Item id: "+itemId);
-                            Log.v(TAG,"Request id: "+ requestId);
+                        ListView lv = (ListView) findViewById(R.id.listViewDonations);
+                        DonateApprovalAdapter listAdapter = new DonateApprovalAdapter(DonationsActivity.this, R.layout.activity_item, request);
+                        lv.setAdapter(listAdapter);
+                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                DonateApproval donate = (DonateApproval) parent.getItemAtPosition(position);
+                                int itemId = donate.getItemId();
+                                int requestId = donate.getRequestId();
 
-                            Intent intent;
-                            intent = new Intent(DonationsActivity.this, DonationsDetailActivity.class);
-                            intent.putExtra("itemId",itemId);
-                            intent.putExtra("requestId",requestId);
-                            startActivity(intent);
+                                Intent intent;
+                                intent = new Intent(DonationsActivity.this, DonationsDetailActivity.class);
+                                intent.putExtra("itemId", itemId);
+                                intent.putExtra("requestId", requestId);
+                                startActivity(intent);
 
-                        }
-                    });
-
+                            }
+                        });
+                    }
                 } catch (JSONException e1) {
                     e1.printStackTrace();
                 }

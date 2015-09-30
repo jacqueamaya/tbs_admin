@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.Map;
 
 public class Server {
-    private static final String URL = "10.0.3.2:8000";
+    private static final String URL = "192.168.0.12:8000";
     private static final String URL_LOGIN = "http://"+URL+"/api/admin_login";
     private static final String URL_NOTIFICATION = "http://"+URL+"/api-x/admin_notifications";
     private static final String URL_RESERVED_ITEMS = "http://"+URL+"/api-x/reservation_requests/";
