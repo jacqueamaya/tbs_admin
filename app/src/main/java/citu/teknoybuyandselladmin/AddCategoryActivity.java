@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -18,12 +19,47 @@ import java.util.Map;
 
 public class AddCategoryActivity extends ActionBarActivity {
 
+    public static final String CATEGORY = "category_name";
+    private static final String TAG = "AddCategoryActivity";
+
+    private EditText txtcategory;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_category);
+
+        txtcategory = (EditText) findViewById(R.id.txtNewCategory);
     }
 
+    public void onAdd(View view){
+        Log.v("AddCategoryActivity", "login function");
+        Map<String,String> data = new HashMap<>();
+        data.put(CATEGORY, txtcategory.getText().toString());
+
+        Server.addCategory(data, new Ajax.Callbacks() {
+            @Override
+            public void success(String responseBody) {
+                try {
+                    JSONObject json = new JSONObject(responseBody);
+                    if (json.getInt("status") == 200) {
+                        Log.v(TAG, "Category Added Successfully");
+                    } else {
+                        Log.v(TAG, "Failed to add category");
+                        Toast.makeText(AddCategoryActivity.this, "Error: Unable to add category", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void error(int statusCode, String responseBody, String statusText) {
+                Log.v(TAG, "Request error");
+                Toast.makeText(AddCategoryActivity.this, "Error: Server error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

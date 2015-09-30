@@ -20,6 +20,7 @@ public class Server {
     private static final String URL_DISAPPROVE_DONATION = "http://"+URL+"/api/admin_disapproveDonation";
     private static final String URL_ITEM_AVAILABLE = "http://"+URL+"/api/item_available";
     private static final String URL_ITEM_CLAIMED = "http://"+URL+"/api/item_claimed";
+    private static final String URL_ADD_CATEGORY = "http://"+URL+"/api/add_category";
 
     private static final String TAG = "Server";
 
@@ -37,7 +38,7 @@ public class Server {
         if ( username == null) {
             throw new RuntimeException("Missing data.");
         }
-        Ajax.get(URL_NOTIFICATION+"/?username="+username, callbacks);
+        Ajax.get(URL_NOTIFICATION + "/?username=" + username, callbacks);
     }
 
     public static void getReservedItems (Ajax.Callbacks callbacks) {
@@ -144,6 +145,14 @@ public class Server {
         }
 
         Ajax.post(URL_ITEM_CLAIMED,data, callbacks);
+    }
+
+    public static void addCategory (Map<String, String> data, Ajax.Callbacks callbacks) {
+        if (  ! data.containsKey(AddCategoryActivity.CATEGORY)) {
+            throw new RuntimeException("Missing data.");
+        }
+
+        Ajax.post(URL_ADD_CATEGORY, data, callbacks);
     }
 
 }

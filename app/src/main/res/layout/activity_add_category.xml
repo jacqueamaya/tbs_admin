@@ -47,7 +47,8 @@
                 android:layout_below="@+id/txtAddCategory"
                 android:layout_alignLeft="@+id/txtAddCategory"
                 android:layout_alignStart="@+id/txtAddCategory"
-                android:width="300dp" />
+                android:width="300dp"
+                android:onClick="onAdd"/>
 
             <Button
                 android:layout_width="300dp"
