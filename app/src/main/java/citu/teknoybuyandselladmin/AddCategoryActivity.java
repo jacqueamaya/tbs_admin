@@ -1,5 +1,6 @@
 package citu.teknoybuyandselladmin;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
@@ -24,6 +25,8 @@ public class AddCategoryActivity extends ActionBarActivity {
 
     private EditText txtcategory;
 
+    private ProgressDialog addCategoryProgress = new ProgressDialog(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,13 +40,18 @@ public class AddCategoryActivity extends ActionBarActivity {
         Map<String,String> data = new HashMap<>();
         data.put(CATEGORY, txtcategory.getText().toString());
 
-        Server.addCategory(data, new Ajax.Callbacks() {
+        addCategoryProgress.setIndeterminate(true);
+        addCategoryProgress.setMessage("Please wait. . .");
+
+        Server.addCategory(data, addCategoryProgress, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {
                     JSONObject json = new JSONObject(responseBody);
                     if (json.getInt("status") == 200) {
                         Log.v(TAG, "Category Added Successfully");
+                        Toast.makeText(AddCategoryActivity.this, "Category successfully added", Toast.LENGTH_SHORT).show();
+
                     } else {
                         Log.v(TAG, "Failed to add activity_category");
                         Toast.makeText(AddCategoryActivity.this, "Error: Unable to add activity_category", Toast.LENGTH_SHORT).show();

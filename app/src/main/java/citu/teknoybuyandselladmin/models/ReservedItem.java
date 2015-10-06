@@ -18,6 +18,7 @@ public class ReservedItem {
     private int requestId;
     private int itemId;
     private float price;
+    private String link;
 
 
     public String getItemName() {
@@ -48,6 +49,10 @@ public class ReservedItem {
         return price;
     }
 
+    public String getLink() {
+        return link;
+    }
+
     public static ReservedItem getReservedItems(JSONObject jsonObject){
         ReservedItem ri = new ReservedItem();
         JSONObject item;
@@ -63,6 +68,7 @@ public class ReservedItem {
                 ri.itemId = item.getInt("id");
                 ri.details = item.getString("description");
                 ri.price = (float) item.getDouble("price");
+                ri.link = item.getString("picture");
             }
         } catch (JSONException e) {
             e.printStackTrace();

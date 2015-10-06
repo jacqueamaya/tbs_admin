@@ -1,7 +1,17 @@
 package citu.teknoybuyandselladmin;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -79,8 +90,12 @@ public final class Ajax {
         }.execute(url);
     }
 
-    public static void post(String url, final Map<String, String> data, final Callbacks callbacks) {
+    public static void post(String url, final ProgressDialog progressDialog, final Map<String, String> data, final Callbacks callbacks) {
         new AsyncTask<String, Void, HashMap<String, Object>>() {
+            @Override
+            protected  void onPreExecute(){
+                progressDialog.show();
+            }
 
             @Override
             protected HashMap<String, Object> doInBackground(String... params) {
@@ -96,8 +111,8 @@ public final class Ajax {
                     connection.setRequestMethod(REQUEST_METHOD_POST);
                     connection.setUseCaches(false);
 
-                    Log.v("Ajax",serialize(data));
-                    Log.v("Ajax","output stream"+connection.getOutputStream());
+                    Log.v("Ajax", serialize(data));
+                    Log.v("Ajax", "output stream" + connection.getOutputStream());
 
                     writeToStream(connection.getOutputStream(), serialize(data));
                     connection.connect();
@@ -121,6 +136,7 @@ public final class Ajax {
 
             @Override
             protected void onPostExecute(HashMap<String, Object> map) {
+                progressDialog.dismiss();
                 super.onPostExecute(map);
                 if (null == map) {
                     callbacks.error(0, null, null);
@@ -137,6 +153,21 @@ public final class Ajax {
             }
         }.execute(url);
     }
+
+    /*public static void download(final Context context, final String url, final ImageView imageView) {
+        new AsyncTask<String, Void, Bitmap>() {
+            @Override
+            protected void doInBackground(String... params) {
+                try {
+                    Picasso.with(context)
+                            .load(url)
+                            .into(imageView);
+                } catch (Exception e) {
+                    Log.w("ImageDownloader", "Error downloading image from " + params[0]);
+                }
+            }
+        }.execute(url);
+    }*/
 
     public static void put(String url, Map<String, String> data, Callbacks callbacks) {
 

@@ -1,38 +1,41 @@
 package citu.teknoybuyandselladmin;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.util.Map;
 
 public class Server {
-    private static final String URL = "192.168.0.12:8000";
-    private static final String URL_LOGIN = "http://"+URL+"/api/admin_login";
-    private static final String URL_NOTIFICATION = "http://"+URL+"/api-x/admin_notifications";
-    private static final String URL_RESERVED_ITEMS = "http://"+URL+"/api-x/reservation_requests/";
-    private static final String URL_SELL_REQUEST = "http://"+URL+"/api-x/sell_requests/";
-    private static final String URL_DONATE_REQUEST = "http://"+URL+"/api-x/donate_requests/";
-    private static final String URL_TRANSACTIONS = "http://"+URL+"/api-x/transactions/";
-    private static final String URL_ITEMS_ON_QUEUE_DETAILS = "http://"+URL+"/api-x/sell_requests/";
-    private static final String URL_DONATED_ITEMS_DETAILS = "http://"+URL+"/api-x/donate_requests/";
-    private static final String URL_APPROVE_SELL = "http://"+URL+"/api/admin_approveItem";
-    private static final String URL_DISAPPROVE_SELL = "http://"+URL+"/api/admin_disapproveItem";
-    private static final String URL_APPROVE_DONATION = "http://"+URL+"/api/admin_approveDonation";
-    private static final String URL_DISAPPROVE_DONATION = "http://"+URL+"/api/admin_disapproveDonation";
-    private static final String URL_ITEM_AVAILABLE = "http://"+URL+"/api/item_available";
-    private static final String URL_ITEM_CLAIMED = "http://"+URL+"/api/item_claimed";
-    private static final String URL_ADD_CATEGORY = "http://"+URL+"/api/add_category";
-    private static final String URL_CATEGORIES = "http://"+URL+"/api-x/categories/";
+    private static final String URL_ADD_CATEGORY = "http://tbs-admin.herokuapp.com/api/add_category";
+    private static final String URL_APPROVE_DONATION = "http://tbs-admin.herokuapp.com/api/admin_approveDonation";
+    private static final String URL_APPROVE_SELL = "http://tbs-admin.herokuapp.com/api/admin_approveItem";
+    private static final String URL_DISAPPROVE_DONATION = "http://tbs-admin.herokuapp.com/api/admin_disapproveDonation";
+    private static final String URL_DISAPPROVE_SELL = "http://tbs-admin.herokuapp.com/api/admin_disapproveItem";
+    private static final String URL_ITEM_AVAILABLE = "http://tbs-admin.herokuapp.com/api/item_available";
+    private static final String URL_ITEM_CLAIMED = "http://tbs-admin.herokuapp.com/api/item_claimed";
+    private static final String URL_LOGIN = "http://tbs-admin.herokuapp.com/api/admin_login";
+
+    private static final String URL_CATEGORIES = "http://tbs-admin.herokuapp.com/api-x/categories/";
+    private static final String URL_DONATED_ITEMS_DETAILS = "http://tbs-admin.herokuapp.com/api-x/donate_requests/";
+    private static final String URL_DONATE_REQUEST = "http://tbs-admin.herokuapp.com/api-x/donate_requests/";
+    private static final String URL_ITEMS_ON_QUEUE_DETAILS = "http://tbs-admin.herokuapp.com/api-x/sell_requests/";
+    private static final String URL_NOTIFICATION = "http://tbs-admin.herokuapp.com/api-x/admin_notifications";
+    private static final String URL_RESERVED_ITEMS = "http://tbs-admin.herokuapp.com/api-x/reservation_requests/";
+    private static final String URL_SELL_REQUEST = "http://tbs-admin.herokuapp.com/api-x/sell_requests/";
+    private static final String URL_TRANSACTIONS = "http://tbs-admin.herokuapp.com/api-x/transactions/";
 
     private static final String TAG = "Server";
 
 
-    public static void login (Map<String, String> data, Ajax.Callbacks callbacks) {
+    public static void login (Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
         if (  ! data.containsKey(LoginActivity.USERNAME) ||
                 ! data.containsKey(LoginActivity.PASSWORD)) {
             throw new RuntimeException("Missing data.");
         }
 
-        Ajax.post(URL_LOGIN, data, callbacks);
+        Ajax.post(URL_LOGIN, progressDialog, data, callbacks);
     }
 
     public static void getNotifications (String username, Ajax.Callbacks callbacks) {
@@ -69,23 +72,23 @@ public class Server {
         }
     }
 
-    public static void approveQueuedItem(Map<String, String> data, Ajax.Callbacks callbacks) {
+    public static void approveQueuedItem(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
         if (  ! data.containsKey("request_id") ||
                 !data.containsKey("item_id") ||
                 !data.containsKey("activity_category")) {
             throw new RuntimeException("Missing data.");
         }
 
-        Ajax.post(URL_APPROVE_SELL, data, callbacks);
+        Ajax.post(URL_APPROVE_SELL, progressDialog, data, callbacks);
     }
 
-    public static void denyQueuedItem(Map<String, String> data, Ajax.Callbacks callbacks) {
+    public static void denyQueuedItem(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
         if (  ! data.containsKey("request_id") ||
                 !data.containsKey("item_id")) {
             throw new RuntimeException("Missing data.");
         }
 
-        Ajax.post(URL_DISAPPROVE_SELL, data, callbacks);
+        Ajax.post(URL_DISAPPROVE_SELL, progressDialog, data, callbacks);
     }
 
     public static void getDonatedItemDetails (Map<String, String> data, Ajax.Callbacks callbacks) {
@@ -99,7 +102,7 @@ public class Server {
         }
     }
 
-    public static void approveDonatedItem(Map<String, String> data, Ajax.Callbacks callbacks) {
+    public static void approveDonatedItem(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
         if (  ! data.containsKey("request_id") ||
                 !data.containsKey("item_id") ||
                 !data.containsKey("activity_category") ||
@@ -107,16 +110,16 @@ public class Server {
             throw new RuntimeException("Missing data.");
         }
 
-        Ajax.post(URL_APPROVE_DONATION,data, callbacks);
+        Ajax.post(URL_APPROVE_DONATION,progressDialog,data, callbacks);
     }
 
-    public static void denyDonatedItem(Map<String, String> data, Ajax.Callbacks callbacks) {
+    public static void denyDonatedItem(Map<String, String> data,ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
         if (  ! data.containsKey("request_id") ||
                 !data.containsKey("item_id")) {
             throw new RuntimeException("Missing data.");
         }
 
-        Ajax.post(URL_DISAPPROVE_DONATION,data, callbacks);
+        Ajax.post(URL_DISAPPROVE_DONATION, progressDialog,data, callbacks);
     }
 
     public static void getReservedItemDetails (Map<String, String> data, Ajax.Callbacks callbacks) {
@@ -130,33 +133,37 @@ public class Server {
         }
     }
 
-    public static void itemAvailable(Map<String, String> data, Ajax.Callbacks callbacks) {
+    public static void itemAvailable(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
         if (  ! data.containsKey("request_id") ||
                 !data.containsKey("item_id")) {
             throw new RuntimeException("Missing data.");
         }
 
-        Ajax.post(URL_ITEM_AVAILABLE,data, callbacks);
+        Ajax.post(URL_ITEM_AVAILABLE, progressDialog, data, callbacks);
     }
 
-    public static void itemClaimed(Map<String, String> data, Ajax.Callbacks callbacks) {
+    public static void itemClaimed(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
         if (  ! data.containsKey("request_id") ||
                 !data.containsKey("item_id")) {
             throw new RuntimeException("Missing data.");
         }
 
-        Ajax.post(URL_ITEM_CLAIMED,data, callbacks);
+        Ajax.post(URL_ITEM_CLAIMED, progressDialog, data, callbacks);
     }
 
-    public static void addCategory (Map<String, String> data, Ajax.Callbacks callbacks) {
+    public static void addCategory (Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
         if (  ! data.containsKey(AddCategoryActivity.CATEGORY)) {
             throw new RuntimeException("Missing data.");
         }
 
-        Ajax.post(URL_ADD_CATEGORY, data, callbacks);
+        Ajax.post(URL_ADD_CATEGORY, progressDialog, data, callbacks);
     }
 
     public static void getCategories (Ajax.Callbacks callbacks) {
         Ajax.get(URL_CATEGORIES, callbacks);
     }
+
+    /*public static void downloadImage(Context context, String url,ImageView imageView){
+        Ajax.download(context,url,imageView);
+    }*/
 }

@@ -13,11 +13,10 @@ public class DonateApproval {
     private String itemName;
     private String request_date;
     private String details;
+    private String link;
 
     private int requestId;
     private int itemId;
-
-    private float price;
 
     public String getItemName() {
         return itemName;
@@ -39,8 +38,8 @@ public class DonateApproval {
         return details;
     }
 
-    public float getPrice() {
-        return price;
+    public String getLink() {
+        return link;
     }
 
     public static DonateApproval getRequest(JSONObject jsonObject){
@@ -56,7 +55,7 @@ public class DonateApproval {
                 donate.itemName = item.getString("name");
                 donate.itemId = item.getInt("id");
                 donate.details = item.getString("description");
-                donate.price = (float)item.getDouble("price");
+                donate.link = item.getString("picture");
             }
         } catch (JSONException e) {
             e.printStackTrace();

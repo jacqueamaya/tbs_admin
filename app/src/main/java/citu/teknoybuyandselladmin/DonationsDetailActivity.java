@@ -1,5 +1,6 @@
 package citu.teknoybuyandselladmin;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -7,8 +8,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +42,10 @@ public class DonationsDetailActivity extends BaseActivity {
     private TextView txtDetails;
     private TextView txtStars;
 
+    private ImageView thumbnail;
+
+    private ProgressDialog donationProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +58,12 @@ public class DonationsDetailActivity extends BaseActivity {
         itemId = intent.getIntExtra("itemId",0);
 
         txtTitle = (TextView) findViewById(R.id.txtTitle);
-        txtPrice = (TextView) findViewById(R.id.txtPriceLabel);
         txtDetails = (TextView) findViewById(R.id.txtDetails);
         txtStars = (TextView) findViewById(R.id.txtNumOfStars);
+        thumbnail = (ImageView) findViewById(R.id.imgThumbnail);
+
+        donationProgress = new ProgressDialog(this);
+
         getDonatedItemDetails(requestId);
 
     }
@@ -74,11 +85,14 @@ public class DonationsDetailActivity extends BaseActivity {
                     request = DonateApproval.allDonateRequest(jsonArray);
                     donate = request.get(0);
 
+                    Picasso.with(DonationsDetailActivity.this)
+                            .load(donate.getLink())
+                            .into(thumbnail);
+
                     mItemName = donate.getItemName();
                     setTitle(mItemName);
 
                     txtTitle.setText(mItemName);
-                    txtPrice.setText("Price: PHP " + donate.getPrice());
                     txtDetails.setText(donate.getDetails());
 
                 } catch (JSONException e1) {
@@ -95,18 +109,21 @@ public class DonationsDetailActivity extends BaseActivity {
     }
 
     public void onApprove(View view){
-        Log.v(TAG,"Item ID: "+itemId);
+        Log.v(TAG, "Item ID: " + itemId);
         Map<String,String> data = new HashMap<>();
 
         data.put(ITEM_ID,this.itemId+"");
-        data.put(REQUEST_ID,this.requestId+"");
-        data.put(STARS_REQUIRED,txtStars.getText().toString());
+        data.put(REQUEST_ID, this.requestId + "");
+        data.put(STARS_REQUIRED, txtStars.getText().toString());
 
         //static activity_category**** to be modified
-        data.put(CATEGORY,"Static activity_category");
+        data.put(CATEGORY, "Static activity_category");
         //Log.v(TAG,activity_category.getSelectedItem().toString());
 
-        Server.approveDonatedItem(data, new Ajax.Callbacks() {
+        donationProgress.setIndeterminate(true);
+        donationProgress.setMessage("Please wait. . ");
+
+        Server.approveDonatedItem(data,donationProgress, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {
@@ -139,7 +156,10 @@ public class DonationsDetailActivity extends BaseActivity {
         data.put(ITEM_ID,this.itemId+"");
         data.put(REQUEST_ID,this.requestId+"");
 
-        Server.denyDonatedItem(data, new Ajax.Callbacks() {
+        donationProgress.setIndeterminate(true);
+        donationProgress.setMessage("Please wait. . ");
+
+        Server.denyDonatedItem(data, donationProgress, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {

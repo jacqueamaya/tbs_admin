@@ -1,5 +1,6 @@
 package citu.teknoybuyandselladmin;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -7,8 +8,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +39,10 @@ public class ReservedDetailActivity extends BaseActivity {
     private TextView txtPrice;
     private TextView txtDetails;
 
+    private ImageView thumbnail;
+
+    private ProgressDialog reserveProgress;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,9 @@ public class ReservedDetailActivity extends BaseActivity {
         txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtPrice = (TextView) findViewById(R.id.txtPriceLabel);
         txtDetails = (TextView) findViewById(R.id.txtDetails);
+        thumbnail = (ImageView) findViewById(R.id.imgThumbnail);
+
+        reserveProgress = new ProgressDialog(this);
 
         getReservedDetails(requestId);
     }
@@ -67,6 +78,9 @@ public class ReservedDetailActivity extends BaseActivity {
                     jsonArray = new JSONArray(responseBody);
                     request = ReservedItem.allReservedItems(jsonArray);
                     reserve = request.get(0);
+                    Picasso.with(ReservedDetailActivity.this)
+                            .load(reserve.getLink())
+                            .into(thumbnail);
                     txtTitle.setText(reserve.getItemName());
                     txtPrice.setText("Price: PHP " + reserve.getPrice());
                     txtDetails.setText(reserve.getDetails());
@@ -85,13 +99,16 @@ public class ReservedDetailActivity extends BaseActivity {
     }
 
     public void onAvailable(View view){
-        Log.v(TAG,"Item ID: "+itemId);
+        Log.v(TAG, "Item ID: " + itemId);
         Map<String,String> data = new HashMap<>();
 
         data.put(ITEM_ID,this.itemId+"");
-        data.put(REQUEST_ID,this.requestId+"");
+        data.put(REQUEST_ID, this.requestId + "");
 
-        Server.itemAvailable(data, new Ajax.Callbacks() {
+        reserveProgress.setIndeterminate(true);
+        reserveProgress.setMessage("Please wait. . .");
+
+        Server.itemAvailable(data, reserveProgress, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {
@@ -124,7 +141,10 @@ public class ReservedDetailActivity extends BaseActivity {
         data.put(ITEM_ID,this.itemId+"");
         data.put(REQUEST_ID,this.requestId+"");
 
-        Server.itemClaimed(data, new Ajax.Callbacks() {
+        reserveProgress.setIndeterminate(true);
+        reserveProgress.setMessage("Please wait. . .");
+
+        Server.itemClaimed(data,reserveProgress, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {

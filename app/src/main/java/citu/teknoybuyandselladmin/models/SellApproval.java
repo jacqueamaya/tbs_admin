@@ -17,6 +17,7 @@ public class SellApproval {
     private int requestId;
     private float price;
     private String details;
+    private String link;
 
 
     public String getItemName() {
@@ -43,6 +44,10 @@ public class SellApproval {
         return details;
     }
 
+    public String getLink() {
+        return link;
+    }
+
     public static SellApproval getRequest(JSONObject jsonObject){
         SellApproval sell = new SellApproval();
         JSONObject item;
@@ -57,6 +62,7 @@ public class SellApproval {
                 sell.itemId = item.getInt("id");
                 sell.price = (float)item.getDouble("price");
                 sell.details = item.getString("description");
+                sell.link = item.getString("picture");
             }
         } catch (JSONException e) {
             e.printStackTrace();

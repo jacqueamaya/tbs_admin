@@ -1,5 +1,6 @@
 package citu.teknoybuyandselladmin;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,9 +8,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,7 +42,11 @@ public class QueueItemDetailActivity extends BaseActivity {
     private TextView txtPrice;
     private TextView txtDetails;
 
+    private ImageView thumbnail;
+
     private Spinner category;
+
+    private ProgressDialog queueProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +59,12 @@ public class QueueItemDetailActivity extends BaseActivity {
         itemId = intent.getIntExtra("itemId",0);
 
         txtTitle = (TextView) findViewById(R.id.txtTitle);
-        txtPrice = (TextView) findViewById(R.id.txtPriceLabel);
+        txtPrice = (TextView) findViewById(R.id.txtPrice);
         txtDetails = (TextView) findViewById(R.id.txtDetails);
         category = (Spinner) findViewById(R.id.spinner);
+        thumbnail = (ImageView) findViewById(R.id.imgThumbnail);
+
+        queueProgress = new ProgressDialog(this);
 
         getQueueItemDetails(requestId);
         getCategories();
@@ -61,7 +72,7 @@ public class QueueItemDetailActivity extends BaseActivity {
 
     public void getQueueItemDetails(int request){
         Map<String,String> data = new HashMap<>();
-        data.put(REQUEST_ID,request+"");
+        data.put(REQUEST_ID, request + "");
 
         Server.getQueueItemDetails(data, new Ajax.Callbacks() {
             @Override
@@ -75,6 +86,12 @@ public class QueueItemDetailActivity extends BaseActivity {
                     jsonArray = new JSONArray(responseBody);
                     request = SellApproval.allSellRequest(jsonArray);
                     sell = request.get(0);
+
+                    Picasso.with(QueueItemDetailActivity.this)
+                            .load(sell.getLink())
+                            .into(thumbnail);
+
+                    Log.v(TAG,request.toString());
 
                     mItemName = sell.getItemName();
                     setTitle(mItemName);
@@ -97,7 +114,7 @@ public class QueueItemDetailActivity extends BaseActivity {
     }
 
     public void getCategories(){
-        Server.getCategories(new Ajax.Callbacks(){
+        Server.getCategories(new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 ArrayList<String> categories = new ArrayList<String>();
@@ -107,7 +124,7 @@ public class QueueItemDetailActivity extends BaseActivity {
                 try {
                     jsonArray = new JSONArray(responseBody);
                     categories = Category.allCategories(jsonArray);
-                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(QueueItemDetailActivity.this,R.layout.activity_category,R.id.txtCategory,categories);
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(QueueItemDetailActivity.this, R.layout.activity_category, R.id.txtCategory, categories);
                     spinnerAdapter.setDropDownViewResource(R.layout.activity_category);
                     category.setAdapter(spinnerAdapter);
                     spinnerAdapter.notifyDataSetChanged();
@@ -125,16 +142,25 @@ public class QueueItemDetailActivity extends BaseActivity {
         });
     }
 
+    public void addCategory(){
+        Intent intent;
+        intent = new Intent(QueueItemDetailActivity.this, AddCategoryActivity.class);
+        startActivity(intent);
+    }
+
     public void onApprove(View view){
-        Log.v(TAG,"Item ID: "+itemId);
+        Log.v(TAG, "Item ID: " + itemId);
         Map<String,String> data = new HashMap<>();
 
         data.put(ITEM_ID,this.itemId+"");
         data.put(REQUEST_ID,this.requestId+"");
-        data.put(CATEGORY,category.getSelectedItem().toString());
-        Log.v(TAG,category.getSelectedItem().toString());
+        data.put(CATEGORY, category.getSelectedItem().toString());
+        Log.v(TAG, category.getSelectedItem().toString());
 
-        Server.approveQueuedItem(data, new Ajax.Callbacks() {
+        queueProgress.setIndeterminate(true);
+        queueProgress.setMessage("Please wait. . .");
+
+        Server.approveQueuedItem(data, queueProgress, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {
@@ -167,7 +193,10 @@ public class QueueItemDetailActivity extends BaseActivity {
         data.put(ITEM_ID,this.itemId+"");
         data.put(REQUEST_ID,this.requestId+"");
 
-        Server.denyQueuedItem(data, new Ajax.Callbacks() {
+        queueProgress.setIndeterminate(true);
+        queueProgress.setMessage("Please wait. . .");
+
+        Server.denyQueuedItem(data, queueProgress, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {
