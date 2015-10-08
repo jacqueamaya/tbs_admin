@@ -62,6 +62,12 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
 
         if(items.get(position) != null )
         {
+            Picasso.with(mContext)
+                    .load(items.get(position).getItemLink())
+                    .placeholder(R.drawable.notif_user)
+                    .resize(50,50)
+                    .centerCrop()
+                    .into(image);
             try {
                 notif_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(items.get(position).getNotification_date());
                 notificationDate = df.format(notif_date);
