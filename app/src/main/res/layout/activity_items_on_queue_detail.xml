@@ -44,27 +44,44 @@
                     android:layout_toRightOf="@id/imgThumbnail"
                     android:textColor="@color/Black"
                     android:textSize="25dp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/txtPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtTitle"
-                    android:layout_toRightOf="@+id/imgThumbnail"
+                    android:layout_marginLeft="23dp"
                     android:layout_marginRight="18dp"
                     android:layout_marginTop="18dp"
-                    android:layout_marginLeft="23dp"
+                    android:layout_toRightOf="@+id/imgThumbnail"
                     android:textColor="@color/Black"
                     android:textSize="16dp" />
 
-                <Spinner
-                    android:id="@+id/spinner"
+                <TextView
+                    android:id="@+id/lblCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/lblDetails"
-                    android:layout_alignLeft="@+id/txtPrice"
-                    android:layout_alignStart="@+id/txtPrice" />
+                    android:layout_below="@+id/txtPrice"
+                    android:layout_marginLeft="23dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/imgThumbnail"
+                    android:textColor="@color/Black"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:text="Category: "/>
+
+                <TextView
+                    android:id="@+id/txtCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtPrice"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/lblCategory"
+                    android:textColor="@color/Black"
+                    android:textSize="16dp"/>
 
                 <TextView
                     android:id="@+id/lblDetails"
@@ -76,6 +93,29 @@
                     android:text="Details:"
                     android:textColor="@color/Black"
                     android:textSize="16dp" />
+
+                <Button
+                    android:id="@+id/btnAdd"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="23dp"
+                    android:layout_alignBottom="@+id/imgThumbnail"
+                    android:layout_toEndOf="@+id/txtPrice"
+                    android:layout_toRightOf="@+id/imgThumbnail"
+                    android:onClick="addCategory"
+                    android:text="Add Category" />
+
+                <Button
+                    android:id="@+id/btnSelect"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/imgThumbnail"
+                    android:layout_toEndOf="@+id/txtPrice"
+                    android:layout_toRightOf="@+id/btnAdd"
+                    android:onClick="onSelect"
+                    android:text="Choose" />
 
                 <TextView
                     android:id="@+id/txtDetails"
@@ -96,30 +136,30 @@
 
                     <Button
                         android:id="@+id/btnApprove"
-                        android:layout_height="50dp"
                         android:layout_width="match_parent"
+                        android:layout_height="50dp"
                         android:layout_marginBottom="10dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:onClick="onDonate"
-                        android:text="Approve"
                         android:background="@drawable/positivebutton"
-                        android:textColor="@color/White"
-                        android:src="@drawable/button_sell" />
+                        android:onClick="onApprove"
+                        android:src="@drawable/button_sell"
+                        android:text="Approve"
+                        android:textColor="@color/White" />
 
                     <Button
                         android:id="@+id/btnDeny"
-                        android:layout_height="50dp"
                         android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_below="@+id/btnApprove"
                         android:layout_marginBottom="10dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:layout_below="@+id/btnApprove"
-                        android:onClick="onDonate"
-                        android:text="Deny"
                         android:background="@drawable/negativebutton"
-                        android:textColor="@color/Louie"
-                        android:src="@drawable/button_sell" />
+                        android:onClick="onDeny"
+                        android:src="@drawable/button_sell"
+                        android:text="Deny"
+                        android:textColor="@color/Louie" />
 
                 </LinearLayout>
 

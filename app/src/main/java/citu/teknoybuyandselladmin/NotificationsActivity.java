@@ -35,6 +35,8 @@ public class NotificationsActivity extends BaseActivity {
     public void getNotifications(){
         String username = "admin";
         Server.getNotifications(username, new Ajax.Callbacks() {
+            TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
+
             @Override
             public void success(String responseBody) {
                 ArrayList<Notification> notifications = new ArrayList<Notification>();
@@ -43,7 +45,6 @@ public class NotificationsActivity extends BaseActivity {
                 try {
                     jsonArray = new JSONArray(responseBody);
                     if (jsonArray.length() == 0) {
-                        TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
                         txtMessage.setText("No new notifications");
                         txtMessage.setVisibility(View.VISIBLE);
                     } else {
@@ -71,6 +72,12 @@ public class NotificationsActivity extends BaseActivity {
                                     intent = new Intent(NotificationsActivity.this, ReservedItemsActivity.class);
                                     startActivity(intent);
                                 }
+                                else if(notificationType.equals("get")){
+                                    Log.v(TAG,"get");
+                                    Intent intent;
+                                    intent = new Intent(NotificationsActivity.this, ReservedItemsActivity.class);
+                                    startActivity(intent);
+                                }
                                 else if(notificationType.equals("donate")){
                                     Log.v(TAG,"donate");
                                     Intent intent;
@@ -90,8 +97,8 @@ public class NotificationsActivity extends BaseActivity {
 
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                // Toast.makeText(LoginActivity.this, "Error: Invalid username or password", Toast.LENGTH_SHORT).show();
+                txtMessage.setText("Connection Error: Cannot connect to server. Please check your internet connection");
+                txtMessage.setVisibility(View.VISIBLE);
             }
         });
     }

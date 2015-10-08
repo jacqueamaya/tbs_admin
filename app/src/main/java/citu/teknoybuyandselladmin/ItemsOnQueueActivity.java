@@ -34,6 +34,8 @@ public class ItemsOnQueueActivity extends BaseActivity {
 
     public void getReservedItems(){
         Server.getSellRequests(new Ajax.Callbacks() {
+            TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
+
             @Override
             public void success(final String responseBody) {
                 ArrayList<SellApproval> request = new ArrayList<SellApproval>();
@@ -43,7 +45,6 @@ public class ItemsOnQueueActivity extends BaseActivity {
                 try {
                     jsonArray = new JSONArray(responseBody);
                     if (jsonArray.length() == 0) {
-                        TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
                         txtMessage.setText("No sell requests available");
                         txtMessage.setVisibility(View.VISIBLE);
                     } else {
@@ -77,6 +78,8 @@ public class ItemsOnQueueActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
+                txtMessage.setText("Connection Error: Cannot connect to server. Please check your internet connection");
+                txtMessage.setVisibility(View.VISIBLE);
             }
         });
     }

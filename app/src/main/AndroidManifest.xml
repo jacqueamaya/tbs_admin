@@ -55,10 +55,6 @@
             android:label="@string/title_activity_transactions" >
         </activity>
         <activity
-            android:name=".AddCategoryActivity"
-            android:label="@string/title_activity_add_category" >
-        </activity>
-        <activity
             android:name=".ReservedDetailActivity"
             android:label="@string/title_activity_reserved_detail" >
         </activity>

@@ -75,7 +75,7 @@ public class Server {
     public static void approveQueuedItem(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
         if (  ! data.containsKey("request_id") ||
                 !data.containsKey("item_id") ||
-                !data.containsKey("activity_category")) {
+                !data.containsKey("category")) {
             throw new RuntimeException("Missing data.");
         }
 
@@ -152,7 +152,7 @@ public class Server {
     }
 
     public static void addCategory (Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
-        if (  ! data.containsKey(AddCategoryActivity.CATEGORY)) {
+        if (  ! data.containsKey(QueueItemDetailActivity.CATEGORY_ITEM)) {
             throw new RuntimeException("Missing data.");
         }
 
@@ -162,8 +162,4 @@ public class Server {
     public static void getCategories (Ajax.Callbacks callbacks) {
         Ajax.get(URL_CATEGORIES, callbacks);
     }
-
-    /*public static void downloadImage(Context context, String url,ImageView imageView){
-        Ajax.download(context,url,imageView);
-    }*/
 }

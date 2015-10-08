@@ -1,11 +1,17 @@
 package citu.teknoybuyandselladmin.models;
 
+import android.util.Log;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class Category {
+
+    private static final String TAG = "Category";
+
     private String categoryName;
     private int categoryId;
 
@@ -17,19 +23,18 @@ public class Category {
         return categoryId;
     }
 
-    public static ArrayList<String> allCategories(JSONArray jsonArray){
-        ArrayList<String> categories = new ArrayList<String>(jsonArray.length());
-        for (int i=0; i < jsonArray.length(); i++) {
-            JSONObject categObject = null;
+    public static String[] getAllCategories(JSONArray jsonArray){
+        String[] categories = new String[jsonArray.length()];
+
+        for (int i = 0; i < categories.length; i++) {
             try {
-                categObject = jsonArray.getJSONObject(i);
-                categories.add(categObject.getString("category_name"));
-            } catch (Exception e) {
-                e.printStackTrace();
-                continue;
+                JSONObject category = jsonArray.getJSONObject(i);
+                categories[i] = category.getString("category_name");
+            } catch (JSONException e) {
+                Log.e(TAG, "Exception while getting category name", e);
             }
         }
-        return categories;
 
+        return categories;
     }
 }

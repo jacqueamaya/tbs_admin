@@ -1,15 +1,18 @@
 package citu.teknoybuyandselladmin;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +35,7 @@ public class QueueItemDetailActivity extends BaseActivity {
     private static final String TAG = "QueueItemDetailActivity";
     private static final String REQUEST_ID = "request_id";
     private static final String ITEM_ID = "item_id";
-    private static final String CATEGORY = "activity_category";
+    public static final String CATEGORY_ITEM = "category";
 
     private int requestId;
     private int itemId;
@@ -41,10 +44,9 @@ public class QueueItemDetailActivity extends BaseActivity {
     private TextView txtTitle;
     private TextView txtPrice;
     private TextView txtDetails;
+    private TextView txtCategory;
 
     private ImageView thumbnail;
-
-    private Spinner category;
 
     private ProgressDialog queueProgress;
 
@@ -61,13 +63,12 @@ public class QueueItemDetailActivity extends BaseActivity {
         txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtPrice = (TextView) findViewById(R.id.txtPrice);
         txtDetails = (TextView) findViewById(R.id.txtDetails);
-        category = (Spinner) findViewById(R.id.spinner);
+        txtCategory = (TextView) findViewById(R.id.txtCategory);
         thumbnail = (ImageView) findViewById(R.id.imgThumbnail);
 
         queueProgress = new ProgressDialog(this);
 
         getQueueItemDetails(requestId);
-        getCategories();
     }
 
     public void getQueueItemDetails(int request){
@@ -91,8 +92,6 @@ public class QueueItemDetailActivity extends BaseActivity {
                             .load(sell.getLink())
                             .into(thumbnail);
 
-                    Log.v(TAG,request.toString());
-
                     mItemName = sell.getItemName();
                     setTitle(mItemName);
 
@@ -108,44 +107,66 @@ public class QueueItemDetailActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                // Toast.makeText(LoginActivity.this, "Error: Invalid username or password", Toast.LENGTH_SHORT).show();
+                Utils.alert(QueueItemDetailActivity.this,"Connection Error!");
             }
         });
     }
 
-    public void getCategories(){
-        Server.getCategories(new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                ArrayList<String> categories = new ArrayList<String>();
-                Log.v(TAG, responseBody);
-                JSONArray jsonArray = null;
+    public void addCategory(View view){
+        LayoutInflater li = LayoutInflater.from(this);
+        View addCategPrompt = li.inflate(R.layout.activity_add_category, null);
+        AlertDialog.Builder alertDialogBuilder =  new AlertDialog.Builder(this);
+        alertDialogBuilder.setView(addCategPrompt);
 
-                try {
-                    jsonArray = new JSONArray(responseBody);
-                    categories = Category.allCategories(jsonArray);
-                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(QueueItemDetailActivity.this, R.layout.activity_category, R.id.txtCategory, categories);
-                    spinnerAdapter.setDropDownViewResource(R.layout.activity_category);
-                    category.setAdapter(spinnerAdapter);
-                    spinnerAdapter.notifyDataSetChanged();
+        final EditText category = (EditText) addCategPrompt.findViewById(R.id.txtCategoryAdded);
 
-                } catch (JSONException e1) {
-                    e1.printStackTrace();
-                }
-            }
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Add",
+                        new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int id){
+                                Log.v(TAG,category.getText().toString());
+                                Map<String,String> data = new HashMap<>();
+                                data.put(CATEGORY_ITEM, category.getText().toString());
 
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                // Toast.makeText(LoginActivity.this, "Error: Invalid username or password", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+                                queueProgress.setIndeterminate(true);
+                                queueProgress.setMessage("Please wait. . .");
 
-    public void addCategory(){
-        Intent intent;
-        intent = new Intent(QueueItemDetailActivity.this, AddCategoryActivity.class);
-        startActivity(intent);
+                                Server.addCategory(data, queueProgress, new Ajax.Callbacks() {
+                                    @Override
+                                    public void success(String responseBody) {
+                                        try {
+                                            JSONObject json = new JSONObject(responseBody);
+                                            if (json.getInt("status") == 200) {
+                                                Log.v(TAG, "Category Added Successfully");
+                                                Snackbar.make(findViewById(R.id.appbar), "Category successfully added", Snackbar.LENGTH_SHORT).show();
+                                            } else {
+                                                Log.v(TAG, "Failed to add activity_category");
+                                                Snackbar.make(findViewById(R.id.appbar), "Failed to add category", Snackbar.LENGTH_SHORT).show();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void error(int statusCode, String responseBody, String statusText) {
+                                        Log.v(TAG, "Request error");
+                                        Snackbar.make(findViewById(R.id.appbar), "Connection Error: Failed to add category", Snackbar.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertDialog =  alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     public void onApprove(View view){
@@ -153,9 +174,11 @@ public class QueueItemDetailActivity extends BaseActivity {
         Map<String,String> data = new HashMap<>();
 
         data.put(ITEM_ID,this.itemId+"");
-        data.put(REQUEST_ID,this.requestId+"");
-        data.put(CATEGORY, category.getSelectedItem().toString());
-        Log.v(TAG, category.getSelectedItem().toString());
+        data.put(REQUEST_ID, this.requestId + "");
+        data.put(CATEGORY_ITEM, txtCategory.getText().toString());
+
+        Log.v(TAG, "Item ID: " + this.itemId);
+        Log.v(TAG, "Request ID: " + this.requestId);
 
         queueProgress.setIndeterminate(true);
         queueProgress.setMessage("Please wait. . .");
@@ -165,12 +188,11 @@ public class QueueItemDetailActivity extends BaseActivity {
             public void success(String responseBody) {
                 try {
                     JSONObject json = new JSONObject(responseBody);
-                    if(json.getInt("status") == 200){
-                        Log.v(TAG,"Successful Approval");
+                    if (json.getInt("status") == 200) {
+                        Log.v(TAG, "Successful Approval");
                         Toast.makeText(QueueItemDetailActivity.this, "Item successfully approved", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Log.v(TAG,"approval failed");
+                    } else {
+                        Log.v(TAG, "approval failed");
                         Toast.makeText(QueueItemDetailActivity.this, "Error; Item approval failed", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -180,18 +202,18 @@ public class QueueItemDetailActivity extends BaseActivity {
 
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG,"Request error");
-                Toast.makeText(QueueItemDetailActivity.this, "Error: Item approval failed", Toast.LENGTH_SHORT).show();
+                Log.v(TAG, "Request error");
+                Toast.makeText(QueueItemDetailActivity.this, " Connection Error: Item approval failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public void onDeny(View view){
-        Log.v(TAG,"Item ID: "+itemId);
+        Log.v(TAG, "Item ID: " + itemId);
         Map<String,String> data = new HashMap<>();
 
         data.put(ITEM_ID,this.itemId+"");
-        data.put(REQUEST_ID,this.requestId+"");
+        data.put(REQUEST_ID, this.requestId + "");
 
         queueProgress.setIndeterminate(true);
         queueProgress.setMessage("Please wait. . .");
@@ -201,12 +223,11 @@ public class QueueItemDetailActivity extends BaseActivity {
             public void success(String responseBody) {
                 try {
                     JSONObject json = new JSONObject(responseBody);
-                    if(json.getInt("status") == 200){
-                        Log.v(TAG,"Successful Disapproval");
+                    if (json.getInt("status") == 200) {
+                        Log.v(TAG, "Successful Disapproval");
                         Toast.makeText(QueueItemDetailActivity.this, "Item successfully disapproved", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Log.v(TAG,"Disapproval failed");
+                    } else {
+                        Log.v(TAG, "Disapproval failed");
                         Toast.makeText(QueueItemDetailActivity.this, "Error; Item disapproval failed", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -216,7 +237,7 @@ public class QueueItemDetailActivity extends BaseActivity {
 
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG,"Request error");
+                Log.v(TAG, "Request error");
                 Toast.makeText(QueueItemDetailActivity.this, "Error: Item disapproval failed", Toast.LENGTH_SHORT).show();
             }
         });
@@ -225,19 +246,14 @@ public class QueueItemDetailActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_items_on_queue_detail, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -248,5 +264,36 @@ public class QueueItemDetailActivity extends BaseActivity {
     @Override
     public boolean checkItemClicked(MenuItem menuItem) {
         return menuItem.getItemId() != R.id.nav_items_queue;
+    }
+
+    public void onSelect(View view) {
+        Server.getCategories(new Ajax.Callbacks() {
+            @Override
+            public void success(String responseBody) {
+                try {
+                    final String categories[] = Category.getAllCategories(new JSONArray(responseBody));
+                    new AlertDialog.Builder(QueueItemDetailActivity.this)
+                            .setTitle("Categories")
+                            .setItems(categories, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    txtCategory.setText(categories[which]);
+                                }
+                            })
+                            .create()
+                            .show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void error(int statusCode, String responseBody, String statusText) {
+                Log.e(TAG, "Error: Cannot connect to server");
+            }
+        });
+
+
+
     }
 }
