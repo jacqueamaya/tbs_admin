@@ -93,6 +93,19 @@
                     android:onClick="onSelect"
                     android:text="Choose" />
 
+                <TextView
+                    android:id="@+id/lblOr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_below="@+id/txtCategory"
+                    android:layout_toRightOf="@+id/btnSelect"
+                    android:text="or"
+                    android:textColor="@color/Black"
+                    android:textSize="16dp" />
+
                 <ImageView
                     android:id="@+id/btnAdd"
                     android:layout_width="30dp"
@@ -100,7 +113,7 @@
                     android:layout_alignBottom="@+id/btnSelect"
                     android:layout_below="@+id/txtCategory"
                     android:layout_toEndOf="@+id/btnSelect"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="40dp"
                     android:layout_toRightOf="@+id/btnSelect"
                     android:onClick="addCategory"
                     android:src="@drawable/add" />
