@@ -91,6 +91,8 @@
                     android:layout_below="@+id/txtCategory"
                     android:layout_marginLeft="23dp"
                     android:layout_toRightOf="@+id/imgThumbnail"
+                    android:background="@color/Maroon"
+                    android:textColor="@color/White"
                     android:onClick="onSelect"
                     android:text="Choose" />
 
