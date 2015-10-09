@@ -91,6 +91,8 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
                 case "get": message = "<b>"+Utils.capitalize(items.get(position).getMakerUsername())+" "+"</b> wants to <b>reserve</b> the donated item, <b>"+items.get(position).getItemName()+"</b> owned by <b>"+Utils.capitalize(items.get(position).getOwnerUsername())+"</b>.<br><small>"+notificationDate+"</small>";
                     text.setText(Html.fromHtml(message));
                     break;
+                case "edit": message = "<b>"+Utils.capitalize(items.get(position).getOwnerUsername())+" edited</b> his/her pending item, <b>"+ items.get(position).getItemName()+"</b>"+"</b>.<br><small>"+notificationDate+"</small>";
+                    text.setText(Html.fromHtml(message));
                 case "delete": message = "<b>"+Utils.capitalize(items.get(position).getOwnerUsername())+" deleted</b> his/her pending item, <b>"+ items.get(position).getItemName()+"</b>"+"</b>.<br><small>"+notificationDate+"</small>";
                     text.setText(Html.fromHtml(message));
                     break;

@@ -44,7 +44,7 @@
                     android:layout_toRightOf="@id/imgThumbnail"
                     android:textColor="@color/Black"
                     android:textSize="25dp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtPrice"
@@ -67,10 +67,10 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/imgThumbnail"
+                    android:text="Category: "
                     android:textColor="@color/Black"
                     android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:text="Category: "/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtCategory"
@@ -81,7 +81,29 @@
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/lblCategory"
                     android:textColor="@color/Black"
-                    android:textSize="16dp"/>
+                    android:textSize="16dp" />
+
+                <Button
+                    android:id="@+id/btnSelect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtCategory"
+                    android:layout_marginLeft="23dp"
+                    android:layout_toRightOf="@+id/imgThumbnail"
+                    android:onClick="onSelect"
+                    android:text="Choose" />
+
+                <ImageView
+                    android:id="@+id/btnAdd"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/btnSelect"
+                    android:layout_below="@+id/txtCategory"
+                    android:layout_toEndOf="@+id/btnSelect"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/btnSelect"
+                    android:onClick="addCategory"
+                    android:src="@drawable/add" />
 
                 <TextView
                     android:id="@+id/lblDetails"
@@ -93,29 +115,6 @@
                     android:text="Details:"
                     android:textColor="@color/Black"
                     android:textSize="16dp" />
-
-                <Button
-                    android:id="@+id/btnAdd"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="23dp"
-                    android:layout_alignBottom="@+id/imgThumbnail"
-                    android:layout_toEndOf="@+id/txtPrice"
-                    android:layout_toRightOf="@+id/imgThumbnail"
-                    android:onClick="addCategory"
-                    android:text="Add Category" />
-
-                <Button
-                    android:id="@+id/btnSelect"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/imgThumbnail"
-                    android:layout_toEndOf="@+id/txtPrice"
-                    android:layout_toRightOf="@+id/btnAdd"
-                    android:onClick="onSelect"
-                    android:text="Choose" />
 
                 <TextView
                     android:id="@+id/txtDetails"
