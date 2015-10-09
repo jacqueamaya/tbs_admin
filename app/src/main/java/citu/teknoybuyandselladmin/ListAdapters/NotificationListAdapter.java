@@ -93,6 +93,7 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
                     break;
                 case "edit": message = "<b>"+Utils.capitalize(items.get(position).getOwnerUsername())+" edited</b> his/her pending item, <b>"+ items.get(position).getItemName()+"</b>"+"</b>.<br><small>"+notificationDate+"</small>";
                     text.setText(Html.fromHtml(message));
+                    break;
                 case "delete": message = "<b>"+Utils.capitalize(items.get(position).getOwnerUsername())+" deleted</b> his/her pending item, <b>"+ items.get(position).getItemName()+"</b>"+"</b>.<br><small>"+notificationDate+"</small>";
                     text.setText(Html.fromHtml(message));
                     break;
