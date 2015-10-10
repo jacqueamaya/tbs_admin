@@ -93,7 +93,7 @@
                     android:layout_marginLeft="23dp"
                     android:layout_toRightOf="@+id/imgThumbnail"
                     android:layout_marginTop="10dp"
-                    android:background="@color/Maroon"
+                    android:background="@drawable/positivebutton"
                     android:textColor="@color/White"
                     android:onClick="onSelect"
                     android:text="Choose" />
@@ -111,18 +111,18 @@
                     android:textColor="@color/Black"
                     android:textSize="16dp" />
 
-                <ImageView
+                <Button
                     android:id="@+id/btnAdd"
-                    android:layout_width="30dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/btnSelect"
                     android:layout_below="@+id/txtCategory"
-                    android:layout_toEndOf="@+id/btnSelect"
                     android:layout_marginLeft="30dp"
-                    android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/btnSelect"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/positivebutton"
+                    android:textColor="@color/White"
                     android:onClick="addCategory"
-                    android:src="@drawable/add" />
+                    android:text="Add" />
 
                 <TextView
                     android:id="@+id/lblDetails"
