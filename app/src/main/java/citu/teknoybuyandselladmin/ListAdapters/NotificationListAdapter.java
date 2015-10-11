@@ -51,30 +51,39 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
     @Override
     public View getView(int position, View v, ViewGroup parent)
     {
+        String message;
+
         View mView = v ;
         if(mView == null){
             LayoutInflater vi = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             mView = vi.inflate(id, null);
         }
-
         TextView text = (TextView) mView.findViewById(R.id.textView);
         ImageView image = (ImageView) mView.findViewById(R.id.image);
 
         if(items.get(position) != null )
         {
-            Picasso.with(mContext)
-                    .load(items.get(position).getItemLink())
-                    .placeholder(R.drawable.notif_user)
-                    .resize(50,50)
-                    .centerCrop()
-                    .into(image);
             try {
                 notif_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(items.get(position).getNotification_date());
                 notificationDate = df.format(notif_date);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            String message;
+            if(items.get(position).getStatus().equals("unread"))
+            {
+                mView.setBackgroundResource(R.color.forNotifs);
+            }
+            else
+            {
+                mView.setBackgroundResource(R.color.White);
+            }
+            Picasso.with(mContext)
+                    .load(items.get(position).getItemLink())
+                    .placeholder(R.drawable.notif_user)
+                    .resize(50,50)
+                    .centerCrop()
+                    .into(image);
+
             switch(items.get(position).getNotification_type()){
                 case "sell": message = "<b>"+Utils.capitalize(items.get(position).getOwnerUsername())+" </b> wants to <b>sell</b> his/her <b>"+items.get(position).getItemName()+"</b>.<br><small>"+notificationDate+"</small>";
                         text.setText(Html.fromHtml(message));
