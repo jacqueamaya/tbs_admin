@@ -33,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private ProgressDialog loginProgress;
 
+    private String mUsername;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,13 +44,15 @@ public class LoginActivity extends AppCompatActivity {
         txtPassword = (EditText) findViewById(R.id.txtPassword);
 
         loginProgress = new ProgressDialog(this);
+
+        mUsername = txtUsername.getText().toString();
     }
 
     public void onLogin(View view) {
         Log.v("LoginActivity", "login function");
         Map<String, String> data = new HashMap<>();
 
-        data.put(USERNAME, txtUsername.getText().toString());
+        data.put(USERNAME, mUsername);
         data.put(PASSWORD, txtPassword.getText().toString());
         Log.v("LoginActivity", txtUsername.getText().toString() + '&' + txtPassword.getText().toString());
 
@@ -64,12 +68,11 @@ public class LoginActivity extends AppCompatActivity {
                         Log.v(TAG, "Successful Login");
 
                         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                        editor.putString("username", "Admin");
+                        editor.putString("username", Utils.capitalize(mUsername));
                         editor.apply();
 
                         Intent intent;
                         intent = new Intent(LoginActivity.this, NotificationsActivity.class);
-                        intent.putExtra("admin", "Admin");
                         startActivity(intent);
 
                         finish();

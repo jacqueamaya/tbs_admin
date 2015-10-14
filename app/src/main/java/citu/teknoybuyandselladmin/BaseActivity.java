@@ -115,7 +115,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 
     public String getUserPreferences() {
         prefs = getSharedPreferences(LoginActivity.MY_PREFS_NAME, MODE_PRIVATE);
-        return prefs.getString("first_name", "No FirstName") + " " + prefs.getString("last_name", "No LastName");
+        return prefs.getString("username", "No Username");
     }
 
     public abstract boolean checkItemClicked(MenuItem menuItem);
