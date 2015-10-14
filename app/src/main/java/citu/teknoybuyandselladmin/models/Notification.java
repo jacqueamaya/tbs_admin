@@ -10,12 +10,26 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class Notification {
+
     private static final String TAG = "Notification";
+
+    public static final String ITEM = "item";
+    public static final String OWNER = "owner";
+    public static final String USER = "user";
+    public static final String MAKER = "maker";
+    public static final String ID = "id";
+    public static final String NOTIFICATION_TYPE = "notification_type";
+    public static final String NOTIFICATION_DATE = "notification_date";
+    public static final String STATUS = "status";
+    public static final String NAME = "name";
+    public static final String PICTURE = "picture";
+    public static final String USERNAME = "username";
+
     private String ownerUsername;
     private String makerUsername;
     private String itemName;
-    private String notification_type;
-    private String notification_date;
+    private String notificationType;
+    private String notificationDate;
     private String itemLink;
     private String status;
 
@@ -33,12 +47,12 @@ public class Notification {
         return itemName;
     }
 
-    public String getNotification_type() {
-        return notification_type;
+    public String getNotificationType() {
+        return notificationType;
     }
 
-    public String getNotification_date() {
-        return notification_date;
+    public String getNotificationDate() {
+        return notificationDate;
     }
 
     public String getItemLink() {
@@ -53,57 +67,41 @@ public class Notification {
         return id;
     }
 
-    public static Notification getNotification(JSONObject jsonObject){
+    public static Notification asSingle(JSONObject jsonObject) {
         Notification n = new Notification();
-        JSONObject item,owner,owner_student,maker;
+        JSONObject item, owner, ownerStudent, maker;
 
         try {
-            n.id =  jsonObject.getInt("id");
-            n.notification_type=jsonObject.getString("notification_type");
-            n.notification_date = jsonObject.getString("notification_date");
-            n.status = jsonObject.getString("status");
+            item = jsonObject.getJSONObject(ITEM);
+            owner = item.getJSONObject(OWNER);
+            ownerStudent = owner.getJSONObject(USER);
+            maker = jsonObject.getJSONObject(MAKER);
 
-            if(!jsonObject.isNull("item")){
-                item = jsonObject.getJSONObject("item");
-
-                n.itemName = item.getString("name");
-                n.itemLink = item.getString("picture");
-                if(!item.isNull("owner")){
-                    owner = item.getJSONObject("owner");
-
-                    if(!owner.isNull("user")){
-                        owner_student = owner.getJSONObject("user");
-
-                        n.ownerUsername = owner_student.getString("username");
-                    }
-                }
-            }
-            if(!jsonObject.isNull("maker")){
-                maker = jsonObject.getJSONObject("maker");
-                n.makerUsername = maker.getString("username");
-                Log.v(TAG,maker.getString("username"));
-            }
+            n.id = jsonObject.getLong(ID);
+            n.notificationType = jsonObject.getString(NOTIFICATION_TYPE);
+            n.notificationDate = jsonObject.getString(NOTIFICATION_DATE);
+            n.status = jsonObject.getString(STATUS);
+            n.itemName = item.getString(NAME);
+            n.itemLink = item.getString(PICTURE);
+            n.ownerUsername = ownerStudent.getString(USERNAME);
+            n.makerUsername = maker.getString(USERNAME);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Cannot parse JSON OR Error getting fields", e);
         }
 
         return n;
     }
 
-    public static ArrayList<Notification> allNotifications(JSONArray jsonArray) {
-        ArrayList<Notification> notifications = new ArrayList<Notification>(jsonArray.length());
-        for (int i=0; i < jsonArray.length(); i++) {
-            JSONObject notificationObject = null;
-            try {
-                notificationObject = jsonArray.getJSONObject(i);
-            } catch (Exception e) {
-                e.printStackTrace();
-                continue;
-            }
+    public static ArrayList<Notification> asList(JSONArray jsonArray) {
+        ArrayList<Notification> notifications = new ArrayList<>(jsonArray.length());
 
-            Notification notification = Notification.getNotification(notificationObject);
-            if (notification != null) {
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                JSONObject notificationObject = jsonArray.getJSONObject(i);
+                Notification notification = Notification.asSingle(notificationObject);
                 notifications.add(notification);
+            } catch (JSONException e) {
+                Log.e(TAG, "JSONException on item#" + i, e);
             }
         }
 

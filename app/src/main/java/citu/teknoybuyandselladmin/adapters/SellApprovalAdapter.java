@@ -1,4 +1,4 @@
-package citu.teknoybuyandselladmin.ListAdapters;
+package citu.teknoybuyandselladmin.adapters;
 
 import android.content.Context;
 import android.text.Html;
@@ -48,7 +48,7 @@ public class SellApprovalAdapter extends ArrayAdapter<SellApproval>{
         if(items.get(position) != null )
         {
             try {
-                request_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(items.get(position).getRequest_date());
+                request_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(items.get(position).getRequestDate());
                 requestDate = df.format(request_date);
             } catch (ParseException e) {
                 e.printStackTrace();

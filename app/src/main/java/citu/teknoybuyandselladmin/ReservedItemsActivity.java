@@ -1,7 +1,6 @@
 package citu.teknoybuyandselladmin;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,7 +15,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
-import citu.teknoybuyandselladmin.ListAdapters.ReservedItemListAdapter;
+import citu.teknoybuyandselladmin.adapters.ReservedItemListAdapter;
 import citu.teknoybuyandselladmin.models.ReservedItem;
 
 
@@ -47,7 +46,7 @@ public class ReservedItemsActivity extends BaseActivity {
                         txtMessage.setText("No reserved items");
                         txtMessage.setVisibility(View.VISIBLE);
                     } else {
-                        reserved = ReservedItem.allReservedItems(jsonArray);
+                        reserved = ReservedItem.asList(jsonArray);
 
                         ListView lv = (ListView) findViewById(R.id.listViewReserved);
                         ReservedItemListAdapter listAdapter = new ReservedItemListAdapter(ReservedItemsActivity.this, R.layout.activity_item, reserved);
@@ -69,38 +68,14 @@ public class ReservedItemsActivity extends BaseActivity {
                         });
                     }
                 } catch (JSONException e1) {
-                    e1.printStackTrace();
+                    Log.e(TAG, "JSONException", e1);
                 }
             }
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
+                Log.e(TAG, "Request error");
             }
         });
-    }
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_reserved_items, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

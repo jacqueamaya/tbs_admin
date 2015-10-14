@@ -10,10 +10,23 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ReservedItem {
+
     private static final String TAG = "ReservedIten";
+    public static final String STATUS = "status";
+    public static final String RESERVED_DATE = "reserved_date";
+    public static final String RESERVE_EXPIRATION = "request_expiration";
+    public static final String REQUEST_ID = "id";
+    public static final String ITEM = "item";
+    public static final String ITEM_ID = "id";
+    public static final String NAME = "name";
+    public static final String DESCRIPTION = "description";
+    public static final String PRICE = "price";
+    public static final String PICTURE = "picture";
+
     private String itemName;
     private String status;
-    private String reserved_date;
+    private String reservedDate;
+    private String reserveExpiration;
     private String details;
     private int requestId;
     private int itemId;
@@ -29,8 +42,8 @@ public class ReservedItem {
         return status;
     }
 
-    public String getReserved_date() {
-        return reserved_date;
+    public String getReservedDate() {
+        return reservedDate;
     }
 
     public int getRequestId() {
@@ -53,46 +66,46 @@ public class ReservedItem {
         return link;
     }
 
-    public static ReservedItem getReservedItems(JSONObject jsonObject){
-        ReservedItem ri = new ReservedItem();
+    public String getReserveExpiration() {
+        return reserveExpiration;
+    }
+
+    public static ReservedItem asSingle(JSONObject jsonObject) {
+        ReservedItem reservedItem = new ReservedItem();
         JSONObject item;
 
         try {
-            ri.status = jsonObject.getString("status");
-            ri.reserved_date = jsonObject.getString("reserved_date");
-            ri.requestId = jsonObject.getInt("id");
+            item = jsonObject.getJSONObject(ITEM);
 
-            if(!jsonObject.isNull("item")){
-                item = jsonObject.getJSONObject("item");
-                ri.itemName = item.getString("name");
-                ri.itemId = item.getInt("id");
-                ri.details = item.getString("description");
-                ri.price = (float) item.getDouble("price");
-                ri.link = item.getString("picture");
-            }
+            reservedItem.itemId = item.getInt(ITEM_ID);
+            reservedItem.status = jsonObject.getString(STATUS);
+            reservedItem.reservedDate = jsonObject.getString(RESERVED_DATE);
+            reservedItem.requestId = jsonObject.getInt(REQUEST_ID);
+            reservedItem.itemName = item.getString(NAME);
+            reservedItem.details = item.getString(DESCRIPTION);
+            reservedItem.price = (float) item.getDouble(PRICE);
+            reservedItem.link = item.getString(PICTURE);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error creating a ReservedItem object from JSONObject", e);
         }
-        return ri;
+
+        return reservedItem;
     }
 
-    public static ArrayList<ReservedItem> allReservedItems(JSONArray jsonArray){
-        ArrayList<ReservedItem> reserved = new ArrayList<ReservedItem>(jsonArray.length());
-        for (int i=0; i < jsonArray.length(); i++) {
-            JSONObject reservedObject = null;
-            try {
-                reservedObject = jsonArray.getJSONObject(i);
-            } catch (Exception e) {
-                e.printStackTrace();
-                continue;
-            }
+    public static ArrayList<ReservedItem> asList(JSONArray jsonArray) {
+        final int length = jsonArray.length();
+        ArrayList<ReservedItem> reserved = new ArrayList<>(length);
 
-            ReservedItem ri = ReservedItem.getReservedItems(reservedObject);
-            if (ri != null) {
+        for (int i = 0; i < length; i++) {
+            try {
+                JSONObject reservedObject = jsonArray.getJSONObject(i);
+                ReservedItem ri = ReservedItem.asSingle(reservedObject);
                 reserved.add(ri);
+            } catch (Exception e) {
+                Log.e(TAG, "Error getting JSONObject at index#" + i, e);
             }
         }
-        return reserved;
 
+        return reserved;
     }
 }

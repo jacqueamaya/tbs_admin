@@ -1,13 +1,11 @@
-package citu.teknoybuyandselladmin.ListAdapters;
+package citu.teknoybuyandselladmin.adapters;
 
 import android.content.Context;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -51,7 +49,7 @@ public class ReservedItemListAdapter extends ArrayAdapter<ReservedItem>{
         if(items.get(position) != null )
         {
             try {
-                reserved_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(items.get(position).getReserved_date());
+                reserved_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(items.get(position).getReservedDate());
                 reservedDate = df.format(reserved_date);
             } catch (ParseException e) {
                 e.printStackTrace();

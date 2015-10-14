@@ -6,30 +6,30 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 public class Category {
 
     private static final String TAG = "Category";
 
-    private String categoryName;
-    private int categoryId;
+    public static final String CATEGORY_NAME = "category_name";
 
-    public String getCategoryName() {
-        return categoryName;
+    private String name;
+    private int id;
+
+    public String getName() {
+        return name;
     }
 
-    public int getCategoryId() {
-        return categoryId;
+    public int getId() {
+        return id;
     }
 
-    public static String[] getAllCategories(JSONArray jsonArray){
+    public static String[] asArray (JSONArray jsonArray) {
         String[] categories = new String[jsonArray.length()];
 
         for (int i = 0; i < categories.length; i++) {
             try {
                 JSONObject category = jsonArray.getJSONObject(i);
-                categories[i] = category.getString("category_name");
+                categories[i] = category.getString(CATEGORY_NAME);
             } catch (JSONException e) {
                 Log.e(TAG, "Exception while getting category name", e);
             }

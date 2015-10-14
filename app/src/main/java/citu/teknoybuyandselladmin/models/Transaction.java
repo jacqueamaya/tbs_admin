@@ -12,11 +12,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * Created by Batistil on 9/20/2015.
- */
+import citu.teknoybuyandselladmin.Utils;
+
 public class Transaction {
+
     private static final String TAG = "Transaction";
+
+    public static final String DATE_CLAIMED = "date_claimed";
+    public static final String ID = "id";
+    public static final String ITEM = "item";
+    public static final String ITEM_NAME = "name";
+    public static final String BUYER = "buyer";
+    public static final String STUDENT = "student";
+    public static final String STUDENT_FIRST_NAME = "first_name";
+    public static final String STUDENT_LAST_NAME = "last_name";
+    public static final String SELLER = "seller";
+
     private String transactionId;
     private String buyer;
     private String seller;
@@ -43,63 +54,52 @@ public class Transaction {
         return itemName;
     }
 
-    public static Transaction getTransaction(JSONObject jsonObject){
+    public static Transaction asSingle(JSONObject jsonObject) {
         Transaction transaction = new Transaction();
-        JSONObject itemObj,buyerObj,sellerObj,studentObj;
-        DateFormat df=null;
-        Date date=null;
+        JSONObject itemObj, buyerObj, sellerObj, studentObj;
 
         try {
-            try {
-                df = new SimpleDateFormat("yyyy-MM-dd");
-                date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(jsonObject.getString("date_claimed"));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            transaction.date = df.format(date);
-            transaction.transactionId = jsonObject.getString("id");
+            Date date = Utils.FORMATTED_DATE_FORMAT.parse(jsonObject.getString(DATE_CLAIMED));
 
-            if(!jsonObject.isNull("item")){
-                itemObj = jsonObject.getJSONObject("item");
-                transaction.itemName = itemObj.getString("name");
-            }
-            if(!jsonObject.isNull("buyer")){
-                buyerObj = jsonObject.getJSONObject("buyer");
-                if(!buyerObj.isNull("student")){
-                    studentObj = buyerObj.getJSONObject("student");
-                    transaction.buyer = studentObj.getString("first_name")+" "+studentObj.getString("last_name");
-                }
-            }
-            if(!jsonObject.isNull("seller")){
-                sellerObj = jsonObject.getJSONObject("seller");
-                if(!sellerObj.isNull("student")){
-                    studentObj = sellerObj.getJSONObject("student");
-                    transaction.seller = studentObj.getString("first_name")+" "+studentObj.getString("last_name");
-                }
-            }
+            transaction.date = Utils.SIMPLE_DATE_FORMAT.format(date);
+            transaction.transactionId = jsonObject.getString(ID);
+
+            itemObj = jsonObject.getJSONObject(ITEM);
+            transaction.itemName = itemObj.getString(ITEM_NAME);
+
+            buyerObj = jsonObject.getJSONObject(BUYER);
+
+            studentObj = buyerObj.getJSONObject(STUDENT);
+            transaction.buyer = studentObj.getString(STUDENT_FIRST_NAME) + " " + studentObj.getString(STUDENT_LAST_NAME);
+
+            sellerObj = jsonObject.getJSONObject(SELLER);
+
+            studentObj = sellerObj.getJSONObject(STUDENT);
+            transaction.seller = studentObj.getString(STUDENT_FIRST_NAME) + " " + studentObj.getString(STUDENT_LAST_NAME);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error creating Transaction object from JSONObject", e);
+        } catch (ParseException e) {
+            // should not happen
+            Log.e(TAG, "Error parsing date", e);
         }
+
         return transaction;
     }
 
-    public static ArrayList<Transaction> allTransactions(JSONArray jsonArray){
-        ArrayList<Transaction> transactions = new ArrayList<Transaction>(jsonArray.length());
-        for (int i=0; i < jsonArray.length(); i++) {
-            JSONObject transObject = null;
-            try {
-                transObject = jsonArray.getJSONObject(i);
-            } catch (Exception e) {
-                e.printStackTrace();
-                continue;
-            }
+    public static ArrayList<Transaction> asList(JSONArray jsonArray) {
+        int length = jsonArray.length();
+        ArrayList<Transaction> transactions = new ArrayList<>(length);
 
-            Transaction transaction = Transaction.getTransaction(transObject);
-            if (transaction != null) {
+        for (int i = 0; i < length; i++) {
+            try {
+                JSONObject transObject = jsonArray.getJSONObject(i);
+                Transaction transaction = Transaction.asSingle(transObject);
                 transactions.add(transaction);
+            } catch (JSONException e) {
+                Log.e(TAG, "Error getting JSONObject at index#" + i, e);
             }
         }
-        return transactions;
 
+        return transactions;
     }
 }

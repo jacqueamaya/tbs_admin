@@ -1,4 +1,4 @@
-package citu.teknoybuyandselladmin.ListAdapters;
+package citu.teknoybuyandselladmin.adapters;
 
 import android.content.Context;
 import android.text.Html;
@@ -16,7 +16,6 @@ import java.util.Date;
 
 import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.models.DonateApproval;
-import citu.teknoybuyandselladmin.models.SellApproval;
 
 /**
  * Created by Batistil on 9/20/2015.
@@ -52,7 +51,7 @@ public class DonateApprovalAdapter extends ArrayAdapter<DonateApproval>{
         if(items.get(position) != null )
         {
             try {
-                request_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(items.get(position).getRequest_date());
+                request_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(items.get(position).getRequestDate());
                 requestDate =df.format(request_date);
             } catch (ParseException e) {
                 e.printStackTrace();

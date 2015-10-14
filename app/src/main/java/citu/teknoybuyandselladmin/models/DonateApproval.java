@@ -1,5 +1,7 @@
 package citu.teknoybuyandselladmin.models;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,8 +12,21 @@ import java.util.ArrayList;
  * Created by Batistil on 9/20/2015.
  */
 public class DonateApproval {
+
+    private static final String TAG = "DonateApproval";
+
+    public static final String REQUEST_DATE = "request_date";
+    public static final String REQUEST_EXPIRATION = "request_expiration";
+    public static final String REQUEST_ID = "id";
+    public static final String ITEM = "item";
+    public static final String ITEM_ID = "id";
+    public static final String ITEM_NAME = "name";
+    public static final String DESCRIPTION = "description";
+    public static final String PICTURE = "picture";
+
     private String itemName;
-    private String request_date;
+    private String requestDate;
+    private String requestExpiration;
     private String details;
     private String link;
 
@@ -22,8 +37,8 @@ public class DonateApproval {
         return itemName;
     }
 
-    public String getRequest_date() {
-        return request_date;
+    public String getRequestDate() {
+        return requestDate;
     }
 
     public int getRequestId() {
@@ -42,44 +57,43 @@ public class DonateApproval {
         return link;
     }
 
-    public static DonateApproval getRequest(JSONObject jsonObject){
-        DonateApproval donate = new DonateApproval();
-        JSONObject item;
-
-        try {
-            donate.request_date = jsonObject.getString("request_date");
-            donate.requestId = jsonObject.getInt("id");
-
-            if(!jsonObject.isNull("item")){
-                item = jsonObject.getJSONObject("item");
-                donate.itemName = item.getString("name");
-                donate.itemId = item.getInt("id");
-                donate.details = item.getString("description");
-                donate.link = item.getString("picture");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return donate;
+    public String getRequestExpiration() {
+        return requestExpiration;
     }
 
-    public static ArrayList<DonateApproval> allDonateRequest(JSONArray jsonArray){
-        ArrayList<DonateApproval> donatedItems = new ArrayList<DonateApproval>(jsonArray.length());
-        for (int i=0; i < jsonArray.length(); i++) {
-            JSONObject requestObject = null;
-            try {
-                requestObject = jsonArray.getJSONObject(i);
-            } catch (Exception e) {
-                e.printStackTrace();
-                continue;
-            }
+    public static DonateApproval asSingle(JSONObject jsonObject) {
+        DonateApproval donateApproval = new DonateApproval();
 
-            DonateApproval donate = DonateApproval.getRequest(requestObject);
-            if (donate != null) {
+        try {
+            donateApproval.requestDate = jsonObject.getString(REQUEST_DATE);
+            donateApproval.requestId = jsonObject.getInt(REQUEST_ID);
+            donateApproval.requestExpiration = jsonObject.getString(REQUEST_EXPIRATION);
+
+            JSONObject item = jsonObject.getJSONObject(ITEM);
+            donateApproval.itemName = item.getString(ITEM_NAME);
+            donateApproval.itemId = item.getInt(ITEM_ID);
+            donateApproval.details = item.getString(DESCRIPTION);
+            donateApproval.link = item.getString(PICTURE);
+        } catch (JSONException e) {
+            Log.e(TAG, "Error extracting data from JSON", e);
+        }
+
+        return donateApproval;
+    }
+
+    public static ArrayList<DonateApproval> asList(JSONArray jsonArray) {
+        ArrayList<DonateApproval> donatedItems = new ArrayList<>(jsonArray.length());
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                JSONObject requestObject = jsonArray.getJSONObject(i);
+                DonateApproval donate = DonateApproval.asSingle(requestObject);
                 donatedItems.add(donate);
+            } catch (JSONException e) {
+                Log.e(TAG, "Error getting JSONObject at index#" + i, e);
             }
         }
-        return donatedItems;
 
+        return donatedItems;
     }
 }

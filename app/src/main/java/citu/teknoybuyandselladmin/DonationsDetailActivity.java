@@ -3,7 +3,6 @@ package citu.teknoybuyandselladmin;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import citu.teknoybuyandselladmin.models.DonateApproval;
-import citu.teknoybuyandselladmin.models.SellApproval;
 
 
 public class DonationsDetailActivity extends BaseActivity {
@@ -82,7 +80,7 @@ public class DonationsDetailActivity extends BaseActivity {
 
                 try {
                     jsonArray = new JSONArray(responseBody);
-                    request = DonateApproval.allDonateRequest(jsonArray);
+                    request = DonateApproval.asList(jsonArray);
                     donate = request.get(0);
 
                     Picasso.with(DonationsDetailActivity.this)
@@ -109,7 +107,7 @@ public class DonationsDetailActivity extends BaseActivity {
     }
 
     public void onApprove(View view){
-        Log.v(TAG, "Item ID: " + itemId);
+        Log.v(TAG, "Item REQUEST_ID: " + itemId);
         Map<String,String> data = new HashMap<>();
 
         data.put(ITEM_ID,this.itemId+"");
@@ -150,7 +148,7 @@ public class DonationsDetailActivity extends BaseActivity {
     }
 
     public void onDeny(View view){
-        Log.v(TAG,"Item ID: "+itemId);
+        Log.v(TAG,"Item REQUEST_ID: "+itemId);
         Map<String,String> data = new HashMap<>();
 
         data.put(ITEM_ID,this.itemId+"");

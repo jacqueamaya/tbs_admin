@@ -16,9 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class DashboardActivity extends AppCompatActivity {
+
     private DrawerLayout mDrawerLayout;
-    Toolbar mToolbar;
-    ActionBarDrawerToggle mDrawerToggle;
+    private Toolbar mToolbar;
+    private ActionBarDrawerToggle mDrawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,7 @@ public class DashboardActivity extends AppCompatActivity {
         txtUser.setText(admin);
 
         final ActionBar ab = getSupportActionBar();
+        //noinspection ConstantConditions
         ab.setHomeAsUpIndicator(R.drawable.sandwich);
         ab.setDisplayHomeAsUpEnabled(true);
 
@@ -45,10 +48,6 @@ public class DashboardActivity extends AppCompatActivity {
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
-    }
-
-    public void setActionBarTitle(String title){
-        mToolbar.setTitle(title);
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
@@ -114,18 +113,6 @@ public class DashboardActivity extends AppCompatActivity {
         menuItem.setChecked(true);
         setTitle(menuItem.getTitle());
         mDrawerLayout.closeDrawers();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_dashboard, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     @Override

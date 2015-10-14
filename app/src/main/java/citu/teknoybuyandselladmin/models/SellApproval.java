@@ -1,18 +1,30 @@
 package citu.teknoybuyandselladmin.models;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-/**
- * Created by Batistil on 9/19/2015.
- */
 public class SellApproval {
 
+    private static final String TAG = "SellApproval";
+
+    public static final String REQUEST_DATE = "request_date";
+    public static final String REQUEST_EXPIRATION = "request_expiration";
+    public static final String REQUEST_ID = "id";
+    public static final String ITEM = "item";
+    public static final String ITEM_NAME = "name";
+    public static final String ITEM_ID = "id";
+    public static final String ITEM_PRICE = "price";
+    public static final String ITEM_DESCRIPTION = "description";
+    public static final String ITEM_PICTURE = "picture";
+
     private String itemName;
-    private String request_date;
+    private String requestDate;
+    private String requestExpiration;
     private int itemId;
     private int requestId;
     private float price;
@@ -24,8 +36,8 @@ public class SellApproval {
         return itemName;
     }
 
-    public String getRequest_date() {
-        return request_date;
+    public String getRequestDate() {
+        return requestDate;
     }
 
     public int getItemId() {
@@ -48,45 +60,45 @@ public class SellApproval {
         return link;
     }
 
-    public static SellApproval getRequest(JSONObject jsonObject){
+    public String getRequestExpiration() {
+        return requestExpiration;
+    }
+
+    public static SellApproval asSingle(JSONObject jsonObject) {
         SellApproval sell = new SellApproval();
-        JSONObject item;
 
         try {
-            sell.request_date = jsonObject.getString("request_date");
-            sell.requestId = jsonObject.getInt("id");
+            sell.requestDate = jsonObject.getString(REQUEST_DATE);
+            sell.requestExpiration = jsonObject.getString(REQUEST_EXPIRATION);
+            sell.requestId = jsonObject.getInt(REQUEST_ID);
 
-            if(!jsonObject.isNull("item")){
-                item = jsonObject.getJSONObject("item");
-                sell.itemName = item.getString("name");
-                sell.itemId = item.getInt("id");
-                sell.price = (float)item.getDouble("price");
-                sell.details = item.getString("description");
-                sell.link = item.getString("picture");
-            }
+            JSONObject item = jsonObject.getJSONObject(ITEM);
+            sell.itemName = item.getString(ITEM_NAME);
+            sell.itemId = item.getInt(ITEM_ID);
+            sell.price = (float) item.getDouble(ITEM_PRICE);
+            sell.details = item.getString(ITEM_DESCRIPTION);
+            sell.link = item.getString(ITEM_PICTURE);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error creating SellApproval object from JSONObject", e);
         }
+
         return sell;
     }
 
-    public static ArrayList<SellApproval> allSellRequest(JSONArray jsonArray){
-        ArrayList<SellApproval> reserved = new ArrayList<SellApproval>(jsonArray.length());
-        for (int i=0; i < jsonArray.length(); i++) {
-            JSONObject requestObject = null;
-            try {
-                requestObject = jsonArray.getJSONObject(i);
-            } catch (Exception e) {
-                e.printStackTrace();
-                continue;
-            }
+    public static ArrayList<SellApproval> asList(JSONArray jsonArray) {
+        int length = jsonArray.length();
+        ArrayList<SellApproval> reserved = new ArrayList<>(length);
 
-            SellApproval sell = SellApproval.getRequest(requestObject);
-            if (sell != null) {
+        for (int i = 0; i < length; i++) {
+            try {
+                JSONObject requestObject = jsonArray.getJSONObject(i);
+                SellApproval sell = SellApproval.asSingle(requestObject);
                 reserved.add(sell);
+            } catch (JSONException e) {
+                Log.e(TAG, "Error getting JSONObject at index#" + i, e);
             }
         }
-        return reserved;
 
+        return reserved;
     }
 }

@@ -2,7 +2,6 @@ package citu.teknoybuyandselladmin;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import citu.teknoybuyandselladmin.models.ReservedItem;
-import citu.teknoybuyandselladmin.models.SellApproval;
 
 
 public class ReservedDetailActivity extends BaseActivity {
@@ -76,7 +74,7 @@ public class ReservedDetailActivity extends BaseActivity {
 
                 try {
                     jsonArray = new JSONArray(responseBody);
-                    request = ReservedItem.allReservedItems(jsonArray);
+                    request = ReservedItem.asList(jsonArray);
                     reserve = request.get(0);
                     Picasso.with(ReservedDetailActivity.this)
                             .load(reserve.getLink())
@@ -99,7 +97,7 @@ public class ReservedDetailActivity extends BaseActivity {
     }
 
     public void onAvailable(View view){
-        Log.v(TAG, "Item ID: " + itemId);
+        Log.v(TAG, "Item REQUEST_ID: " + itemId);
         Map<String,String> data = new HashMap<>();
 
         data.put(ITEM_ID,this.itemId+"");
@@ -135,7 +133,7 @@ public class ReservedDetailActivity extends BaseActivity {
     }
 
     public void onClaimed(View view){
-        Log.v(TAG,"Item ID: "+itemId);
+        Log.v(TAG,"Item REQUEST_ID: "+itemId);
         Map<String,String> data = new HashMap<>();
 
         data.put(ITEM_ID,this.itemId+"");

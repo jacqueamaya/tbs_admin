@@ -163,7 +163,7 @@ public final class Ajax {
                             .load(url)
                             .into(imageView);
                 } catch (Exception e) {
-                    Log.w("ImageDownloader", "Error downloading image from " + params[0]);
+                    Log.w("ImageDownloader", "Error downloading image asSingle " + params[0]);
                 }
             }
         }.execute(url);

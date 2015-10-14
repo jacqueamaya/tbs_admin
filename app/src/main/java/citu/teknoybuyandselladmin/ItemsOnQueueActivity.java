@@ -1,7 +1,6 @@
 package citu.teknoybuyandselladmin;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,7 +15,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
-import citu.teknoybuyandselladmin.ListAdapters.SellApprovalAdapter;
+import citu.teknoybuyandselladmin.adapters.SellApprovalAdapter;
 import citu.teknoybuyandselladmin.models.SellApproval;
 
 
@@ -48,7 +47,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
                         txtMessage.setText("No sell requests available");
                         txtMessage.setVisibility(View.VISIBLE);
                     } else {
-                        request = SellApproval.allSellRequest(jsonArray);
+                        request = SellApproval.asList(jsonArray);
 
                         ListView lv = (ListView) findViewById(R.id.listViewQueue);
                         SellApprovalAdapter listAdapter = new SellApprovalAdapter(ItemsOnQueueActivity.this, R.layout.activity_item, request);

@@ -33,7 +33,7 @@
                     android:id="@+id/imgThumbnail"
                     android:layout_width="100dp"
                     android:layout_height="150dp"
-                    android:src="@drawable/rizal_book" />
+                    android:src="@drawable/default_item_preview" />
 
                 <TextView
                     android:id="@+id/txtTitle"
@@ -98,25 +98,12 @@
                     android:onClick="onSelect"
                     android:text="Choose" />
 
-                <TextView
-                    android:id="@+id/lblOr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="23dp"
-                    android:layout_below="@+id/txtCategory"
-                    android:layout_toRightOf="@+id/btnSelect"
-                    android:text="or"
-                    android:textColor="@color/Black"
-                    android:textSize="16dp" />
-
                 <Button
                     android:id="@+id/btnAdd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtCategory"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/btnSelect"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/positivebutton"

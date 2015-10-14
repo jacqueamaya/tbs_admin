@@ -85,7 +85,7 @@ public class QueueItemDetailActivity extends BaseActivity {
 
                 try {
                     jsonArray = new JSONArray(responseBody);
-                    request = SellApproval.allSellRequest(jsonArray);
+                    request = SellApproval.asList(jsonArray);
                     sell = request.get(0);
 
                     Picasso.with(QueueItemDetailActivity.this)
@@ -170,15 +170,15 @@ public class QueueItemDetailActivity extends BaseActivity {
     }
 
     public void onApprove(View view){
-        Log.v(TAG, "Item ID: " + itemId);
+        Log.v(TAG, "Item REQUEST_ID: " + itemId);
         Map<String,String> data = new HashMap<>();
 
         data.put(ITEM_ID,this.itemId+"");
         data.put(REQUEST_ID, this.requestId + "");
         data.put(CATEGORY_ITEM, txtCategory.getText().toString());
 
-        Log.v(TAG, "Item ID: " + this.itemId);
-        Log.v(TAG, "Request ID: " + this.requestId);
+        Log.v(TAG, "Item REQUEST_ID: " + this.itemId);
+        Log.v(TAG, "Request REQUEST_ID: " + this.requestId);
 
         queueProgress.setIndeterminate(true);
         queueProgress.setMessage("Please wait. . .");
@@ -209,7 +209,7 @@ public class QueueItemDetailActivity extends BaseActivity {
     }
 
     public void onDeny(View view){
-        Log.v(TAG, "Item ID: " + itemId);
+        Log.v(TAG, "Item REQUEST_ID: " + itemId);
         Map<String,String> data = new HashMap<>();
 
         data.put(ITEM_ID,this.itemId+"");
@@ -271,7 +271,7 @@ public class QueueItemDetailActivity extends BaseActivity {
             @Override
             public void success(String responseBody) {
                 try {
-                    final String categories[] = Category.getAllCategories(new JSONArray(responseBody));
+                    final String categories[] = Category.asArray(new JSONArray(responseBody));
                     new AlertDialog.Builder(QueueItemDetailActivity.this)
                             .setTitle("Categories")
                             .setItems(categories, new DialogInterface.OnClickListener() {

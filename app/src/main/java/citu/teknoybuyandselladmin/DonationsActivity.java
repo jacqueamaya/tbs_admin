@@ -1,7 +1,6 @@
 package citu.teknoybuyandselladmin;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,12 +14,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import citu.teknoybuyandselladmin.ListAdapters.DonateApprovalAdapter;
-import citu.teknoybuyandselladmin.ListAdapters.SellApprovalAdapter;
+import citu.teknoybuyandselladmin.adapters.DonateApprovalAdapter;
 import citu.teknoybuyandselladmin.models.DonateApproval;
-import citu.teknoybuyandselladmin.models.SellApproval;
 
 
 public class DonationsActivity extends BaseActivity {
@@ -51,7 +47,7 @@ public class DonationsActivity extends BaseActivity {
                         txtMessage.setText("No donate requests available");
                         txtMessage.setVisibility(View.VISIBLE);
                     } else {
-                        request = DonateApproval.allDonateRequest(jsonArray);
+                        request = DonateApproval.asList(jsonArray);
 
                         ListView lv = (ListView) findViewById(R.id.listViewDonations);
                         DonateApprovalAdapter listAdapter = new DonateApprovalAdapter(DonationsActivity.this, R.layout.activity_item, request);

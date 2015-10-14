@@ -44,7 +44,7 @@
                         android:id="@+id/imgThumbnail"
                         android:layout_width="100dp"
                         android:layout_height="150dp"
-                        android:src="@drawable/rizal_book" />
+                        android:src="@drawable/default_item_preview" />
 
                     <TextView
                         android:id="@+id/txtTitle"
