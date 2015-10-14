@@ -16,6 +16,7 @@ public class Server {
     private static final String URL_ITEM_AVAILABLE = "http://tbs-admin.herokuapp.com/api/item_available";
     private static final String URL_ITEM_CLAIMED = "http://tbs-admin.herokuapp.com/api/item_claimed";
     private static final String URL_LOGIN = "http://tbs-admin.herokuapp.com/api/admin_login";
+    private static final String URL_READ_NOTIFICATION = "http://tbs-admin.herokuapp.com/api/read_notification";
 
     private static final String URL_CATEGORIES = "http://tbs-admin.herokuapp.com/api-x/categories/";
     private static final String URL_DONATED_ITEMS_DETAILS = "http://tbs-admin.herokuapp.com/api-x/donate_requests/";
@@ -161,5 +162,12 @@ public class Server {
 
     public static void getCategories (Ajax.Callbacks callbacks) {
         Ajax.get(URL_CATEGORIES, callbacks);
+    }
+
+    public static void readNotification(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks){
+        if(! data.containsKey(NotificationsActivity.NOTIFICATION_ID)){
+            throw new RuntimeException("Missing data.");
+        }
+        Ajax.post(URL_READ_NOTIFICATION, progressDialog, data,callbacks);
     }
 }

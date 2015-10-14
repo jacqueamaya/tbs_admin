@@ -17,6 +17,9 @@ public class Notification {
     private String notification_type;
     private String notification_date;
     private String itemLink;
+    private String status;
+
+    private long id;
 
     public String getOwnerUsername() {
         return ownerUsername;
@@ -42,13 +45,23 @@ public class Notification {
         return itemLink;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public long getId() {
+        return id;
+    }
+
     public static Notification getNotification(JSONObject jsonObject){
         Notification n = new Notification();
-        JSONObject item,owner,owner_student,maker,maker_student;
+        JSONObject item,owner,owner_student,maker;
 
         try {
+            n.id =  jsonObject.getInt("id");
             n.notification_type=jsonObject.getString("notification_type");
             n.notification_date = jsonObject.getString("notification_date");
+            n.status = jsonObject.getString("status");
 
             if(!jsonObject.isNull("item")){
                 item = jsonObject.getJSONObject("item");
