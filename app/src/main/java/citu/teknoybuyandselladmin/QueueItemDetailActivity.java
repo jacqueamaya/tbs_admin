@@ -292,8 +292,5 @@ public class QueueItemDetailActivity extends BaseActivity {
                 Log.e(TAG, "Error: Cannot connect to server");
             }
         });
-
-
-
     }
 }

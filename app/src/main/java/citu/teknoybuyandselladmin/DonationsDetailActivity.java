@@ -1,13 +1,18 @@
 package citu.teknoybuyandselladmin;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import citu.teknoybuyandselladmin.models.Category;
 import citu.teknoybuyandselladmin.models.DonateApproval;
 import citu.teknoybuyandselladmin.models.SellApproval;
 
@@ -32,6 +38,7 @@ public class DonationsDetailActivity extends BaseActivity {
     private static final String ITEM_ID = "item_id";
     private static final String STARS_REQUIRED = "stars_required";
     private static final String CATEGORY = "activity_category";
+    public static final String CATEGORY_ITEM = "category";
 
     private int requestId;
     private int itemId;
@@ -41,10 +48,12 @@ public class DonationsDetailActivity extends BaseActivity {
     private TextView txtPrice;
     private TextView txtDetails;
     private TextView txtStars;
+    private TextView txtCategory;
 
     private ImageView thumbnail;
 
     private ProgressDialog donationProgress;
+    private ProgressDialog queueProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +115,63 @@ public class DonationsDetailActivity extends BaseActivity {
                 // Toast.makeText(LoginActivity.this, "Error: Invalid username or password", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void addCategory(View view){
+        LayoutInflater li = LayoutInflater.from(this);
+        View addCategPrompt = li.inflate(R.layout.activity_add_category, null);
+        AlertDialog.Builder alertDialogBuilder =  new AlertDialog.Builder(this);
+        alertDialogBuilder.setView(addCategPrompt);
+
+        final EditText category = (EditText) addCategPrompt.findViewById(R.id.txtCategoryAdded);
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Add",
+                        new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int id){
+                                Log.v(TAG,category.getText().toString());
+                                Map<String,String> data = new HashMap<>();
+                                data.put(CATEGORY_ITEM, category.getText().toString());
+
+                                queueProgress.setIndeterminate(true);
+                                queueProgress.setMessage("Please wait. . .");
+
+                                Server.addCategory(data, queueProgress, new Ajax.Callbacks() {
+                                    @Override
+                                    public void success(String responseBody) {
+                                        try {
+                                            JSONObject json = new JSONObject(responseBody);
+                                            if (json.getInt("status") == 200) {
+                                                Log.v(TAG, "Category Added Successfully");
+                                                Snackbar.make(findViewById(R.id.appbar), "Category successfully added", Snackbar.LENGTH_SHORT).show();
+                                            } else {
+                                                Log.v(TAG, "Failed to add activity_category");
+                                                Snackbar.make(findViewById(R.id.appbar), "Failed to add category", Snackbar.LENGTH_SHORT).show();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void error(int statusCode, String responseBody, String statusText) {
+                                        Log.v(TAG, "Request error");
+                                        Snackbar.make(findViewById(R.id.appbar), "Connection Error: Failed to add category", Snackbar.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertDialog =  alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     public void onApprove(View view){
@@ -210,5 +276,32 @@ public class DonationsDetailActivity extends BaseActivity {
     @Override
     public boolean checkItemClicked(MenuItem menuItem) {
         return menuItem.getItemId() != R.id.nav_donations;
+    }
+    public void onSelect(View view) {
+        Server.getCategories(new Ajax.Callbacks() {
+            @Override
+            public void success(String responseBody) {
+                try {
+                    final String categories[] = Category.getAllCategories(new JSONArray(responseBody));
+                    new AlertDialog.Builder(DonationsDetailActivity.this)
+                            .setTitle("Categories")
+                            .setItems(categories, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    txtCategory.setText(categories[which]);
+                                }
+                            })
+                            .create()
+                            .show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void error(int statusCode, String responseBody, String statusText) {
+                Log.e(TAG, "Error: Cannot connect to server");
+            }
+        });
     }
 }
