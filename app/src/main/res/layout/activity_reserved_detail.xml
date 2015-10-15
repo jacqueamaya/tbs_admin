@@ -24,8 +24,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -91,23 +90,27 @@
                         android:textSize="16dp"
                         android:textStyle="normal" />
 
-                    <ImageView
+                    <Button
                         android:id="@+id/imgAvailable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="140dp"
-                        android:src="@drawable/available"
                         android:layout_below="@+id/txtDetails"
+                        android:layout_marginRight="140dp"
+                        android:background="@drawable/btn_available"
                         android:onClick="onAvailable"
-                        />
-                    <ImageView
+                        android:text="Available"
+                        android:textAllCaps="false" />
+
+                    <Button
                         android:id="@+id/imgClaimed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="140dp"
                         android:layout_below="@+id/txtDetails"
-                        android:src="@drawable/claimed"
-                        android:onClick="onClaimed"/>
+                        android:layout_marginLeft="140dp"
+                        android:background="@drawable/btn_available"
+                        android:onClick="onClaimed"
+                        android:text="Claimed"
+                        android:textAllCaps="false" />
 
                 </RelativeLayout>
 

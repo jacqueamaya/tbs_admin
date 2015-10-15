@@ -38,6 +38,8 @@ public class ReservedDetailActivity extends BaseActivity {
     private TextView txtDetails;
 
     private ImageView thumbnail;
+    private ImageView imgAvailable;
+    private ImageView claimed;
 
     private ProgressDialog reserveProgress;
 
@@ -47,22 +49,25 @@ public class ReservedDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reserved_detail);
         Intent intent = getIntent();
-        requestId = intent.getIntExtra("requestId",0);
-        itemId = intent.getIntExtra("itemId",0);
+        requestId = intent.getIntExtra("requestId", 0);
+        itemId = intent.getIntExtra("itemId", 0);
 
         txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtPrice = (TextView) findViewById(R.id.txtPriceLabel);
         txtDetails = (TextView) findViewById(R.id.txtDetails);
         thumbnail = (ImageView) findViewById(R.id.imgThumbnail);
+        imgAvailable = (ImageView) findViewById(R.id.imgAvailable);
+
+        imgAvailable.setOnClickListener(null);
 
         reserveProgress = new ProgressDialog(this);
 
         getReservedDetails(requestId);
     }
 
-    public void getReservedDetails(int request){
-        Map<String,String> data = new HashMap<>();
-        data.put(REQUEST_ID,request+"");
+    public void getReservedDetails(int request) {
+        Map<String, String> data = new HashMap<>();
+        data.put(REQUEST_ID, request + "");
 
         Server.getReservedItemDetails(data, new Ajax.Callbacks() {
             @Override
@@ -96,11 +101,11 @@ public class ReservedDetailActivity extends BaseActivity {
         });
     }
 
-    public void onAvailable(View view){
+    public void onAvailable(View view) {
         Log.v(TAG, "Item REQUEST_ID: " + itemId);
-        Map<String,String> data = new HashMap<>();
+        Map<String, String> data = new HashMap<>();
 
-        data.put(ITEM_ID,this.itemId+"");
+        data.put(ITEM_ID, this.itemId + "");
         data.put(REQUEST_ID, this.requestId + "");
 
         reserveProgress.setIndeterminate(true);
@@ -111,12 +116,11 @@ public class ReservedDetailActivity extends BaseActivity {
             public void success(String responseBody) {
                 try {
                     JSONObject json = new JSONObject(responseBody);
-                    if(json.getInt("status") == 200){
-                        Log.v(TAG,"Successfully set item available");
-                        Toast.makeText(ReservedDetailActivity.this, "Item successfully set available", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Log.v(TAG,"failed");
+                    if (json.getInt("status") == 200) {
+                        Log.v(TAG, "Successfully set item imgAvailable");
+                        Toast.makeText(ReservedDetailActivity.this, "Item successfully set imgAvailable", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.v(TAG, "failed");
                         Toast.makeText(ReservedDetailActivity.this, "Error: Item set availability failed", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -126,33 +130,32 @@ public class ReservedDetailActivity extends BaseActivity {
 
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG,"Request error");
+                Log.v(TAG, "Request error");
                 Toast.makeText(ReservedDetailActivity.this, "Error: Item set availability failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public void onClaimed(View view){
-        Log.v(TAG,"Item REQUEST_ID: "+itemId);
-        Map<String,String> data = new HashMap<>();
+    public void onClaimed(View view) {
+        Log.v(TAG, "Item REQUEST_ID: " + itemId);
+        Map<String, String> data = new HashMap<>();
 
-        data.put(ITEM_ID,this.itemId+"");
-        data.put(REQUEST_ID,this.requestId+"");
+        data.put(ITEM_ID, this.itemId + "");
+        data.put(REQUEST_ID, this.requestId + "");
 
         reserveProgress.setIndeterminate(true);
         reserveProgress.setMessage("Please wait. . .");
 
-        Server.itemClaimed(data,reserveProgress, new Ajax.Callbacks() {
+        Server.itemClaimed(data, reserveProgress, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {
                     JSONObject json = new JSONObject(responseBody);
-                    if(json.getInt("status") == 200){
-                        Log.v(TAG,"Successfully claimed");
+                    if (json.getInt("status") == 200) {
+                        Log.v(TAG, "Successfully claimed");
                         Toast.makeText(ReservedDetailActivity.this, "Item successfully claimed", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Log.v(TAG,"failed");
+                    } else {
+                        Log.v(TAG, "failed");
                         Toast.makeText(ReservedDetailActivity.this, "Error: Failed to claim item", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -162,7 +165,7 @@ public class ReservedDetailActivity extends BaseActivity {
 
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG,"Request error");
+                Log.v(TAG, "Request error");
                 Toast.makeText(ReservedDetailActivity.this, "Error: Failed to claim item", Toast.LENGTH_SHORT).show();
             }
         });
