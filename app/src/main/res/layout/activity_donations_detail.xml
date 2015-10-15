@@ -84,12 +84,72 @@
                         android:ems="6" />
 
                     <TextView
-                        android:id="@+id/lblDetails"
+                        android:id="@+id/lblCategory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/imgThumbnail"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="25dp"
+                        android:text="Category: "
+                        android:textColor="@color/Black"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtCategory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imgThumbnail"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="25dp"
+                        android:layout_toRightOf="@+id/lblCategory"
+                        android:textColor="@color/Black"
+                        android:textSize="16dp" />
+
+                    <Button
+                        android:id="@+id/btnSelect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imgThumbnail"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@drawable/positivebutton"
+                        android:textColor="@color/White"
+                        android:onClick="onSelect"
+                        android:text="Choose" />
+
+                    <TextView
+                        android:id="@+id/lblOr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="50dp"
+                        android:layout_below="@+id/imgThumbnail"
+                        android:layout_toRightOf="@+id/btnSelect"
+                        android:text="or"
+                        android:textColor="@color/Black"
+                        android:textSize="16dp" />
+
+                    <Button
+                        android:id="@+id/btnAdd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imgThumbnail"
+                        android:layout_toRightOf="@+id/lblOr"
+                        android:layout_marginTop="30dp"
+                        android:background="@drawable/positivebutton"
+                        android:textColor="@color/White"
+                        android:onClick="addCategory"
+                        android:text="Add" />
+
+                    <TextView
+                        android:id="@+id/lblDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/lblCategory"
                         android:layout_marginRight="18dp"
-                        android:layout_marginTop="25dp"
+                        android:layout_marginTop="45dp"
                         android:text="Details:"
                         android:textColor="@color/Black"
                         android:textSize="16dp" />

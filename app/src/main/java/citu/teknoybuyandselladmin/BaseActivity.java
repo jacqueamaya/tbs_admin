@@ -20,7 +20,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     protected void setupUI(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -76,6 +76,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                     intent = new Intent(this, TransactionsActivity.class);
                     break;
                 case R.id.nav_logout:
+                    mSharedPreferences.edit().clear().apply();
                     intent = new Intent(this, LoginActivity.class);
                     break;
                 default:
@@ -114,8 +115,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     }
 
     public String getUserPreferences() {
-        prefs = getSharedPreferences(LoginActivity.MY_PREFS_NAME, MODE_PRIVATE);
-        return prefs.getString("username", "No Username");
+        mSharedPreferences = getSharedPreferences(LoginActivity.MY_PREFS_NAME, MODE_PRIVATE);
+        return mSharedPreferences.getString("username", "No Username");
     }
 
     public abstract boolean checkItemClicked(MenuItem menuItem);
