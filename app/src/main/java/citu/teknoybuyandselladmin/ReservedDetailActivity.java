@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,8 +39,8 @@ public class ReservedDetailActivity extends BaseActivity {
     private TextView txtDetails;
 
     private ImageView thumbnail;
-    private ImageView imgAvailable;
-    private ImageView claimed;
+    private Button btnAvailable;
+    private Button btnClaimed;
 
     private ProgressDialog reserveProgress;
 
@@ -48,6 +49,8 @@ public class ReservedDetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reserved_detail);
+        setupUI();
+
         Intent intent = getIntent();
         requestId = intent.getIntExtra("requestId", 0);
         itemId = intent.getIntExtra("itemId", 0);
@@ -56,9 +59,8 @@ public class ReservedDetailActivity extends BaseActivity {
         txtPrice = (TextView) findViewById(R.id.txtPriceLabel);
         txtDetails = (TextView) findViewById(R.id.txtDetails);
         thumbnail = (ImageView) findViewById(R.id.imgThumbnail);
-        imgAvailable = (ImageView) findViewById(R.id.imgAvailable);
-
-        imgAvailable.setOnClickListener(null);
+        btnAvailable = (Button) findViewById(R.id.imgAvailable);
+        btnClaimed = (Button) findViewById(R.id.imgClaimed);
 
         reserveProgress = new ProgressDialog(this);
 
@@ -87,6 +89,15 @@ public class ReservedDetailActivity extends BaseActivity {
                     txtTitle.setText(reserve.getItemName());
                     txtPrice.setText("Price: PHP " + reserve.getPrice());
                     txtDetails.setText(reserve.getDetails());
+
+                    if("Reserved".equals(reserve.getStatus())){
+                        Log.v(TAG,reserve.getStatus()+"Item reserved. Claimed button disabled");
+                        btnClaimed.setEnabled(false);
+                    }
+                    else if("Available".equals(reserve.getStatus())){
+                        Log.v(TAG,reserve.getStatus()+"Item available. Available button disabled");
+                        btnAvailable.setEnabled(false);
+                    }
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();
@@ -118,7 +129,7 @@ public class ReservedDetailActivity extends BaseActivity {
                     JSONObject json = new JSONObject(responseBody);
                     if (json.getInt("status") == 200) {
                         Log.v(TAG, "Successfully set item imgAvailable");
-                        Toast.makeText(ReservedDetailActivity.this, "Item successfully set imgAvailable", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ReservedDetailActivity.this, "Item successfully set available", Toast.LENGTH_SHORT).show();
                     } else {
                         Log.v(TAG, "failed");
                         Toast.makeText(ReservedDetailActivity.this, "Error: Item set availability failed", Toast.LENGTH_SHORT).show();
@@ -131,7 +142,7 @@ public class ReservedDetailActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                Toast.makeText(ReservedDetailActivity.this, "Error: Item set availability failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReservedDetailActivity.this, "Connection Error: Item set availability failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -166,26 +177,20 @@ public class ReservedDetailActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                Toast.makeText(ReservedDetailActivity.this, "Error: Failed to claim item", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReservedDetailActivity.this, "Connection Error: Failed to claim item", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_reserved_detail, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
