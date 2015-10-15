@@ -43,7 +43,6 @@ public class DonationsDetailActivity extends BaseActivity {
     private String mItemName;
 
     private TextView txtTitle;
-    private TextView txtPrice;
     private TextView txtDetails;
     private TextView txtStars;
     private TextView txtCategory;
@@ -51,7 +50,6 @@ public class DonationsDetailActivity extends BaseActivity {
     private ImageView thumbnail;
 
     private ProgressDialog donationProgress;
-    private ProgressDialog queueProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +65,7 @@ public class DonationsDetailActivity extends BaseActivity {
         txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtDetails = (TextView) findViewById(R.id.txtDetails);
         txtStars = (TextView) findViewById(R.id.txtNumOfStars);
+        txtCategory = (TextView) findViewById(R.id.txtCategory);
         thumbnail = (ImageView) findViewById(R.id.imgThumbnail);
 
         donationProgress = new ProgressDialog(this);
@@ -133,10 +132,10 @@ public class DonationsDetailActivity extends BaseActivity {
                                 Map<String,String> data = new HashMap<>();
                                 data.put(CATEGORY_ITEM, category.getText().toString());
 
-                                queueProgress.setIndeterminate(true);
-                                queueProgress.setMessage("Please wait. . .");
+                                donationProgress.setIndeterminate(true);
+                                donationProgress.setMessage("Please wait. . .");
 
-                                Server.addCategory(data, queueProgress, new Ajax.Callbacks() {
+                                Server.addCategory(data, donationProgress, new Ajax.Callbacks() {
                                     @Override
                                     public void success(String responseBody) {
                                         try {
