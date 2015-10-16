@@ -194,6 +194,7 @@ public class DonationsDetailActivity extends BaseActivity {
                     if (json.getInt("status") == 200) {
                         Log.v(TAG, "Successful Donation Approval");
                         Toast.makeText(DonationsDetailActivity.this, "Donation successfully approved", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         Log.v(TAG, "approval failed");
                         Toast.makeText(DonationsDetailActivity.this, "Error: Donation approval failed", Toast.LENGTH_SHORT).show();
@@ -229,6 +230,7 @@ public class DonationsDetailActivity extends BaseActivity {
                     if (json.getInt("status") == 200) {
                         Log.v(TAG, "Successful Disapproval");
                         Toast.makeText(DonationsDetailActivity.this, "Item successfully disapproved", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         Log.v(TAG, "Disapproval failed");
                         Toast.makeText(DonationsDetailActivity.this, "Error; Item disapproval failed", Toast.LENGTH_SHORT).show();

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import citu.teknoybuyandselladmin.adapters.SellApprovalAdapter;
 import citu.teknoybuyandselladmin.models.Category;
 import citu.teknoybuyandselladmin.models.SellApproval;
 
@@ -37,18 +38,19 @@ public class QueueItemDetailActivity extends BaseActivity {
     private static final String ITEM_ID = "item_id";
     public static final String CATEGORY_ITEM = "category";
 
-    private int requestId;
-    private int itemId;
+    private int mRequestId;
+    private int mItemId;
+
     private String mItemName;
 
-    private TextView txtTitle;
-    private TextView txtPrice;
-    private TextView txtDetails;
-    private TextView txtCategory;
+    private TextView mTxtTitle;
+    private TextView mTxtPrice;
+    private TextView mTxtDetails;
+    private TextView mTxtCategory;
 
-    private ImageView thumbnail;
+    private ImageView mThumbnail;
 
-    private ProgressDialog queueProgress;
+    private ProgressDialog mQueueProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,18 +59,18 @@ public class QueueItemDetailActivity extends BaseActivity {
         setupUI();
 
         Intent intent = getIntent();
-        requestId = intent.getIntExtra("requestId",0);
-        itemId = intent.getIntExtra("itemId",0);
+        mRequestId = intent.getIntExtra("requestId",0);
+        mItemId = intent.getIntExtra("itemId",0);
 
-        txtTitle = (TextView) findViewById(R.id.txtTitle);
-        txtPrice = (TextView) findViewById(R.id.txtPrice);
-        txtDetails = (TextView) findViewById(R.id.txtDetails);
-        txtCategory = (TextView) findViewById(R.id.txtCategory);
-        thumbnail = (ImageView) findViewById(R.id.imgThumbnail);
+        mTxtTitle = (TextView) findViewById(R.id.txtTitle);
+        mTxtPrice = (TextView) findViewById(R.id.txtPrice);
+        mTxtDetails = (TextView) findViewById(R.id.txtDetails);
+        mTxtCategory = (TextView) findViewById(R.id.txtCategory);
+        mThumbnail = (ImageView) findViewById(R.id.imgThumbnail);
 
-        queueProgress = new ProgressDialog(this);
+        mQueueProgress = new ProgressDialog(this);
 
-        getQueueItemDetails(requestId);
+        getQueueItemDetails(mRequestId);
     }
 
     public void getQueueItemDetails(int request){
@@ -90,14 +92,14 @@ public class QueueItemDetailActivity extends BaseActivity {
 
                     Picasso.with(QueueItemDetailActivity.this)
                             .load(sell.getLink())
-                            .into(thumbnail);
+                            .into(mThumbnail);
 
                     mItemName = sell.getItemName();
                     setTitle(mItemName);
 
-                    txtTitle.setText(mItemName);
-                    txtPrice.setText("Price: PHP " + sell.getPrice());
-                    txtDetails.setText(sell.getDetails());
+                    mTxtTitle.setText(mItemName);
+                    mTxtPrice.setText("Price: PHP " + sell.getPrice());
+                    mTxtDetails.setText(sell.getDetails());
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();
@@ -107,7 +109,7 @@ public class QueueItemDetailActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                Utils.alert(QueueItemDetailActivity.this,"Connection Error!");
+                Utils.alert(QueueItemDetailActivity.this, "Connection Error!");
             }
         });
     }
@@ -130,10 +132,10 @@ public class QueueItemDetailActivity extends BaseActivity {
                                 Map<String,String> data = new HashMap<>();
                                 data.put(CATEGORY_ITEM, category.getText().toString());
 
-                                queueProgress.setIndeterminate(true);
-                                queueProgress.setMessage("Please wait. . .");
+                                mQueueProgress.setIndeterminate(true);
+                                mQueueProgress.setMessage("Please wait. . .");
 
-                                Server.addCategory(data, queueProgress, new Ajax.Callbacks() {
+                                Server.addCategory(data, mQueueProgress, new Ajax.Callbacks() {
                                     @Override
                                     public void success(String responseBody) {
                                         try {
@@ -170,20 +172,20 @@ public class QueueItemDetailActivity extends BaseActivity {
     }
 
     public void onApprove(View view){
-        Log.v(TAG, "Item REQUEST_ID: " + itemId);
+        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
         Map<String,String> data = new HashMap<>();
 
-        data.put(ITEM_ID,this.itemId+"");
-        data.put(REQUEST_ID, this.requestId + "");
-        data.put(CATEGORY_ITEM, txtCategory.getText().toString());
+        data.put(ITEM_ID,this.mItemId +"");
+        data.put(REQUEST_ID, this.mRequestId + "");
+        data.put(CATEGORY_ITEM, mTxtCategory.getText().toString());
 
-        Log.v(TAG, "Item REQUEST_ID: " + this.itemId);
-        Log.v(TAG, "Request REQUEST_ID: " + this.requestId);
+        Log.v(TAG, "Item REQUEST_ID: " + this.mItemId);
+        Log.v(TAG, "Request REQUEST_ID: " + this.mRequestId);
 
-        queueProgress.setIndeterminate(true);
-        queueProgress.setMessage("Please wait. . .");
+        mQueueProgress.setIndeterminate(true);
+        mQueueProgress.setMessage("Please wait. . .");
 
-        Server.approveQueuedItem(data, queueProgress, new Ajax.Callbacks() {
+        Server.approveQueuedItem(data, mQueueProgress, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {
@@ -191,6 +193,7 @@ public class QueueItemDetailActivity extends BaseActivity {
                     if (json.getInt("status") == 200) {
                         Log.v(TAG, "Successful Approval");
                         Toast.makeText(QueueItemDetailActivity.this, "Item successfully approved", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         Log.v(TAG, "approval failed");
                         Toast.makeText(QueueItemDetailActivity.this, "Error; Item approval failed", Toast.LENGTH_SHORT).show();
@@ -208,17 +211,17 @@ public class QueueItemDetailActivity extends BaseActivity {
         });
     }
 
-    public void onDeny(View view){
-        Log.v(TAG, "Item REQUEST_ID: " + itemId);
+    public void onDeny(View view) {
+        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
         Map<String,String> data = new HashMap<>();
 
-        data.put(ITEM_ID,this.itemId+"");
-        data.put(REQUEST_ID, this.requestId + "");
+        data.put(ITEM_ID,this.mItemId + "");
+        data.put(REQUEST_ID, this.mRequestId + "");
 
-        queueProgress.setIndeterminate(true);
-        queueProgress.setMessage("Please wait. . .");
+        mQueueProgress.setIndeterminate(true);
+        mQueueProgress.setMessage("Please wait. . .");
 
-        Server.denyQueuedItem(data, queueProgress, new Ajax.Callbacks() {
+        Server.denyQueuedItem(data, mQueueProgress, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {
@@ -226,6 +229,7 @@ public class QueueItemDetailActivity extends BaseActivity {
                     if (json.getInt("status") == 200) {
                         Log.v(TAG, "Successful Disapproval");
                         Toast.makeText(QueueItemDetailActivity.this, "Item successfully disapproved", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         Log.v(TAG, "Disapproval failed");
                         Toast.makeText(QueueItemDetailActivity.this, "Error; Item disapproval failed", Toast.LENGTH_SHORT).show();
@@ -277,7 +281,7 @@ public class QueueItemDetailActivity extends BaseActivity {
                             .setItems(categories, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    txtCategory.setText(categories[which]);
+                                    mTxtCategory.setText(categories[which]);
                                 }
                             })
                             .create()

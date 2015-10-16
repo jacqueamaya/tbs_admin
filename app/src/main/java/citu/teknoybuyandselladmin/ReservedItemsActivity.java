@@ -82,4 +82,10 @@ public class ReservedItemsActivity extends BaseActivity {
     public boolean checkItemClicked(MenuItem menuItem) {
         return menuItem.getItemId() != R.id.nav_reserved_items;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getReservedItems();
+    }
 }

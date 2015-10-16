@@ -130,6 +130,7 @@ public class ReservedDetailActivity extends BaseActivity {
                     if (json.getInt("status") == 200) {
                         Log.v(TAG, "Successfully set item imgAvailable");
                         Toast.makeText(ReservedDetailActivity.this, "Item successfully set available", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         Log.v(TAG, "failed");
                         Toast.makeText(ReservedDetailActivity.this, "Error: Item set availability failed", Toast.LENGTH_SHORT).show();
@@ -165,6 +166,7 @@ public class ReservedDetailActivity extends BaseActivity {
                     if (json.getInt("status") == 200) {
                         Log.v(TAG, "Successfully claimed");
                         Toast.makeText(ReservedDetailActivity.this, "Item successfully claimed", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         Log.v(TAG, "failed");
                         Toast.makeText(ReservedDetailActivity.this, "Error: Failed to claim item", Toast.LENGTH_SHORT).show();

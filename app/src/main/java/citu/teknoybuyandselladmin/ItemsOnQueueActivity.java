@@ -22,6 +22,7 @@ import citu.teknoybuyandselladmin.models.SellApproval;
 public class ItemsOnQueueActivity extends BaseActivity {
 
     private static final String TAG = "ItemsOnQueueActivity";
+    private JSONArray jsonArray;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +40,6 @@ public class ItemsOnQueueActivity extends BaseActivity {
             public void success(final String responseBody) {
                 ArrayList<SellApproval> request = new ArrayList<SellApproval>();
                 Log.v(TAG, responseBody);
-                JSONArray jsonArray = null;
 
                 try {
                     jsonArray = new JSONArray(responseBody);
@@ -108,5 +108,11 @@ public class ItemsOnQueueActivity extends BaseActivity {
     @Override
     public boolean checkItemClicked(MenuItem menuItem) {
         return menuItem.getItemId() != R.id.nav_items_queue;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getReservedItems();
     }
 }

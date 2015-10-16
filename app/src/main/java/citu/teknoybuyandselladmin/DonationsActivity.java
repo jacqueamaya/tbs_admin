@@ -107,4 +107,10 @@ public class DonationsActivity extends BaseActivity {
     public boolean checkItemClicked(MenuItem menuItem) {
         return menuItem.getItemId() != R.id.nav_donations;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getReservedItems();
+    }
 }

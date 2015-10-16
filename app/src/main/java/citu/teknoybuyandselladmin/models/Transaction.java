@@ -26,6 +26,7 @@ public class Transaction {
     public static final String STUDENT = "student";
     public static final String STUDENT_FIRST_NAME = "first_name";
     public static final String STUDENT_LAST_NAME = "last_name";
+    public static final String STUDENT_ID_NUMBER = "id_number";
     public static final String SELLER = "seller";
 
     private String transactionId;
@@ -33,6 +34,7 @@ public class Transaction {
     private String seller;
     private String date;
     private String itemName;
+    private String studentId;
 
     public String getTransactionId() {
         return transactionId;
@@ -54,6 +56,10 @@ public class Transaction {
         return itemName;
     }
 
+    public String getStudentId() {
+        return studentId;
+    }
+
     public static Transaction asSingle(JSONObject jsonObject) {
         Transaction transaction = new Transaction();
         JSONObject itemObj, buyerObj, sellerObj, studentObj;
@@ -70,12 +76,12 @@ public class Transaction {
             buyerObj = jsonObject.getJSONObject(BUYER);
 
             studentObj = buyerObj.getJSONObject(STUDENT);
-            transaction.buyer = studentObj.getString(STUDENT_FIRST_NAME) + " " + studentObj.getString(STUDENT_LAST_NAME);
+            transaction.buyer = studentObj.getString(STUDENT_ID_NUMBER);
 
             sellerObj = jsonObject.getJSONObject(SELLER);
 
             studentObj = sellerObj.getJSONObject(STUDENT);
-            transaction.seller = studentObj.getString(STUDENT_FIRST_NAME) + " " + studentObj.getString(STUDENT_LAST_NAME);
+            transaction.seller = studentObj.getString(STUDENT_ID_NUMBER);
         } catch (JSONException e) {
             Log.e(TAG, "Error creating Transaction object from JSONObject", e);
         } catch (ParseException e) {
