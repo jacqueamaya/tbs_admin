@@ -172,16 +172,22 @@ public class DonationsDetailActivity extends BaseActivity {
     }
 
     public void onApprove(View view){
+        Utils.alert(DonationsDetailActivity.this, "Approve Item", "Are you sure you want to approve this item?", new Utils.Callbacks() {
+            @Override
+            public void ok() {
+                approveDonation();
+            }
+        });
+    }
+
+    public void approveDonation(){
         Log.v(TAG, "Item REQUEST_ID: " + itemId);
         Map<String,String> data = new HashMap<>();
 
         data.put(ITEM_ID,this.itemId+"");
         data.put(REQUEST_ID, this.requestId + "");
         data.put(STARS_REQUIRED, txtStars.getText().toString());
-
-        //static activity_category**** to be modified
-        data.put(CATEGORY, "Static activity_category");
-        //Log.v(TAG,activity_category.getSelectedItem().toString());
+        data.put(CATEGORY, txtCategory.getText().toString());
 
         donationProgress.setIndeterminate(true);
         donationProgress.setMessage("Please wait. . ");
@@ -207,12 +213,21 @@ public class DonationsDetailActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                Toast.makeText(DonationsDetailActivity.this, "Error: Donation approval failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DonationsDetailActivity.this, "Connection Error: Donation approval failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public void onDeny(View view){
+        Utils.alert(DonationsDetailActivity.this, "Deny Item", "Are you sure you want to deny this item?", new Utils.Callbacks() {
+            @Override
+            public void ok() {
+                denyDonation();
+            }
+        });
+    }
+
+    public void denyDonation(){
         Log.v(TAG, "Item REQUEST_ID: " + itemId);
         Map<String,String> data = new HashMap<>();
 
@@ -243,26 +258,21 @@ public class DonationsDetailActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                Toast.makeText(DonationsDetailActivity.this, "Error: Item disapproval failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DonationsDetailActivity.this, "Connection Error: Item disapproval failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_donations_detail, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }

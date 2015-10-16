@@ -113,6 +113,15 @@ public class ReservedDetailActivity extends BaseActivity {
     }
 
     public void onAvailable(View view) {
+        Utils.alert(ReservedDetailActivity.this, "Item Available", "Set item status to available?", new Utils.Callbacks() {
+            @Override
+            public void ok() {
+                setItemAvailable();
+            }
+        });
+    }
+
+    public void setItemAvailable(){
         Log.v(TAG, "Item REQUEST_ID: " + itemId);
         Map<String, String> data = new HashMap<>();
 
@@ -149,6 +158,15 @@ public class ReservedDetailActivity extends BaseActivity {
     }
 
     public void onClaimed(View view) {
+        Utils.alert(ReservedDetailActivity.this, "Item Claimed", "Item claimed by the buyer?", new Utils.Callbacks() {
+            @Override
+            public void ok() {
+                claimItem();
+            }
+        });
+    }
+
+    public void claimItem(){
         Log.v(TAG, "Item REQUEST_ID: " + itemId);
         Map<String, String> data = new HashMap<>();
 
