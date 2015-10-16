@@ -109,7 +109,6 @@ public class QueueItemDetailActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                Utils.alert(QueueItemDetailActivity.this, "Connection Error!");
             }
         });
     }
@@ -172,6 +171,15 @@ public class QueueItemDetailActivity extends BaseActivity {
     }
 
     public void onApprove(View view){
+        Utils.alert(QueueItemDetailActivity.this, "Approve Item", "Are you sure you want to approve this item?", new Utils.Callbacks() {
+            @Override
+            public void ok() {
+                approveItem();
+            }
+        });
+    }
+
+    public void approveItem(){
         Log.v(TAG, "Item REQUEST_ID: " + mItemId);
         Map<String,String> data = new HashMap<>();
 
@@ -212,6 +220,15 @@ public class QueueItemDetailActivity extends BaseActivity {
     }
 
     public void onDeny(View view) {
+        Utils.alert(QueueItemDetailActivity.this, "Deny Item", "Are you sure you want to deny this item?", new Utils.Callbacks() {
+            @Override
+            public void ok() {
+                denyItem();
+            }
+        });
+    }
+
+    public void denyItem(){
         Log.v(TAG, "Item REQUEST_ID: " + mItemId);
         Map<String,String> data = new HashMap<>();
 

@@ -19,11 +19,17 @@ public final class Utils {
         return Character.toUpperCase(string.charAt(0)) + string.substring(1);
     }
 
-    public static void alert(Context context, String message) {
+    public static void alert(Context context, String title, String message, final Callbacks callbacks) {
         new AlertDialog.Builder(context)
-                .setTitle("Alert")
+                .setTitle(title)
                 .setMessage(message)
-                .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        callbacks.ok();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -31,6 +37,10 @@ public final class Utils {
                 })
                 .create()
                 .show();
+    }
+
+    public interface Callbacks {
+        void ok();
     }
 
 }
