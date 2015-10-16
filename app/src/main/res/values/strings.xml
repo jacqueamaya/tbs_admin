@@ -53,5 +53,5 @@
         <item>Others</item>
     </string-array>
     <string name="title_activity_add_category">AddCategoryActivity</string>
-    <string name="title_activity_reserved_detail">ReservedDetailActivity</string>
+    <string name="title_activity_reserved_detail">Reserved Item Detail</string>
 </resources>
