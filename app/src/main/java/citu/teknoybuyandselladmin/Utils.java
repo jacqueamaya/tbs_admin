@@ -8,12 +8,15 @@ import android.view.View;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 public final class Utils {
 
     public static final DateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    public static final DateFormat READABLE_DATE_FORMAT = new SimpleDateFormat("E, y-M-d 'at' h:m:s a");
-    public static final DateFormat FORMATTED_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    //public static final DateFormat READABLE_DATE_FORMAT = new SimpleDateFormat("E, y-M-d 'at' h:m:s a");
+    public static final DateFormat READABLE_DATE_FORMAT = new SimpleDateFormat("E, y-M-d ");
+    public static DateFormat FORMATTED_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     public static String capitalize (String string) {
         return Character.toUpperCase(string.charAt(0)) + string.substring(1);
@@ -41,6 +44,11 @@ public final class Utils {
 
     public interface Callbacks {
         void ok();
+    }
+
+    public static String parseDate(String date){
+        String [] str = date.split(Pattern.quote("."));
+        return str[0]+'Z';
     }
 
 }

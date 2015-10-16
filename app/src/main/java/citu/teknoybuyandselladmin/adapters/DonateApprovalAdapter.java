@@ -13,8 +13,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 import citu.teknoybuyandselladmin.R;
+import citu.teknoybuyandselladmin.Utils;
 import citu.teknoybuyandselladmin.models.DonateApproval;
 
 /**
@@ -26,8 +28,6 @@ public class DonateApprovalAdapter extends ArrayAdapter<DonateApproval>{
     private int id;
     private ArrayList<DonateApproval> items;
     private String requestDate;
-    private Date request_date;
-    private DateFormat df = new SimpleDateFormat("E, y-M-d 'at' h:m:s a");
 
     public DonateApprovalAdapter(Context context, int textViewResourceId, ArrayList<DonateApproval> list)
     {
@@ -51,8 +51,19 @@ public class DonateApprovalAdapter extends ArrayAdapter<DonateApproval>{
         if(items.get(position) != null )
         {
             try {
-                request_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(items.get(position).getRequestDate());
-                requestDate =df.format(request_date);
+                //read datetime
+                /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+                Date date = sdf.parse(Utils.parseDate(items.get(position).getRequestDate()));
+
+                //format datetime
+                SimpleDateFormat sdf2 = new SimpleDateFormat("E, y-M-d 'at' h:m:s a");
+                sdf2.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+                requestDate = sdf2.format(date);*/
+
+                Date date = Utils.FORMATTED_DATE_FORMAT.parse(items.get(position).getRequestDate());
+                requestDate = Utils.READABLE_DATE_FORMAT.format(date);
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }

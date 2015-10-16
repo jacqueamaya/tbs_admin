@@ -12,8 +12,10 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.Utils;
@@ -51,6 +53,15 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
         ImageView image = (ImageView) view.findViewById(R.id.image);
 
         try {
+            //read the datetime
+           /* SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+            Date date = sdf.parse(notification.getNotificationDate());
+
+            //format datetime
+            SimpleDateFormat sdf2 = new SimpleDateFormat("E, y-M-d 'at' h:m:s a");
+            sdf2.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+            notificationDate = sdf2.format(date);*/
             Date date = Utils.FORMATTED_DATE_FORMAT.parse(notification.getNotificationDate());
             notificationDate = Utils.READABLE_DATE_FORMAT.format(date);
         } catch (ParseException e) {

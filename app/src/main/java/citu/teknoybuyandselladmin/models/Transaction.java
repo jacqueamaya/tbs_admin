@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 import citu.teknoybuyandselladmin.Utils;
 
@@ -65,9 +66,19 @@ public class Transaction {
         JSONObject itemObj, buyerObj, sellerObj, studentObj;
 
         try {
-            Date date = Utils.FORMATTED_DATE_FORMAT.parse(jsonObject.getString(DATE_CLAIMED));
+            //read datetime
+            /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+            Date date = sdf.parse(jsonObject.getString(DATE_CLAIMED));
 
+            //format datetime
+            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+            sdf2.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+            transaction.date = sdf2.format(date);*/
+            Date date = Utils.FORMATTED_DATE_FORMAT.parse(jsonObject.getString(DATE_CLAIMED));
             transaction.date = Utils.SIMPLE_DATE_FORMAT.format(date);
+
+
             transaction.transactionId = jsonObject.getString(ID);
 
             itemObj = jsonObject.getJSONObject(ITEM);

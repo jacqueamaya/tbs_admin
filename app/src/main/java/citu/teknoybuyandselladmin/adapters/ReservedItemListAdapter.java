@@ -13,8 +13,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 import citu.teknoybuyandselladmin.R;
+import citu.teknoybuyandselladmin.Utils;
 import citu.teknoybuyandselladmin.models.ReservedItem;
 
 public class ReservedItemListAdapter extends ArrayAdapter<ReservedItem>{
@@ -24,8 +26,7 @@ public class ReservedItemListAdapter extends ArrayAdapter<ReservedItem>{
     private ArrayList<ReservedItem> items ;
     private String reservedDate;
     private Date reserved_date;
-    private Date request_date;
-    private DateFormat df = new SimpleDateFormat("E, y-M-d 'at' h:m:s a");
+    //private DateFormat df = new SimpleDateFormat("E, y-M-d 'at' h:m:s a");
 
     public ReservedItemListAdapter(Context context, int textViewResourceId, ArrayList<ReservedItem> list)
     {
@@ -49,8 +50,19 @@ public class ReservedItemListAdapter extends ArrayAdapter<ReservedItem>{
         if(items.get(position) != null )
         {
             try {
-                reserved_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(items.get(position).getReservedDate());
-                reservedDate = df.format(reserved_date);
+                //read datetime
+                /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+                Date date = sdf.parse(Utils.parseDate(items.get(position).getReservedDate()));
+
+                //format datetime
+                SimpleDateFormat sdf2 = new SimpleDateFormat("E, y-M-d 'at' h:m:s a");
+                sdf2.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+                reservedDate = sdf2.format(date);*/
+
+                Date date = Utils.FORMATTED_DATE_FORMAT.parse(items.get(position).getReservedDate());
+                reservedDate = Utils.READABLE_DATE_FORMAT.format(date);
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
