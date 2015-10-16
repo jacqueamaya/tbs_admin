@@ -39,17 +39,19 @@ public class ReservedItemsActivity extends BaseActivity {
                 Log.v(TAG, responseBody);
                 JSONArray jsonArray = null;
 
+                TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
+                ListView lv = (ListView) findViewById(R.id.listViewReserved);
+
                 try {
                     jsonArray = new JSONArray(responseBody);
                     if (jsonArray.length() == 0) {
-                        TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
                         txtMessage.setText("No reserved items");
                         txtMessage.setVisibility(View.VISIBLE);
+                        lv.setVisibility(View.GONE);
                     } else {
                         reserved = ReservedItem.asList(jsonArray);
-
-                        ListView lv = (ListView) findViewById(R.id.listViewReserved);
                         ReservedItemListAdapter listAdapter = new ReservedItemListAdapter(ReservedItemsActivity.this, R.layout.activity_item, reserved);
+
                         lv.setAdapter(listAdapter);
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override

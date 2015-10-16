@@ -23,6 +23,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
 
     private static final String TAG = "ItemsOnQueueActivity";
     private JSONArray jsonArray;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +36,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
     public void getReservedItems(){
         Server.getSellRequests(new Ajax.Callbacks() {
             TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
+            ListView lv = (ListView) findViewById(R.id.listViewQueue);
 
             @Override
             public void success(final String responseBody) {
@@ -46,10 +48,9 @@ public class ItemsOnQueueActivity extends BaseActivity {
                     if (jsonArray.length() == 0) {
                         txtMessage.setText("No sell requests available");
                         txtMessage.setVisibility(View.VISIBLE);
+                        lv.setVisibility(View.GONE);
                     } else {
                         request = SellApproval.asList(jsonArray);
-
-                        ListView lv = (ListView) findViewById(R.id.listViewQueue);
                         SellApprovalAdapter listAdapter = new SellApprovalAdapter(ItemsOnQueueActivity.this, R.layout.activity_item, request);
                         lv.setAdapter(listAdapter);
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
