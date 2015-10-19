@@ -7,7 +7,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.squareup.picasso.Picasso;
 
@@ -37,8 +39,13 @@ public final class Ajax {
     public static final int HTTP_CREATED = 201;
     private static final String TAG = "Ajax";
 
-    public static void get(String url, final Callbacks callbacks) {
+    public static void get(String url, final ProgressBar progressBar, final Callbacks callbacks) {
         new AsyncTask<String, Void, HashMap<String, Object>>() {
+            @Override
+            protected void onPreExecute() {
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setProgress(0);
+            }
 
             @Override
             protected HashMap<String, Object> doInBackground(String... params) {
@@ -73,6 +80,8 @@ public final class Ajax {
 
             @Override
             protected void onPostExecute(HashMap<String, Object> map) {
+                progressBar.setProgress(100);
+                progressBar.setVisibility(View.GONE);
                 super.onPostExecute(map);
                 if (null == map) {
                     callbacks.error(0, null, null);

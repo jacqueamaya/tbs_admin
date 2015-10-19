@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +42,12 @@ public class QueueItemDetailActivity extends BaseActivity {
     private int mRequestId;
     private int mItemId;
 
+    private float mItemPrice;
+
     private String mItemName;
+    private String mItemDetail;
+    private String mItemLink;
+    private String mItemCategory;
 
     private TextView mTxtTitle;
     private TextView mTxtPrice;
@@ -51,6 +57,7 @@ public class QueueItemDetailActivity extends BaseActivity {
     private ImageView mThumbnail;
 
     private ProgressDialog mQueueProgress;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +68,11 @@ public class QueueItemDetailActivity extends BaseActivity {
         Intent intent = getIntent();
         mRequestId = intent.getIntExtra("requestId",0);
         mItemId = intent.getIntExtra("itemId",0);
+        mItemName = intent.getStringExtra("itemName");
+        mItemDetail = intent.getStringExtra("itemDetail");
+        mItemLink = intent.getStringExtra("itemLink");
+        mItemCategory = intent.getStringExtra("itemCategory");
+        mItemPrice = intent.getFloatExtra("itemPrice", 0);
 
         mTxtTitle = (TextView) findViewById(R.id.txtTitle);
         mTxtPrice = (TextView) findViewById(R.id.txtPrice);
@@ -69,48 +81,20 @@ public class QueueItemDetailActivity extends BaseActivity {
         mThumbnail = (ImageView) findViewById(R.id.imgThumbnail);
 
         mQueueProgress = new ProgressDialog(this);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressGetCategory);
 
-        getQueueItemDetails(mRequestId);
+        getQueueItemDetails();
     }
+    public void getQueueItemDetails(){
+        setTitle(mItemName);
+        Picasso.with(QueueItemDetailActivity.this)
+                .load(mItemLink)
+                .into(mThumbnail);
 
-    public void getQueueItemDetails(int request){
-        Map<String,String> data = new HashMap<>();
-        data.put(REQUEST_ID, request + "");
-
-        Server.getQueueItemDetails(data, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                ArrayList<SellApproval> request = new ArrayList<SellApproval>();
-                SellApproval sell;
-                Log.v(TAG, responseBody);
-                JSONArray jsonArray = null;
-
-                try {
-                    jsonArray = new JSONArray(responseBody);
-                    request = SellApproval.asList(jsonArray);
-                    sell = request.get(0);
-
-                    Picasso.with(QueueItemDetailActivity.this)
-                            .load(sell.getLink())
-                            .into(mThumbnail);
-
-                    mItemName = sell.getItemName();
-                    setTitle(mItemName);
-
-                    mTxtTitle.setText(mItemName);
-                    mTxtPrice.setText("Price: PHP " + sell.getPrice());
-                    mTxtDetails.setText(sell.getDetails());
-
-                } catch (JSONException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-            }
-        });
+        mTxtTitle.setText(mItemName);
+        mTxtPrice.setText("Price: PHP "+mItemPrice);
+       // mTxtCategory.setText(mItemCategory);
+        mTxtDetails.setText(mItemDetail);
     }
 
     public void addCategory(View view){
@@ -183,12 +167,12 @@ public class QueueItemDetailActivity extends BaseActivity {
         Log.v(TAG, "Item REQUEST_ID: " + mItemId);
         Map<String,String> data = new HashMap<>();
 
-        data.put(ITEM_ID,this.mItemId +"");
-        data.put(REQUEST_ID, this.mRequestId + "");
+        data.put(ITEM_ID, mItemId +"");
+        data.put(REQUEST_ID, mRequestId + "");
         data.put(CATEGORY_ITEM, mTxtCategory.getText().toString());
 
-        Log.v(TAG, "Item REQUEST_ID: " + this.mItemId);
-        Log.v(TAG, "Request REQUEST_ID: " + this.mRequestId);
+        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
+        Log.v(TAG, "Request REQUEST_ID: " + mRequestId);
 
         mQueueProgress.setIndeterminate(true);
         mQueueProgress.setMessage("Please wait. . .");
@@ -232,8 +216,8 @@ public class QueueItemDetailActivity extends BaseActivity {
         Log.v(TAG, "Item REQUEST_ID: " + mItemId);
         Map<String,String> data = new HashMap<>();
 
-        data.put(ITEM_ID,this.mItemId + "");
-        data.put(REQUEST_ID, this.mRequestId + "");
+        data.put(ITEM_ID, mItemId + "");
+        data.put(REQUEST_ID, mRequestId + "");
 
         mQueueProgress.setIndeterminate(true);
         mQueueProgress.setMessage("Please wait. . .");
@@ -288,7 +272,7 @@ public class QueueItemDetailActivity extends BaseActivity {
     }
 
     public void onSelect(View view) {
-        Server.getCategories(new Ajax.Callbacks() {
+        Server.getCategories(mProgressBar, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {

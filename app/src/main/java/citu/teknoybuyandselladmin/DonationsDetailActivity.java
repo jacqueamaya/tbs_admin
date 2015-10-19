@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,12 +23,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import citu.teknoybuyandselladmin.models.Category;
-import citu.teknoybuyandselladmin.models.DonateApproval;
 
 
 public class DonationsDetailActivity extends BaseActivity {
@@ -38,18 +37,23 @@ public class DonationsDetailActivity extends BaseActivity {
     private static final String CATEGORY = "activity_category";
     public static final String CATEGORY_ITEM = "category";
 
-    private int requestId;
-    private int itemId;
-    private String mItemName;
+    private int mRequestId;
+    private int mItemId;
 
-    private TextView txtTitle;
-    private TextView txtDetails;
-    private TextView txtStars;
-    private TextView txtCategory;
+    private String mItemName;
+    private String mItemDetail;
+    private String mItemCategory;
+    private String mItemLink;
+
+    private TextView mTxtTitle;
+    private TextView mTxtDetails;
+    private TextView mTxtStars;
+    private TextView mTxtCategory;
 
     private ImageView thumbnail;
 
     private ProgressDialog donationProgress;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,59 +63,35 @@ public class DonationsDetailActivity extends BaseActivity {
 
         Intent intent = getIntent();
 
-        requestId = intent.getIntExtra("requestId",0);
-        itemId = intent.getIntExtra("itemId",0);
+        mRequestId = intent.getIntExtra("requestId",0);
+        mItemId = intent.getIntExtra("itemId",0);
+        mItemName = intent.getStringExtra("itemName");
+        mItemDetail = intent.getStringExtra("itemDetail");
+        mItemCategory = intent.getStringExtra("itemCategory");
+        mItemLink = intent.getStringExtra("itemLink");
 
-        txtTitle = (TextView) findViewById(R.id.txtTitle);
-        txtDetails = (TextView) findViewById(R.id.txtDetails);
-        txtStars = (TextView) findViewById(R.id.txtNumOfStars);
-        txtCategory = (TextView) findViewById(R.id.txtCategory);
+        mTxtTitle = (TextView) findViewById(R.id.txtTitle);
+        mTxtDetails = (TextView) findViewById(R.id.txtDetails);
+        mTxtStars = (TextView) findViewById(R.id.txtNumOfStars);
+        mTxtCategory = (TextView) findViewById(R.id.txtCategory);
         thumbnail = (ImageView) findViewById(R.id.imgThumbnail);
 
         donationProgress = new ProgressDialog(this);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressGetCategoryDonate);
 
-        getDonatedItemDetails(requestId);
+        getDonatedItemDetails();
 
     }
 
-    public void getDonatedItemDetails(int request){
-        Map<String,String> data = new HashMap<>();
-        data.put(REQUEST_ID,request+"");
+    public void getDonatedItemDetails(){
+        setTitle(mItemName);
+        Picasso.with(DonationsDetailActivity.this)
+                .load(mItemLink)
+                .into(thumbnail);
+        mTxtTitle.setText(mItemName);
+        mTxtDetails.setText(mItemDetail);
+        //mTxtCategory.setText(mItemCategory);
 
-        Server.getDonatedItemDetails(data, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                ArrayList<DonateApproval> request = new ArrayList<DonateApproval>();
-                DonateApproval donate;
-                Log.v(TAG, responseBody);
-                JSONArray jsonArray = null;
-
-                try {
-                    jsonArray = new JSONArray(responseBody);
-                    request = DonateApproval.asList(jsonArray);
-                    donate = request.get(0);
-
-                    Picasso.with(DonationsDetailActivity.this)
-                            .load(donate.getLink())
-                            .into(thumbnail);
-
-                    mItemName = donate.getItemName();
-                    setTitle(mItemName);
-
-                    txtTitle.setText(mItemName);
-                    txtDetails.setText(donate.getDetails());
-
-                } catch (JSONException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                // Toast.makeText(LoginActivity.this, "Error: Invalid username or password", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public void addCategory(View view){
@@ -181,13 +161,13 @@ public class DonationsDetailActivity extends BaseActivity {
     }
 
     public void approveDonation(){
-        Log.v(TAG, "Item REQUEST_ID: " + itemId);
+        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
         Map<String,String> data = new HashMap<>();
 
-        data.put(ITEM_ID,this.itemId+"");
-        data.put(REQUEST_ID, this.requestId + "");
-        data.put(STARS_REQUIRED, txtStars.getText().toString());
-        data.put(CATEGORY, txtCategory.getText().toString());
+        data.put(ITEM_ID,mItemId+"");
+        data.put(REQUEST_ID, mRequestId + "");
+        data.put(STARS_REQUIRED, mTxtStars.getText().toString());
+        data.put(CATEGORY, mTxtCategory.getText().toString());
 
         donationProgress.setIndeterminate(true);
         donationProgress.setMessage("Please wait. . ");
@@ -228,11 +208,11 @@ public class DonationsDetailActivity extends BaseActivity {
     }
 
     public void denyDonation(){
-        Log.v(TAG, "Item REQUEST_ID: " + itemId);
+        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
         Map<String,String> data = new HashMap<>();
 
-        data.put(ITEM_ID,this.itemId+"");
-        data.put(REQUEST_ID,this.requestId+"");
+        data.put(ITEM_ID,mItemId+"");
+        data.put(REQUEST_ID,mRequestId+"");
 
         donationProgress.setIndeterminate(true);
         donationProgress.setMessage("Please wait. . ");
@@ -285,7 +265,7 @@ public class DonationsDetailActivity extends BaseActivity {
         return menuItem.getItemId() != R.id.nav_donations;
     }
     public void onSelect(View view) {
-        Server.getCategories(new Ajax.Callbacks() {
+        Server.getCategories(mProgressBar, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {
@@ -295,7 +275,7 @@ public class DonationsDetailActivity extends BaseActivity {
                             .setItems(categories, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    txtCategory.setText(categories[which]);
+                                    mTxtCategory.setText(categories[which]);
                                 }
                             })
                             .create()

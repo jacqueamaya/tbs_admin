@@ -4,7 +4,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +23,9 @@ public class TransactionsActivity extends BaseActivity {
     private static final String TAG = "TransactionsActivity";
 
     private TableLayout mTableLayout;
+    private ProgressBar mProgressBar;
+
+    private TextView mTxtMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +34,14 @@ public class TransactionsActivity extends BaseActivity {
         setupUI();
 
         mTableLayout = (TableLayout) findViewById(R.id.transactionTable);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressGetTransactions);
+
+        mTxtMessage = (TextView) findViewById(R.id.txtMessage);
         getTransactions(mTableLayout);
     }
 
     public void getTransactions(final TableLayout tl) {
-        Server.getTransactions(new Ajax.Callbacks() {
+        Server.getTransactions(mProgressBar, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 ArrayList<Transaction> transactions = new ArrayList<Transaction>();
@@ -41,10 +50,15 @@ public class TransactionsActivity extends BaseActivity {
 
                 try {
                     jsonArray = new JSONArray(responseBody);
-                    transactions = Transaction.asList(jsonArray);
+                    if (jsonArray.length() == 0) {
+                        mTxtMessage.setText("No transactions");
+                        mTxtMessage.setVisibility(View.VISIBLE);
+                    } else {
+                        transactions = Transaction.asList(jsonArray);
 
-                    TransactionAdapter transAdapter = new TransactionAdapter(TransactionsActivity.this, transactions);
-                    transAdapter.addRows(tl);
+                        TransactionAdapter transAdapter = new TransactionAdapter(TransactionsActivity.this, transactions);
+                        transAdapter.addRows(tl);
+                    }
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();

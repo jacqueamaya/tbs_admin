@@ -25,13 +25,16 @@ public class ReservedItem {
 
     private String itemName;
     private String status;
-    private String reservedDate;
-    private String reserveExpiration;
     private String details;
+    private String link;
+
     private int requestId;
     private int itemId;
+
+    private long reservedDate;
+    private long reserveExpiration;
+
     private float price;
-    private String link;
 
 
     public String getItemName() {
@@ -42,7 +45,7 @@ public class ReservedItem {
         return status;
     }
 
-    public String getReservedDate() {
+    public long getReservedDate() {
         return reservedDate;
     }
 
@@ -66,7 +69,7 @@ public class ReservedItem {
         return link;
     }
 
-    public String getReserveExpiration() {
+    public long getReserveExpiration() {
         return reserveExpiration;
     }
 
@@ -79,7 +82,7 @@ public class ReservedItem {
 
             reservedItem.itemId = item.getInt(ITEM_ID);
             reservedItem.status = jsonObject.getString(STATUS);
-            reservedItem.reservedDate = jsonObject.getString(RESERVED_DATE);
+            reservedItem.reservedDate = jsonObject.getLong(RESERVED_DATE);
             reservedItem.requestId = jsonObject.getInt(REQUEST_ID);
             reservedItem.itemName = item.getString(NAME);
             reservedItem.details = item.getString(DESCRIPTION);

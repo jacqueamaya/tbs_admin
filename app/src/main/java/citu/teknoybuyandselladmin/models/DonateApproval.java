@@ -23,21 +23,24 @@ public class DonateApproval {
     public static final String ITEM_NAME = "name";
     public static final String DESCRIPTION = "description";
     public static final String PICTURE = "picture";
+    public static final String CATEGORY = "category";
 
     private String itemName;
-    private String requestDate;
-    private String requestExpiration;
+    private String itemCategory;
     private String details;
     private String link;
 
     private int requestId;
     private int itemId;
 
+    private long requestDate;
+    private long requestExpiration;
+
     public String getItemName() {
         return itemName;
     }
 
-    public String getRequestDate() {
+    public long getRequestDate() {
         return requestDate;
     }
 
@@ -57,23 +60,29 @@ public class DonateApproval {
         return link;
     }
 
-    public String getRequestExpiration() {
+    public long getRequestExpiration() {
         return requestExpiration;
+    }
+
+    public String getItemCategory() {
+        return itemCategory;
     }
 
     public static DonateApproval asSingle(JSONObject jsonObject) {
         DonateApproval donateApproval = new DonateApproval();
 
         try {
-            donateApproval.requestDate = jsonObject.getString(REQUEST_DATE);
+            donateApproval.requestDate = jsonObject.getLong(REQUEST_DATE);
             donateApproval.requestId = jsonObject.getInt(REQUEST_ID);
-            donateApproval.requestExpiration = jsonObject.getString(REQUEST_EXPIRATION);
+            donateApproval.requestExpiration = jsonObject.getLong(REQUEST_EXPIRATION);
 
             JSONObject item = jsonObject.getJSONObject(ITEM);
             donateApproval.itemName = item.getString(ITEM_NAME);
             donateApproval.itemId = item.getInt(ITEM_ID);
             donateApproval.details = item.getString(DESCRIPTION);
             donateApproval.link = item.getString(PICTURE);
+            donateApproval.itemCategory = item.optString(CATEGORY);
+
         } catch (JSONException e) {
             Log.e(TAG, "Error extracting data from JSON", e);
         }

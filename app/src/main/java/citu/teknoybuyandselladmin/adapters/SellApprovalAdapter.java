@@ -49,7 +49,7 @@ public class SellApprovalAdapter extends ArrayAdapter<SellApproval>{
 
         if(items.get(position) != null )
         {
-            try {
+            //try {
                 //read datetime
                 /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
                 sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
@@ -61,12 +61,12 @@ public class SellApprovalAdapter extends ArrayAdapter<SellApproval>{
                 sdf2.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
                 requestDate = sdf2.format(date);*/
 
-                Date date = Utils.FORMATTED_DATE_FORMAT.parse(items.get(position).getRequestDate());
-                requestDate = Utils.READABLE_DATE_FORMAT.format(date);
+               // Date date = Utils.FORMATTED_DATE_FORMAT.parse(items.get(position).getRequestDate());
+                requestDate = Utils.parseDate(items.get(position).getRequestDate());
 
-            } catch (ParseException e) {
+            /*} catch (ParseException e) {
                 e.printStackTrace();
-            }
+            }*/
             String message;
             message = "<b>"+items.get(position).getItemName()+"</b><br><small>"+requestDate+"</small>";
             text.setText(Html.fromHtml(message));

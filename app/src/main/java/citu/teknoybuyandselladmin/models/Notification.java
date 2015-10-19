@@ -29,11 +29,11 @@ public class Notification {
     private String makerUsername;
     private String itemName;
     private String notificationType;
-    private String notificationDate;
     private String itemLink;
     private String status;
 
     private long id;
+    private long notificationDate;
 
     public String getOwnerUsername() {
         return ownerUsername;
@@ -51,7 +51,7 @@ public class Notification {
         return notificationType;
     }
 
-    public String getNotificationDate() {
+    public long getNotificationDate() {
         return notificationDate;
     }
 
@@ -79,7 +79,7 @@ public class Notification {
 
             n.id = jsonObject.getLong(ID);
             n.notificationType = jsonObject.getString(NOTIFICATION_TYPE);
-            n.notificationDate = jsonObject.getString(NOTIFICATION_DATE);
+            n.notificationDate = jsonObject.getLong(NOTIFICATION_DATE);
             n.status = jsonObject.getString(STATUS);
             n.itemName = item.getString(NAME);
             n.itemLink = item.getString(PICTURE);

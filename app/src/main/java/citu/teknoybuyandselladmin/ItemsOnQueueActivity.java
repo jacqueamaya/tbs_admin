@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -24,17 +25,21 @@ public class ItemsOnQueueActivity extends BaseActivity {
     private static final String TAG = "ItemsOnQueueActivity";
     private JSONArray jsonArray;
 
+    private ProgressBar mProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_items_on_queue);
         setupUI();
 
+        mProgressBar = (ProgressBar) findViewById(R.id.progressGetSellRequests);
+
         getReservedItems();
     }
 
     public void getReservedItems(){
-        Server.getSellRequests(new Ajax.Callbacks() {
+        Server.getSellRequests(mProgressBar, new Ajax.Callbacks() {
             TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
             ListView lv = (ListView) findViewById(R.id.listViewQueue);
 
@@ -57,13 +62,18 @@ public class ItemsOnQueueActivity extends BaseActivity {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 SellApproval sell = (SellApproval) parent.getItemAtPosition(position);
-                                int itemId = sell.getItemId();
-                                int requestId = sell.getRequestId();
+                                //int itemId = sell.getItemId();
+                                //int requestId = sell.getRequestId();
 
                                 Intent intent;
                                 intent = new Intent(ItemsOnQueueActivity.this, QueueItemDetailActivity.class);
-                                intent.putExtra("itemId",itemId);
-                                intent.putExtra("requestId",requestId);
+                                intent.putExtra("itemId",sell.getItemId());
+                                intent.putExtra("requestId",sell.getRequestId());
+                                intent.putExtra("itemName", sell.getItemName());
+                                intent.putExtra("itemPrice", sell.getPrice());
+                                intent.putExtra("itemDetail", sell.getDetails());
+                                intent.putExtra("itemLink", sell.getLink());
+                                intent.putExtra("itemCategoy", sell.getCategory());
                                 startActivity(intent);
 
                             }

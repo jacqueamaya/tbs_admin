@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -28,6 +29,7 @@ public class NotificationsActivity extends BaseActivity {
 
     private Notification notif;
     private ProgressDialog readProgress;
+    private ProgressBar mProgressBar;
 
     public static final String NOTIFICATION_ID = "notification_id";
 
@@ -38,13 +40,14 @@ public class NotificationsActivity extends BaseActivity {
         setupUI();
 
         readProgress = new ProgressDialog(this);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressGetNotifications);
 
         getNotifications();
     }
 
     public void getNotifications() {
         String username = "admin";
-        Server.getNotifications(username, new Ajax.Callbacks() {
+        Server.getNotifications(username,mProgressBar, new Ajax.Callbacks() {
             TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
 
             @Override
@@ -68,6 +71,7 @@ public class NotificationsActivity extends BaseActivity {
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 notif = (Notification) parent.getItemAtPosition(position);
                                 view.setBackgroundResource(R.color.forNotifs);
+
                                 Map<String, String> data = new HashMap<>();
                                 data.put(NOTIFICATION_ID, notif.getId() + "");
 

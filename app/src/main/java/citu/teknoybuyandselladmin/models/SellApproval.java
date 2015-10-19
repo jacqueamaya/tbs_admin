@@ -21,22 +21,26 @@ public class SellApproval {
     public static final String ITEM_PRICE = "price";
     public static final String ITEM_DESCRIPTION = "description";
     public static final String ITEM_PICTURE = "picture";
+    public static final String ITEM_CATEGORY = "category";
 
     private String itemName;
-    private String requestDate;
-    private String requestExpiration;
-    private int itemId;
-    private int requestId;
-    private float price;
+    private String category;
     private String details;
     private String link;
 
+    private int itemId;
+    private int requestId;
+
+    private float price;
+
+    private long requestDate;
+    private long requestExpiration;
 
     public String getItemName() {
         return itemName;
     }
 
-    public String getRequestDate() {
+    public long getRequestDate() {
         return requestDate;
     }
 
@@ -60,16 +64,20 @@ public class SellApproval {
         return link;
     }
 
-    public String getRequestExpiration() {
+    public long getRequestExpiration() {
         return requestExpiration;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     public static SellApproval asSingle(JSONObject jsonObject) {
         SellApproval sell = new SellApproval();
 
         try {
-            sell.requestDate = jsonObject.getString(REQUEST_DATE);
-            sell.requestExpiration = jsonObject.getString(REQUEST_EXPIRATION);
+            sell.requestDate = jsonObject.getLong(REQUEST_DATE);
+            sell.requestExpiration = jsonObject.getLong(REQUEST_EXPIRATION);
             sell.requestId = jsonObject.getInt(REQUEST_ID);
 
             JSONObject item = jsonObject.getJSONObject(ITEM);
@@ -78,6 +86,7 @@ public class SellApproval {
             sell.price = (float) item.getDouble(ITEM_PRICE);
             sell.details = item.getString(ITEM_DESCRIPTION);
             sell.link = item.getString(ITEM_PICTURE);
+            sell.category = item.optString(ITEM_CATEGORY);
         } catch (JSONException e) {
             Log.e(TAG, "Error creating SellApproval object from JSONObject", e);
         }

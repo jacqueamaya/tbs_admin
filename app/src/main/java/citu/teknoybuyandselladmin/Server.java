@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import java.util.Map;
 
@@ -38,37 +39,37 @@ public final class Server {
         Ajax.post(URL_LOGIN, progressDialog, data, callbacks);
     }
 
-    public static void getNotifications(String username, Ajax.Callbacks callbacks) {
+    public static void getNotifications(String username,ProgressBar progressBar, Ajax.Callbacks callbacks) {
         if (username == null) {
             throw new RuntimeException("Missing data.");
         }
 
-        Ajax.get(URL_NOTIFICATION + "/?username=" + username, callbacks);
+        Ajax.get(URL_NOTIFICATION + "/?username=" + username, progressBar, callbacks);
     }
 
-    public static void getReservedItems(Ajax.Callbacks callbacks) {
-        Ajax.get(URL_RESERVED_ITEMS, callbacks);
+    public static void getReservedItems(ProgressBar progressBar, Ajax.Callbacks callbacks) {
+        Ajax.get(URL_RESERVED_ITEMS, progressBar, callbacks);
     }
 
-    public static void getSellRequests(Ajax.Callbacks callbacks) {
-        Ajax.get(URL_SELL_REQUEST, callbacks);
+    public static void getSellRequests(ProgressBar progressBar, Ajax.Callbacks callbacks) {
+        Ajax.get(URL_SELL_REQUEST, progressBar, callbacks);
     }
 
-    public static void getDonateRequests(Ajax.Callbacks callbacks) {
-        Ajax.get(URL_DONATE_REQUEST, callbacks);
+    public static void getDonateRequests(ProgressBar progressBar, Ajax.Callbacks callbacks) {
+        Ajax.get(URL_DONATE_REQUEST, progressBar, callbacks);
     }
 
-    public static void getTransactions(Ajax.Callbacks callbacks) {
-        Ajax.get(URL_TRANSACTIONS, callbacks);
+    public static void getTransactions(ProgressBar progressBar, Ajax.Callbacks callbacks) {
+        Ajax.get(URL_TRANSACTIONS, progressBar, callbacks);
     }
 
-    public static void getQueueItemDetails(Map<String, String> data, Ajax.Callbacks callbacks) {
+    public static void getQueueItemDetails(Map<String, String> data, ProgressBar progressBar, Ajax.Callbacks callbacks) {
         if (!data.containsKey("request_id")) {
             throw new RuntimeException("Missing data.");
         }
 
         String requestId = data.get("request_id");
-        Ajax.get(URL_ITEMS_ON_QUEUE_DETAILS + "?request_id=" + requestId, callbacks);
+        Ajax.get(URL_ITEMS_ON_QUEUE_DETAILS + "?request_id=" + requestId, progressBar, callbacks);
     }
 
     public static void approveQueuedItem(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
@@ -90,13 +91,13 @@ public final class Server {
         Ajax.post(URL_DISAPPROVE_SELL, progressDialog, data, callbacks);
     }
 
-    public static void getDonatedItemDetails(Map<String, String> data, Ajax.Callbacks callbacks) {
+    public static void getDonatedItemDetails(Map<String, String> data, ProgressBar progressBar, Ajax.Callbacks callbacks) {
         if (!data.containsKey("request_id")) {
             throw new RuntimeException("Missing data.");
         }
 
         String requestId = data.get("request_id");
-        Ajax.get(URL_DONATED_ITEMS_DETAILS + "?request_id=" + requestId, callbacks);
+        Ajax.get(URL_DONATED_ITEMS_DETAILS + "?request_id=" + requestId, progressBar, callbacks);
     }
 
     public static void approveDonatedItem(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
@@ -118,13 +119,13 @@ public final class Server {
         Ajax.post(URL_DISAPPROVE_DONATION, progressDialog, data, callbacks);
     }
 
-    public static void getReservedItemDetails(Map<String, String> data, Ajax.Callbacks callbacks) {
+    public static void getReservedItemDetails(Map<String, String> data, ProgressBar progressBar, Ajax.Callbacks callbacks) {
         if (!data.containsKey("request_id")) {
             throw new RuntimeException("Missing data.");
         }
 
         String requestId = data.get("request_id");
-        Ajax.get(URL_RESERVED_ITEMS + "?request_id=" + requestId, callbacks);
+        Ajax.get(URL_RESERVED_ITEMS + "?request_id=" + requestId, progressBar, callbacks);
     }
 
     public static void itemAvailable(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
@@ -153,8 +154,8 @@ public final class Server {
         Ajax.post(URL_ADD_CATEGORY, progressDialog, data, callbacks);
     }
 
-    public static void getCategories(Ajax.Callbacks callbacks) {
-        Ajax.get(URL_CATEGORIES, callbacks);
+    public static void getCategories(ProgressBar progressBar, Ajax.Callbacks callbacks) {
+        Ajax.get(URL_CATEGORIES, progressBar, callbacks);
     }
 
     public static void readNotification(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {

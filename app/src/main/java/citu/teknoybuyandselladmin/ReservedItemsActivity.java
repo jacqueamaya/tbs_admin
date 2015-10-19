@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -22,17 +23,20 @@ import citu.teknoybuyandselladmin.models.ReservedItem;
 public class ReservedItemsActivity extends BaseActivity {
 
     private static final String TAG = "ReservedActivity";
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reserved_items);
         setupUI();
+        mProgressBar = (ProgressBar) findViewById(R.id.progressGetReserveRequests);
+
         getReservedItems();
     }
 
     public void getReservedItems(){
-        Server.getReservedItems(new Ajax.Callbacks() {
+        Server.getReservedItems(mProgressBar, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 ArrayList<ReservedItem> reserved = new ArrayList<ReservedItem>();
@@ -57,13 +61,18 @@ public class ReservedItemsActivity extends BaseActivity {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 ReservedItem reserve = (ReservedItem) parent.getItemAtPosition(position);
-                                int itemId = reserve.getItemId();
-                                int requestId = reserve.getRequestId();
+                                //int itemId = reserve.getItemId();
+                                //int requestId = reserve.getRequestId();
 
                                 Intent intent;
                                 intent = new Intent(ReservedItemsActivity.this, ReservedDetailActivity.class);
-                                intent.putExtra("itemId", itemId);
-                                intent.putExtra("requestId", requestId);
+                                intent.putExtra("itemId", reserve.getItemId());
+                                intent.putExtra("requestId", reserve.getRequestId());
+                                intent.putExtra("itemName", reserve.getItemName());
+                                intent.putExtra("itemStatus", reserve.getStatus());
+                                intent.putExtra("itemPrice", reserve.getPrice());
+                                intent.putExtra("itemDetail", reserve.getDetails());
+                                intent.putExtra("itemLink", reserve.getLink());
                                 startActivity(intent);
 
                             }

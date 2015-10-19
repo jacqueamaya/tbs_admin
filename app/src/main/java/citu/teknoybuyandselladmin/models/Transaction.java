@@ -33,9 +33,9 @@ public class Transaction {
     private String transactionId;
     private String buyer;
     private String seller;
-    private String date;
     private String itemName;
     private String studentId;
+    private String date;
 
     public String getTransactionId() {
         return transactionId;
@@ -75,8 +75,8 @@ public class Transaction {
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
             sdf2.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
             transaction.date = sdf2.format(date);*/
-            Date date = Utils.FORMATTED_DATE_FORMAT.parse(jsonObject.getString(DATE_CLAIMED));
-            transaction.date = Utils.SIMPLE_DATE_FORMAT.format(date);
+            //Date date = Utils.FORMATTED_DATE_FORMAT.parse(jsonObject.getString(DATE_CLAIMED));
+            transaction.date = Utils.parseToDateOnly(jsonObject.getLong(DATE_CLAIMED));
 
 
             transaction.transactionId = jsonObject.getString(ID);
@@ -95,9 +95,6 @@ public class Transaction {
             transaction.seller = studentObj.getString(STUDENT_ID_NUMBER);
         } catch (JSONException e) {
             Log.e(TAG, "Error creating Transaction object from JSONObject", e);
-        } catch (ParseException e) {
-            // should not happen
-            Log.e(TAG, "Error parsing date", e);
         }
 
         return transaction;

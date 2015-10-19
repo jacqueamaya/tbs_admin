@@ -85,6 +85,15 @@
                     android:textColor="@color/Black"
                     android:textSize="16dp" />
 
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progressGetCategory"
+                    android:layout_below="@+id/txtCategory"
+                    android:layout_marginLeft="46dp"
+                    android:layout_toRightOf="@+id/imgThumbnail"
+                    android:layout_marginTop="12dp"/>
+
                 <Button
                     android:id="@+id/btnSelect"
                     android:layout_width="wrap_content"
@@ -168,7 +177,6 @@
                         android:textColor="@color/Louie" />
 
                 </LinearLayout>
-
             </RelativeLayout>
 
         </RelativeLayout>

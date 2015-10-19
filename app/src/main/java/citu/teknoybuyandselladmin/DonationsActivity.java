@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -23,17 +24,21 @@ public class DonationsActivity extends BaseActivity {
 
     private static final String TAG = "DonatedActivity";
 
+    private ProgressBar mProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_donations);
         setupUI();
 
+        mProgressBar = (ProgressBar) findViewById(R.id.progressGetDonationsRequests);
+
         getReservedItems();
     }
 
     public void getReservedItems(){
-        Server.getDonateRequests(new Ajax.Callbacks() {
+        Server.getDonateRequests(mProgressBar, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 ArrayList<DonateApproval> request = new ArrayList<DonateApproval>();
@@ -56,13 +61,18 @@ public class DonationsActivity extends BaseActivity {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 DonateApproval donate = (DonateApproval) parent.getItemAtPosition(position);
-                                int itemId = donate.getItemId();
-                                int requestId = donate.getRequestId();
+                                //int itemId = donate.getItemId();
+                                //int requestId = donate.getRequestId();
 
                                 Intent intent;
                                 intent = new Intent(DonationsActivity.this, DonationsDetailActivity.class);
-                                intent.putExtra("itemId", itemId);
-                                intent.putExtra("requestId", requestId);
+                                intent.putExtra("itemId", donate.getItemId());
+                                intent.putExtra("requestId", donate.getRequestId());
+                                intent.putExtra("itemName", donate.getItemName());
+                                intent.putExtra("itemDetail", donate.getDetails());
+                                intent.putExtra("itemCategory", donate.getItemCategory());
+                                intent.putExtra("itemLink", donate.getLink());
+
                                 startActivity(intent);
                             }
                         });

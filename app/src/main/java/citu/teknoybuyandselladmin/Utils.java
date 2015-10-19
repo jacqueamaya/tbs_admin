@@ -8,6 +8,7 @@ import android.view.View;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
@@ -46,9 +47,19 @@ public final class Utils {
         void ok();
     }
 
-    public static String parseDate(String date){
-        String [] str = date.split(Pattern.quote("."));
-        return str[0]+'Z';
+    public static String parseDate(long unix){
+        Date date = new Date(unix*1000L); // *1000 is to convert seconds to milliseconds
+        SimpleDateFormat sdf = new SimpleDateFormat("E, MMM d 'at' h:m:s a"); // the format of the date
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila")); // timezone reference for formating
+        String formattedDate = sdf.format(date);
+        return formattedDate;
+    }
+    public static String parseToDateOnly(long unix){
+        Date date = new Date(unix*1000L); // *1000 is to convert seconds to milliseconds
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // the format of the date
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila")); // timezone reference for formating
+        String formattedDate = sdf.format(date);
+        return formattedDate;
     }
 
 }

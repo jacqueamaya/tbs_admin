@@ -14,15 +14,11 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import citu.teknoybuyandselladmin.models.ReservedItem;
 
 
 public class ReservedDetailActivity extends BaseActivity {
@@ -31,18 +27,25 @@ public class ReservedDetailActivity extends BaseActivity {
     private static final String TAG = "ReservedDetailActivity";
     private static final String ITEM_ID = "item_id";
 
-    private int requestId;
-    private int itemId;
+    private int mRequestId;
+    private int mItemId;
 
-    private TextView txtTitle;
-    private TextView txtPrice;
-    private TextView txtDetails;
+    private float mItemPrice;
 
-    private ImageView thumbnail;
-    private Button btnAvailable;
-    private Button btnClaimed;
+    private String mItemName;
+    private String mItemDetail;
+    private String mItemStatus;
+    private String mItemLink;
 
-    private ProgressDialog reserveProgress;
+    private TextView mTxtTitle;
+    private TextView mTxtPrice;
+    private TextView mTxtDetails;
+
+    private ImageView mThumbnail;
+    private Button mBtnAvailable;
+    private Button mBtnClaimed;
+
+    private ProgressDialog mReserveProgress;
 
 
     @Override
@@ -52,64 +55,44 @@ public class ReservedDetailActivity extends BaseActivity {
         setupUI();
 
         Intent intent = getIntent();
-        requestId = intent.getIntExtra("requestId", 0);
-        itemId = intent.getIntExtra("itemId", 0);
+        mRequestId = intent.getIntExtra("requestId", 0);
+        mItemId = intent.getIntExtra("itemId", 0);
+        mItemName = intent.getStringExtra("itemName");
+        mItemDetail = intent.getStringExtra("itemDetail");
+        mItemPrice = intent.getFloatExtra("itemPrice", 0);
+        mItemLink = intent.getStringExtra("itemLink");
+        mItemStatus = intent.getStringExtra("itemStatus");
 
-        txtTitle = (TextView) findViewById(R.id.txtTitle);
-        txtPrice = (TextView) findViewById(R.id.txtPriceLabel);
-        txtDetails = (TextView) findViewById(R.id.txtDetails);
-        thumbnail = (ImageView) findViewById(R.id.imgThumbnail);
-        btnAvailable = (Button) findViewById(R.id.imgAvailable);
-        btnClaimed = (Button) findViewById(R.id.imgClaimed);
+        mTxtTitle = (TextView) findViewById(R.id.txtTitle);
+        mTxtPrice = (TextView) findViewById(R.id.txtPriceLabel);
+        mTxtDetails = (TextView) findViewById(R.id.txtDetails);
+        mThumbnail = (ImageView) findViewById(R.id.imgThumbnail);
+        mBtnAvailable = (Button) findViewById(R.id.imgAvailable);
+        mBtnClaimed = (Button) findViewById(R.id.imgClaimed);
 
-        reserveProgress = new ProgressDialog(this);
+        mReserveProgress = new ProgressDialog(this);
 
-        getReservedDetails(requestId);
+        getReservedDetails();
     }
 
-    public void getReservedDetails(int request) {
-        Map<String, String> data = new HashMap<>();
-        data.put(REQUEST_ID, request + "");
+    public void getReservedDetails(){
+        setTitle(mItemName);
+        Picasso.with(ReservedDetailActivity.this)
+                .load(mItemLink)
+                .into(mThumbnail);
+        mTxtTitle.setText(mItemName);
+        mTxtDetails.setText(mItemDetail);
+        mTxtPrice.setText("Price: PHP " +mItemPrice);
 
-        Server.getReservedItemDetails(data, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                ArrayList<ReservedItem> request = new ArrayList<ReservedItem>();
-                ReservedItem reserve;
-                Log.v(TAG, responseBody);
-                JSONArray jsonArray = null;
+        if("Reserved".equals(mItemStatus)){
+            Log.v(TAG,mItemStatus+" Item reserved. Claimed button disabled");
+            mBtnClaimed.setEnabled(false);
+        }
+        else if("Available".equals(mItemStatus)){
+            Log.v(TAG,mItemStatus+" Item available. Available button disabled");
+            mBtnAvailable.setEnabled(false);
+        }
 
-                try {
-                    jsonArray = new JSONArray(responseBody);
-                    request = ReservedItem.asList(jsonArray);
-                    reserve = request.get(0);
-                    Picasso.with(ReservedDetailActivity.this)
-                            .load(reserve.getLink())
-                            .into(thumbnail);
-                    txtTitle.setText(reserve.getItemName());
-                    txtPrice.setText("Price: PHP " + reserve.getPrice());
-                    txtDetails.setText(reserve.getDetails());
-
-                    if("Reserved".equals(reserve.getStatus())){
-                        Log.v(TAG,reserve.getStatus()+"Item reserved. Claimed button disabled");
-                        btnClaimed.setEnabled(false);
-                    }
-                    else if("Available".equals(reserve.getStatus())){
-                        Log.v(TAG,reserve.getStatus()+"Item available. Available button disabled");
-                        btnAvailable.setEnabled(false);
-                    }
-
-                } catch (JSONException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                // Toast.makeText(LoginActivity.this, "Error: Invalid username or password", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public void onAvailable(View view) {
@@ -122,16 +105,16 @@ public class ReservedDetailActivity extends BaseActivity {
     }
 
     public void setItemAvailable(){
-        Log.v(TAG, "Item REQUEST_ID: " + itemId);
+        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
         Map<String, String> data = new HashMap<>();
 
-        data.put(ITEM_ID, this.itemId + "");
-        data.put(REQUEST_ID, this.requestId + "");
+        data.put(ITEM_ID, mItemId + "");
+        data.put(REQUEST_ID, mRequestId + "");
 
-        reserveProgress.setIndeterminate(true);
-        reserveProgress.setMessage("Please wait. . .");
+        mReserveProgress.setIndeterminate(true);
+        mReserveProgress.setMessage("Please wait. . .");
 
-        Server.itemAvailable(data, reserveProgress, new Ajax.Callbacks() {
+        Server.itemAvailable(data, mReserveProgress, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {
@@ -167,16 +150,16 @@ public class ReservedDetailActivity extends BaseActivity {
     }
 
     public void claimItem(){
-        Log.v(TAG, "Item REQUEST_ID: " + itemId);
+        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
         Map<String, String> data = new HashMap<>();
 
-        data.put(ITEM_ID, this.itemId + "");
-        data.put(REQUEST_ID, this.requestId + "");
+        data.put(ITEM_ID, mItemId + "");
+        data.put(REQUEST_ID, mRequestId + "");
 
-        reserveProgress.setIndeterminate(true);
-        reserveProgress.setMessage("Please wait. . .");
+        mReserveProgress.setIndeterminate(true);
+        mReserveProgress.setMessage("Please wait. . .");
 
-        Server.itemClaimed(data, reserveProgress, new Ajax.Callbacks() {
+        Server.itemClaimed(data, mReserveProgress, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
                 try {

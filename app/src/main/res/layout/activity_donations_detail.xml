@@ -106,6 +106,14 @@
                         android:textColor="@color/Black"
                         android:textSize="16dp" />
 
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/progressGetCategoryDonate"
+                        android:layout_below="@+id/imgThumbnail"
+                        android:layout_marginLeft="52dp"
+                        android:layout_marginTop="32dp"/>
+
                     <Button
                         android:id="@+id/btnSelect"
                         android:layout_width="wrap_content"
