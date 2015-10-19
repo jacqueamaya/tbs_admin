@@ -50,23 +50,7 @@ public class DonateApprovalAdapter extends ArrayAdapter<DonateApproval>{
 
         if(items.get(position) != null )
         {
-            //try {
-                //read datetime
-                /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-                sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
-                Date date = sdf.parse(Utils.parseDate(items.get(position).getRequestDate()));
-
-                //format datetime
-                SimpleDateFormat sdf2 = new SimpleDateFormat("E, y-M-d 'at' h:m:s a");
-                sdf2.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
-                requestDate = sdf2.format(date);*/
-
-                //Date date = Utils.FORMATTED_DATE_FORMAT.parse(items.get(position).getRequestDate());
-                requestDate = Utils.parseDate(items.get(position).getRequestDate());
-
-            /*} catch (ParseException e) {
-                e.printStackTrace();
-            }*/
+            requestDate = Utils.parseDate(items.get(position).getRequestDate());
             String message;
             message = "<b>"+items.get(position).getItemName()+"</b><br><small>"+requestDate+"</small>";
             text.setText(Html.fromHtml(message));

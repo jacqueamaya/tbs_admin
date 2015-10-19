@@ -66,19 +66,7 @@ public class Transaction {
         JSONObject itemObj, buyerObj, sellerObj, studentObj;
 
         try {
-            //read datetime
-            /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
-            Date date = sdf.parse(jsonObject.getString(DATE_CLAIMED));
-
-            //format datetime
-            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-            sdf2.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
-            transaction.date = sdf2.format(date);*/
-            //Date date = Utils.FORMATTED_DATE_FORMAT.parse(jsonObject.getString(DATE_CLAIMED));
             transaction.date = Utils.parseToDateOnly(jsonObject.getLong(DATE_CLAIMED));
-
-
             transaction.transactionId = jsonObject.getString(ID);
 
             itemObj = jsonObject.getJSONObject(ITEM);

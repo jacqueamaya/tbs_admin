@@ -53,23 +53,7 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
         TextView text = (TextView) view.findViewById(R.id.textView);
         ImageView image = (ImageView) view.findViewById(R.id.image);
 
-        //try {
-            //read the datetime
-           /* SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
-            Date date = sdf.parse(notification.getNotificationDate());
-
-            //format datetime
-            SimpleDateFormat sdf2 = new SimpleDateFormat("E, y-M-d 'at' h:m:s a");
-            sdf2.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
-            notificationDate = sdf2.format(date);*/
-            //Date date = Utils.FORMATTED_DATE_FORMAT.parse(notification.getNotificationDate());
-            notificationDate = Utils.parseDate(notification.getNotificationDate());
-       // } catch (ParseException e) {
-            // should not happen
-        //    notificationDate = Utils.READABLE_DATE_FORMAT.format(new Date());
-        //    e.printStackTrace();
-       // }
+        notificationDate = Utils.parseDate(notification.getNotificationDate());
         Log.v(TAG,notification.getStatus());
         if ("unread".equals(notification.getStatus())) {
             Log.v(TAG,"This notification is unread");

@@ -141,7 +141,7 @@ public class ReservedDetailActivity extends BaseActivity {
     }
 
     public void onClaimed(View view) {
-        Utils.alert(ReservedDetailActivity.this, "Item Claimed", "Item claimed by the buyer?", new Utils.Callbacks() {
+        Utils.alert(ReservedDetailActivity.this, "Item Claimed", "Item claimed by the buyer/donee?", new Utils.Callbacks() {
             @Override
             public void ok() {
                 claimItem();
