@@ -2,6 +2,7 @@ package citu.teknoybuyandselladmin.adapters;
 
 import android.content.Context;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,17 +45,17 @@ public class ReservedItemListAdapter extends BaseAdapter implements Filterable{
 
     @Override
     public int getCount() {
-        return 0;
+        return mDisplayedValues.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return position;
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
@@ -68,13 +69,16 @@ public class ReservedItemListAdapter extends BaseAdapter implements Filterable{
         }
 
         TextView text = (TextView) mView.findViewById(R.id.textViewItem);
+
         ImageView image = (ImageView) mView.findViewById(R.id.image);
+        Log.d(TAG, "Link: " + reservedItem.getLink());
         Picasso.with(mContext)
                 .load(reservedItem.getLink())
                 .placeholder(R.drawable.thumbsq_24dp)
                 .resize(50, 50)
                 .centerCrop()
                 .into(image);
+
         if(reservedItem != null )
         {
             reservedDate = Utils.parseDate(reservedItem.getReservedDate());

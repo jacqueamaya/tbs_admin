@@ -75,14 +75,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
+                    android:textColor="@color/Gray"
+                    android:textSize="20sp"
                     android:visibility="gone" />
 
                 <ListView
                     android:id="@+id/listViewReserved"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
-                    android:color="@color/Gray" />
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/appbar" />
 
             </RelativeLayout>
 

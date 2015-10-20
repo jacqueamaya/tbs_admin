@@ -36,16 +36,12 @@ public class ItemsOnQueueActivity extends BaseActivity {
     private JSONArray jsonArray;
 
     private ProgressBar mProgressBar;
-    private TextView txtCategory;
 
     private SellApprovalAdapter listAdapter;
-    private ArrayList<SellApproval> availableItems;
 
-    private String categories[];
     private String sortBy[];
 
     private String searchQuery = "";
-    private String category = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,34 +49,11 @@ public class ItemsOnQueueActivity extends BaseActivity {
         setContentView(R.layout.activity_items_on_queue);
         setupUI();
 
-        txtCategory = (TextView) findViewById(R.id.txtCategory);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetSellRequests);
         mProgressBar.setVisibility(View.GONE);
 
         sortBy = getResources().getStringArray(R.array.sort_by);
         getReservedItems();
-        getCategories();
-
-        txtCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog displayCategories = new AlertDialog.Builder(ItemsOnQueueActivity.this)
-                        .setTitle("Categories")
-                        .setItems(categories, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                txtCategory.setText(categories[which]);
-                                category = txtCategory.getText().toString();
-                                if (category.equals("All")) {
-                                    category = "";
-                                }
-                                listAdapter.getFilter().filter(category);
-                            }
-                        })
-                        .create();
-                displayCategories.show();
-            }
-        });
     }
 
     public void getReservedItems() {
@@ -174,14 +147,14 @@ public class ItemsOnQueueActivity extends BaseActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchQuery = query;
-                listAdapter.getFilter().filter(searchQuery + "," + category);
+                listAdapter.getFilter().filter(searchQuery);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 searchQuery = newText;
-                listAdapter.getFilter().filter(searchQuery + "," + category);
+                listAdapter.getFilter().filter(searchQuery);
                 return true;
             }
         });
@@ -205,30 +178,5 @@ public class ItemsOnQueueActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         getReservedItems();
-    }
-
-    public void getCategories() {
-        mProgressBar.setVisibility(View.GONE);
-        Server.getCategories(mProgressBar, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                try {
-                    JSONArray json = new JSONArray(responseBody);
-                    if (json.length() != 0) {
-                        categories = Category.asArray(new JSONArray(responseBody));
-                    } else {
-                        Toast.makeText(ItemsOnQueueActivity.this, "Empty categories", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                categories = null;
-                Toast.makeText(ItemsOnQueueActivity.this, "Cannot connect to server", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }
