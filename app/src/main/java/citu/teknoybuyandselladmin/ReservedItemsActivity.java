@@ -83,9 +83,8 @@ public class ReservedItemsActivity extends BaseActivity {
         Server.getReservedItems(mProgressBar, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
-                ArrayList<ReservedItem> reserved = new ArrayList<ReservedItem>();
-                Log.v(TAG, responseBody);
-                JSONArray jsonArray = null;
+                ArrayList<ReservedItem> reserved;
+                JSONArray jsonArray;
 
                 TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
                 ListView lv = (ListView) findViewById(R.id.listViewReserved);
