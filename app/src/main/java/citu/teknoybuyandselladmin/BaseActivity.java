@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -21,11 +22,30 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
     private SharedPreferences mSharedPreferences;
+    private ImageView mImgUser;
+
+    public static final int INDEX_USER_IMAGE = (int) (Math.random()*10);
+    public static final int USER_IMAGES[] =
+            {
+                    R.drawable.user_1,
+                    R.drawable.user_2,
+                    R.drawable.user_3,
+                    R.drawable.user_4,
+                    R.drawable.user_5,
+                    R.drawable.user_6,
+                    R.drawable.user_7,
+                    R.drawable.user_8,
+                    R.drawable.user_9,
+                    R.drawable.user_10
+            };
 
     protected void setupUI(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        mImgUser = (ImageView) findViewById(R.id.imgUser);
+        mImgUser.setImageResource(USER_IMAGES[INDEX_USER_IMAGE]);
 
         if(null == toolbar) {
             throw new RuntimeException("No toolbar found");

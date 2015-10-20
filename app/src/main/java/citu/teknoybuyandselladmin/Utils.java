@@ -38,6 +38,20 @@ public final class Utils {
                 .show();
     }
 
+    public static void alertInfo(Context context,String message) {
+        new AlertDialog.Builder(context)
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
+
     public interface Callbacks {
         void ok();
     }
