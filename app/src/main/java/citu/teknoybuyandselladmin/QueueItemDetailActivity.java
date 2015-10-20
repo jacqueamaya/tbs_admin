@@ -93,8 +93,7 @@ public class QueueItemDetailActivity extends BaseActivity {
                 .into(mThumbnail);
 
         mTxtTitle.setText(mItemName);
-        mTxtPrice.setText("Price: PHP "+mItemPrice);
-       // mTxtCategory.setText(mItemCategory);
+        mTxtPrice.setText("Price: PHP " + mItemPrice);
         mTxtDetails.setText(mItemDetail);
     }
 
@@ -109,39 +108,14 @@ public class QueueItemDetailActivity extends BaseActivity {
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton("Add",
-                        new DialogInterface.OnClickListener(){
+                        new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int id){
-                                Log.v(TAG,category.getText().toString());
-                                Map<String,String> data = new HashMap<>();
-                                data.put(CATEGORY_ITEM, category.getText().toString());
-
-                                mQueueProgress.setIndeterminate(true);
-                                mQueueProgress.setMessage("Please wait. . .");
-
-                                Server.addCategory(data, mQueueProgress, new Ajax.Callbacks() {
-                                    @Override
-                                    public void success(String responseBody) {
-                                        try {
-                                            JSONObject json = new JSONObject(responseBody);
-                                            if (json.getInt("status") == 200) {
-                                                Log.v(TAG, "Category Added Successfully");
-                                                Snackbar.make(findViewById(R.id.appbar), "Category successfully added", Snackbar.LENGTH_SHORT).show();
-                                            } else {
-                                                Log.v(TAG, "Failed to add activity_category");
-                                                Snackbar.make(findViewById(R.id.appbar), "Failed to add category", Snackbar.LENGTH_SHORT).show();
-                                            }
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void error(int statusCode, String responseBody, String statusText) {
-                                        Log.v(TAG, "Request error");
-                                        Snackbar.make(findViewById(R.id.appbar), "Connection Error: Failed to add category", Snackbar.LENGTH_SHORT).show();
-                                    }
-                                });
+                            public void onClick(DialogInterface dialog, int id) {
+                                if ("".equals(category.getText().toString().trim()) || category.getText().toString() == null) {
+                                    Utils.alertInfo(QueueItemDetailActivity.this, "Please input the category to add.");
+                                } else {
+                                    saveCategory(category);
+                                }
                             }
                         })
                 .setNegativeButton("Cancel",
@@ -155,11 +129,50 @@ public class QueueItemDetailActivity extends BaseActivity {
         alertDialog.show();
     }
 
+    public void saveCategory(EditText category){
+        Log.v(TAG,category.getText().toString());
+        Map<String,String> data = new HashMap<>();
+        data.put(CATEGORY_ITEM, category.getText().toString());
+
+        mQueueProgress.setIndeterminate(true);
+        mQueueProgress.setMessage("Please wait. . .");
+
+        Server.addCategory(data, mQueueProgress, new Ajax.Callbacks() {
+            @Override
+            public void success(String responseBody) {
+                try {
+                    JSONObject json = new JSONObject(responseBody);
+                    if (json.getInt("status") == 200) {
+                        Log.v(TAG, "Category Added Successfully");
+                        Snackbar.make(findViewById(R.id.appbar), "Category successfully added", Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        Log.v(TAG, "Failed to add activity_category");
+                        Snackbar.make(findViewById(R.id.appbar), "Failed to add category", Snackbar.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void error(int statusCode, String responseBody, String statusText) {
+                Log.v(TAG, "Request error");
+                Snackbar.make(findViewById(R.id.appbar), "Connection Error: Failed to add category", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     public void onApprove(View view){
         Utils.alert(QueueItemDetailActivity.this, "Approve Item", "Are you sure you want to approve this item?", new Utils.Callbacks() {
             @Override
             public void ok() {
-                approveItem();
+                if ("".equals(mTxtCategory.getText().toString()) || mTxtCategory.getText().toString() == null) {
+                    Utils.alertInfo(QueueItemDetailActivity.this, "Please select a category first");
+                }
+                else{
+                    approveItem();
+                }
+
             }
         });
     }
