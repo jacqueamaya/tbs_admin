@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class ReservedItem {
 
     private static final String TAG = "ReservedIten";
+    public static final String CATEGORY = "category";
     public static final String STATUS = "status";
     public static final String RESERVED_DATE = "reserved_date";
     public static final String RESERVE_EXPIRATION = "request_expiration";
@@ -23,6 +24,7 @@ public class ReservedItem {
     public static final String PRICE = "price";
     public static final String PICTURE = "picture";
 
+    private String category;
     private String itemName;
     private String status;
     private String details;
@@ -35,7 +37,6 @@ public class ReservedItem {
     private long reserveExpiration;
 
     private float price;
-
 
     public String getItemName() {
         return itemName;
@@ -73,6 +74,10 @@ public class ReservedItem {
         return reserveExpiration;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
     public static ReservedItem asSingle(JSONObject jsonObject) {
         ReservedItem reservedItem = new ReservedItem();
         JSONObject item;
@@ -81,6 +86,7 @@ public class ReservedItem {
             item = jsonObject.getJSONObject(ITEM);
 
             reservedItem.itemId = item.getInt(ITEM_ID);
+            reservedItem.category = item.getString(CATEGORY);
             reservedItem.status = jsonObject.getString(STATUS);
             reservedItem.reservedDate = jsonObject.getLong(RESERVED_DATE);
             reservedItem.requestId = jsonObject.getInt(REQUEST_ID);

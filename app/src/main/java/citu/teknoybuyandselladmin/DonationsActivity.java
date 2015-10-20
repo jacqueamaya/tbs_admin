@@ -1,7 +1,9 @@
 package citu.teknoybuyandselladmin;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +26,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 import citu.teknoybuyandselladmin.adapters.DonateApprovalAdapter;
+import citu.teknoybuyandselladmin.models.Category;
 import citu.teknoybuyandselladmin.models.DonateApproval;
 import citu.teknoybuyandselladmin.models.SellApproval;
 
@@ -34,7 +38,9 @@ public class DonationsActivity extends BaseActivity {
     private DonateApprovalAdapter listAdapter;
 
     private ProgressBar mProgressBar;
+    private TextView txtCategory;
 
+    private String categories[];
     private String sortBy[];
 
     private String searchQuery = "";
@@ -46,9 +52,34 @@ public class DonationsActivity extends BaseActivity {
         setContentView(R.layout.activity_donations);
         setupUI();
 
+        txtCategory = (TextView) findViewById(R.id.txtCategory);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetDonationsRequests);
+        mProgressBar.setVisibility(View.GONE);
+
         sortBy = getResources().getStringArray(R.array.donate_sort_by);
         getDonatedItems();
+        getCategories();
+
+        txtCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog displayCategories = new AlertDialog.Builder(DonationsActivity.this)
+                        .setTitle("Categories")
+                        .setItems(categories, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                txtCategory.setText(categories[which]);
+                                category = txtCategory.getText().toString();
+                                if (category.equals("All")) {
+                                    category = "";
+                                }
+                                listAdapter.getFilter().filter(category);
+                            }
+                        })
+                        .create();
+                displayCategories.show();
+            }
+        });
     }
 
     public void getDonatedItems(){
@@ -56,6 +87,7 @@ public class DonationsActivity extends BaseActivity {
 
             ListView lv = (ListView) findViewById(R.id.listViewDonations);
             TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
+
             @Override
             public void success(String responseBody) {
                 ArrayList<DonateApproval> request = new ArrayList<DonateApproval>();
@@ -104,7 +136,7 @@ public class DonationsActivity extends BaseActivity {
                                 startActivity(intent);
                             }
                         });
-                     }
+                    }
 
                 } catch (JSONException e1) {
                     e1.printStackTrace();
@@ -171,5 +203,30 @@ public class DonationsActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         getDonatedItems();
+    }
+
+    public void getCategories() {
+        mProgressBar.setVisibility(View.GONE);
+        Server.getCategories(mProgressBar, new Ajax.Callbacks() {
+            @Override
+            public void success(String responseBody) {
+                try {
+                    JSONArray json = new JSONArray(responseBody);
+                    if (json.length() != 0) {
+                        categories = Category.asArray(new JSONArray(responseBody));
+                    } else {
+                        Toast.makeText(DonationsActivity.this, "Empty categories", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void error(int statusCode, String responseBody, String statusText) {
+                categories = null;
+                Toast.makeText(DonationsActivity.this, "Cannot connect to server", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

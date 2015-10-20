@@ -102,7 +102,7 @@ public class DonateApprovalAdapter extends BaseAdapter implements Filterable {
                     mOriginalValues = new ArrayList<DonateApproval>(mDisplayedValues); // saves the original data in mOriginalValues
                 }
 
-                if (constraint == null || constraint.length() == 0 || searchByCategory.length == 0) {
+                if (constraint == "" || constraint.length() == 0 || searchByCategory.length == 0) {
                     // set the Original result to return
                     results.count = mOriginalValues.size();
                     results.values = mOriginalValues;
@@ -141,14 +141,6 @@ public class DonateApprovalAdapter extends BaseAdapter implements Filterable {
 
     public void sortItems(String sortBy) {
         switch (sortBy) {
-           /** case "price":
-                Comparator<DonateApproval> priceComparator = new Comparator<DonateApproval>() {
-                    public int compare(DonateApproval obj1, DonateApproval obj2) {
-                        return obj1.getPrice() < obj2.getPrice() ? -1 : obj1.getPrice() > obj2.getPrice() ? 1 : 0;
-                    }
-                };
-                Collections.sort(mDisplayedValues, priceComparator);
-                break;**/
             case "name":
                 Comparator<DonateApproval> nameComparator = new Comparator<DonateApproval>() {
                     public int compare(DonateApproval obj1, DonateApproval obj2) {

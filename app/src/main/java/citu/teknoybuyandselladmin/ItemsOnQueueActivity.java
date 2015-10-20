@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,6 +26,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 import citu.teknoybuyandselladmin.adapters.SellApprovalAdapter;
+import citu.teknoybuyandselladmin.models.Category;
 import citu.teknoybuyandselladmin.models.SellApproval;
 
 
@@ -34,10 +36,10 @@ public class ItemsOnQueueActivity extends BaseActivity {
     private JSONArray jsonArray;
 
     private ProgressBar mProgressBar;
+    private TextView txtCategory;
 
     private SellApprovalAdapter listAdapter;
     private ArrayList<SellApproval> availableItems;
-
 
     private String categories[];
     private String sortBy[];
@@ -51,13 +53,37 @@ public class ItemsOnQueueActivity extends BaseActivity {
         setContentView(R.layout.activity_items_on_queue);
         setupUI();
 
+        txtCategory = (TextView) findViewById(R.id.txtCategory);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetSellRequests);
+        mProgressBar.setVisibility(View.GONE);
 
         sortBy = getResources().getStringArray(R.array.sort_by);
         getReservedItems();
+        getCategories();
+
+        txtCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog displayCategories = new AlertDialog.Builder(ItemsOnQueueActivity.this)
+                        .setTitle("Categories")
+                        .setItems(categories, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                txtCategory.setText(categories[which]);
+                                category = txtCategory.getText().toString();
+                                if (category.equals("All")) {
+                                    category = "";
+                                }
+                                listAdapter.getFilter().filter(category);
+                            }
+                        })
+                        .create();
+                displayCategories.show();
+            }
+        });
     }
 
-    public void getReservedItems(){
+    public void getReservedItems() {
         Server.getSellRequests(mProgressBar, new Ajax.Callbacks() {
             TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
             ListView lv = (ListView) findViewById(R.id.listViewQueue);
@@ -101,15 +127,14 @@ public class ItemsOnQueueActivity extends BaseActivity {
 
                                 Intent intent;
                                 intent = new Intent(ItemsOnQueueActivity.this, QueueItemDetailActivity.class);
-                                intent.putExtra("itemId",sell.getItemId());
-                                intent.putExtra("requestId",sell.getRequestId());
+                                intent.putExtra("itemId", sell.getItemId());
+                                intent.putExtra("requestId", sell.getRequestId());
                                 intent.putExtra("itemName", sell.getItemName());
                                 intent.putExtra("itemPrice", sell.getPrice());
                                 intent.putExtra("itemDetail", sell.getDetails());
                                 intent.putExtra("itemLink", sell.getLink());
                                 intent.putExtra("itemCategoy", sell.getCategory());
                                 startActivity(intent);
-
                             }
                         });
                     }
@@ -180,5 +205,30 @@ public class ItemsOnQueueActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         getReservedItems();
+    }
+
+    public void getCategories() {
+        mProgressBar.setVisibility(View.GONE);
+        Server.getCategories(mProgressBar, new Ajax.Callbacks() {
+            @Override
+            public void success(String responseBody) {
+                try {
+                    JSONArray json = new JSONArray(responseBody);
+                    if (json.length() != 0) {
+                        categories = Category.asArray(new JSONArray(responseBody));
+                    } else {
+                        Toast.makeText(ItemsOnQueueActivity.this, "Empty categories", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void error(int statusCode, String responseBody, String statusText) {
+                categories = null;
+                Toast.makeText(ItemsOnQueueActivity.this, "Cannot connect to server", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

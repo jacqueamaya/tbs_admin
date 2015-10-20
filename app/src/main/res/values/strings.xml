@@ -40,10 +40,6 @@
     <string name="menu_logout">Log-out</string>
     <string name="title_activity_login">LoginActivity</string>
 
-    <!--Detailed Description of Item-->
-    <string name="item_detail">This is an old Rizal Book. Pages are still intact and is covered with plastic cover.
-    All activities inside the book are untouched. No pen or pencil marks. Used by most of the university Rizal teachers.</string>
-
     <string name="spinner_header">Choose a category</string>
     <string-array name="sort_by">
         <item>Price</item>
@@ -57,4 +53,5 @@
     <string name="title_activity_add_category">AddCategoryActivity</string>
     <string name="title_activity_reserved_detail">Reserved Item Detail</string>
     <string name="action_search">Search</string>
+    <string name="title_activity_splash">SplashActivity</string>
 </resources>

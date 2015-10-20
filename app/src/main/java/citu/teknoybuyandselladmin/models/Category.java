@@ -12,23 +12,13 @@ public class Category {
 
     public static final String CATEGORY_NAME = "category_name";
 
-    private String name;
-    private int id;
+    public static String[] asArray(JSONArray jsonArray) {
+        String[] categories = new String[jsonArray.length() + 1];
+        categories[0] = "All";
 
-    public String getName() {
-        return name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public static String[] asArray (JSONArray jsonArray) {
-        String[] categories = new String[jsonArray.length()];
-
-        for (int i = 0; i < categories.length; i++) {
+        for (int i = 1; i < categories.length; i++) {
             try {
-                JSONObject category = jsonArray.getJSONObject(i);
+                JSONObject category = jsonArray.getJSONObject(i-1);
                 categories[i] = category.getString(CATEGORY_NAME);
             } catch (JSONException e) {
                 Log.e(TAG, "Exception while getting category name", e);
