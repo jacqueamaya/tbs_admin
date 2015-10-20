@@ -71,6 +71,7 @@ public class ReservedDetailActivity extends BaseActivity {
         mBtnClaimed = (Button) findViewById(R.id.imgClaimed);
 
         mReserveProgress = new ProgressDialog(this);
+        mReserveProgress.setCancelable(false);
 
         getReservedDetails();
     }
@@ -150,7 +151,8 @@ public class ReservedDetailActivity extends BaseActivity {
     }
 
     public void claimItem(){
-        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
+        Log.v(TAG, "Item ITEM_ID: " + mItemId);
+        Log.v(TAG, "Item REQUEST_ID: " + mRequestId);
         Map<String, String> data = new HashMap<>();
 
         data.put(ITEM_ID, mItemId + "");

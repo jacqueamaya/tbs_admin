@@ -77,6 +77,7 @@ public class DonationsDetailActivity extends BaseActivity {
         thumbnail = (ImageView) findViewById(R.id.imgThumbnail);
 
         donationProgress = new ProgressDialog(this);
+        donationProgress.setCancelable(false);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetCategoryDonate);
 
         getDonatedItemDetails();

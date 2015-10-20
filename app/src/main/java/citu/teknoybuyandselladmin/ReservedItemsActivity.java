@@ -61,8 +61,6 @@ public class ReservedItemsActivity extends BaseActivity {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 ReservedItem reserve = (ReservedItem) parent.getItemAtPosition(position);
-                                //int itemId = reserve.getItemId();
-                                //int requestId = reserve.getRequestId();
 
                                 Intent intent;
                                 intent = new Intent(ReservedItemsActivity.this, ReservedDetailActivity.class);

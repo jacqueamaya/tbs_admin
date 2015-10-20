@@ -1,14 +1,22 @@
 package citu.teknoybuyandselladmin;
 
+import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -27,6 +35,16 @@ public class ItemsOnQueueActivity extends BaseActivity {
 
     private ProgressBar mProgressBar;
 
+    private SellApprovalAdapter listAdapter;
+    private ArrayList<SellApproval> availableItems;
+
+
+    private String categories[];
+    private String sortBy[];
+
+    private String searchQuery = "";
+    private String category = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +53,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
 
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetSellRequests);
 
+        sortBy = getResources().getStringArray(R.array.sort_by);
         getReservedItems();
     }
 
@@ -56,14 +75,29 @@ public class ItemsOnQueueActivity extends BaseActivity {
                         lv.setVisibility(View.GONE);
                     } else {
                         request = SellApproval.asList(jsonArray);
-                        SellApprovalAdapter listAdapter = new SellApprovalAdapter(ItemsOnQueueActivity.this, R.layout.activity_item, request);
+                        listAdapter = new SellApprovalAdapter(ItemsOnQueueActivity.this, R.layout.list_item, request);
+                        listAdapter.sortItems("price");
                         lv.setAdapter(listAdapter);
+
+                        Spinner spinnerSortBy = (Spinner) findViewById(R.id.spinnerSortBy);
+                        spinnerSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                String lowerCaseSort = sortBy[position].toLowerCase();
+                                Log.d(TAG, lowerCaseSort);
+                                listAdapter.sortItems(lowerCaseSort);
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                SellApproval sell = (SellApproval) parent.getItemAtPosition(position);
-                                //int itemId = sell.getItemId();
-                                //int requestId = sell.getRequestId();
+                                SellApproval sell = listAdapter.getDisplayView().get(position);
 
                                 Intent intent;
                                 intent = new Intent(ItemsOnQueueActivity.this, QueueItemDetailActivity.class);
@@ -88,7 +122,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                txtMessage.setText("Connection Error: Cannot connect to server. Please check your internet connection");
+                txtMessage.setText("Connection Error: Cannot connect to server.");
                 txtMessage.setVisibility(View.VISIBLE);
             }
         });
@@ -96,7 +130,37 @@ public class ItemsOnQueueActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_items_on_queue, menu);
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_items_on_queue, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchMenuItem.getActionView();
+        int id = searchView.getContext()
+                .getResources()
+                .getIdentifier("android:id/search_src_text", null, null);
+        TextView textView = (TextView) searchView.findViewById(id);
+        textView.setTextColor(Color.BLACK);
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchQuery = query;
+                listAdapter.getFilter().filter(searchQuery + "," + category);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchQuery = newText;
+                listAdapter.getFilter().filter(searchQuery + "," + category);
+                return true;
+            }
+        });
+
         return true;
     }
 
@@ -104,11 +168,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_search || super.onOptionsItemSelected(item);
     }
 
     @Override

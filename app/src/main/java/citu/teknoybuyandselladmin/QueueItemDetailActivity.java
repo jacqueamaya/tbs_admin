@@ -82,6 +82,7 @@ public class QueueItemDetailActivity extends BaseActivity {
 
         mQueueProgress = new ProgressDialog(this);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetCategory);
+        mQueueProgress.setCancelable(false);
 
         getQueueItemDetails();
     }

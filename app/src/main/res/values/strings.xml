@@ -45,13 +45,12 @@
     All activities inside the book are untouched. No pen or pencil marks. Used by most of the university Rizal teachers.</string>
 
     <string name="spinner_header">Choose a category</string>
-    <string-array name="category">
-        <item>Books</item>
-        <item>Uniforms</item>
-        <item>Notes</item>
-        <item>Gadgets</item>
-        <item>Others</item>
+    <string-array name="sort_by">
+        <item>Price</item>
+        <item>Name</item>
+        <item>Date</item>
     </string-array>
     <string name="title_activity_add_category">AddCategoryActivity</string>
     <string name="title_activity_reserved_detail">Reserved Item Detail</string>
+    <string name="action_search">Search</string>
 </resources>

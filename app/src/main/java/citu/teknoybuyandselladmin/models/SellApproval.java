@@ -8,6 +8,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import citu.teknoybuyandselladmin.Utils;
+
 public class SellApproval {
 
     private static final String TAG = "SellApproval";
@@ -27,6 +29,7 @@ public class SellApproval {
     private String category;
     private String details;
     private String link;
+    private String strRequestDate;
 
     private int itemId;
     private int requestId;
@@ -72,11 +75,16 @@ public class SellApproval {
         return category;
     }
 
+    public String getStrRequestDate() {
+        return strRequestDate;
+    }
+
     public static SellApproval asSingle(JSONObject jsonObject) {
         SellApproval sell = new SellApproval();
 
         try {
             sell.requestDate = jsonObject.getLong(REQUEST_DATE);
+            sell.strRequestDate = Utils.parseDate(sell.requestDate);
             sell.requestExpiration = jsonObject.getLong(REQUEST_EXPIRATION);
             sell.requestId = jsonObject.getInt(REQUEST_ID);
 

@@ -44,7 +44,7 @@ public final class Utils {
 
     public static String parseDate(long unix){
         Date date = new Date(unix*1000L); // *1000 is to convert seconds to milliseconds
-        SimpleDateFormat sdf = new SimpleDateFormat("E, MMM d 'at' h:m:s a"); // the format of the date
+        SimpleDateFormat sdf = new SimpleDateFormat("E, MMM d 'at' h:mm:ss a"); // the format of the date
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila")); // timezone reference for formating
         String formattedDate = sdf.format(date);
         return formattedDate;
