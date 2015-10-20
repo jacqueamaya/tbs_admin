@@ -2,17 +2,27 @@ package citu.teknoybuyandselladmin.adapters;
 
 import android.content.Context;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import citu.teknoybuyandselladmin.R;
@@ -22,24 +32,41 @@ import citu.teknoybuyandselladmin.models.DonateApproval;
 /**
  * Created by Batistil on 9/20/2015.
  */
-public class DonateApprovalAdapter extends ArrayAdapter<DonateApproval>{
+public class DonateApprovalAdapter extends BaseAdapter implements Filterable {
     private static final String TAG = "DonateApprovalAdapter";
     private Context mContext;
     private int id;
-    private ArrayList<DonateApproval> items;
     private String requestDate;
+
+    private ArrayList<DonateApproval> mOriginalValues;
+    private ArrayList<DonateApproval> mDisplayedValues;
 
     public DonateApprovalAdapter(Context context, int textViewResourceId, ArrayList<DonateApproval> list)
     {
-        super(context, textViewResourceId, list);
         mContext = context;
         id = textViewResourceId;
-        items = list ;
+        mOriginalValues = list;
+        mDisplayedValues = list;
+    }
+    @Override
+    public int getCount() {
+        return mDisplayedValues.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
     public View getView(int position, View v, ViewGroup parent)
     {
+        DonateApproval donate = mDisplayedValues.get(position);
         View mView = v ;
         if(mView == null){
             LayoutInflater vi = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -47,15 +74,98 @@ public class DonateApprovalAdapter extends ArrayAdapter<DonateApproval>{
         }
 
         TextView text = (TextView) mView.findViewById(R.id.textViewItem);
-
-        if(items.get(position) != null )
-        {
-            requestDate = Utils.parseDate(items.get(position).getRequestDate());
-            String message;
-            message = "<b>"+items.get(position).getItemName()+"</b><br><small>"+requestDate+"</small>";
-            text.setText(Html.fromHtml(message));
-        }
+        ImageView image = (ImageView) mView.findViewById(R.id.image);
+        Picasso.with(mContext)
+                .load(donate.getLink())
+                .placeholder(R.drawable.thumbsq_24dp)
+                .resize(50, 50)
+                .centerCrop()
+                .into(image);
+        requestDate = Utils.parseDate(donate.getRequestDate());
+        String message;
+        message = "<b>"+donate.getItemName()+"</b><br><small>"+requestDate+"</small>";
+        text.setText(Html.fromHtml(message));
 
         return mView;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+                List<DonateApproval> FilteredArrList = new ArrayList<DonateApproval>();
+                String searchByCategory[] = constraint.toString().split(",");
+                Log.d("ItemsListAdapter", searchByCategory.length + "");
+                if (mOriginalValues == null) {
+                    mOriginalValues = new ArrayList<DonateApproval>(mDisplayedValues); // saves the original data in mOriginalValues
+                }
+
+                if (constraint == null || constraint.length() == 0 || searchByCategory.length == 0) {
+                    // set the Original result to return
+                    results.count = mOriginalValues.size();
+                    results.values = mOriginalValues;
+                } else {
+                    for (int i = 0; i < mOriginalValues.size(); i++) {
+                        String name = mOriginalValues.get(i).getItemName();
+                        String category = mOriginalValues.get(i).getItemCategory();
+                        if(searchByCategory.length == 2) {
+                            if (category.equals(searchByCategory[1]) && name.toLowerCase().contains(searchByCategory[0].toLowerCase())) {
+                                FilteredArrList.add(mOriginalValues.get(i));
+                            }
+                        } else {
+                            if (category.equals(constraint.toString()) || name.toLowerCase().contains(searchByCategory[0].toLowerCase())) {
+                                FilteredArrList.add(mOriginalValues.get(i));
+                            }
+                        }
+                    }
+                    // set the Filtered result to return
+                    results.count = FilteredArrList.size();
+                    results.values = FilteredArrList;
+                }
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                mDisplayedValues = (ArrayList<DonateApproval>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public List<DonateApproval> getDisplayView() {
+        return mDisplayedValues;
+    }
+
+    public void sortItems(String sortBy) {
+        switch (sortBy) {
+           /** case "price":
+                Comparator<DonateApproval> priceComparator = new Comparator<DonateApproval>() {
+                    public int compare(DonateApproval obj1, DonateApproval obj2) {
+                        return obj1.getPrice() < obj2.getPrice() ? -1 : obj1.getPrice() > obj2.getPrice() ? 1 : 0;
+                    }
+                };
+                Collections.sort(mDisplayedValues, priceComparator);
+                break;**/
+            case "name":
+                Comparator<DonateApproval> nameComparator = new Comparator<DonateApproval>() {
+                    public int compare(DonateApproval obj1, DonateApproval obj2) {
+                        return obj1.getItemName().compareTo(obj2.getItemName());
+                    }
+                };
+                Collections.sort(mDisplayedValues, nameComparator);
+                break;
+            default:
+                Comparator<DonateApproval> dateComparator = new Comparator<DonateApproval>() {
+                    public int compare(DonateApproval obj1, DonateApproval obj2) {
+                        return obj1.getStrRequestDate().compareTo(obj2.getStrRequestDate());
+                    }
+                };
+                Collections.sort(mDisplayedValues, dateComparator);
+                break;
+        }
+        notifyDataSetChanged();
     }
 }

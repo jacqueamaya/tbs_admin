@@ -1,14 +1,20 @@
 package citu.teknoybuyandselladmin;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -18,13 +24,21 @@ import java.util.ArrayList;
 
 import citu.teknoybuyandselladmin.adapters.DonateApprovalAdapter;
 import citu.teknoybuyandselladmin.models.DonateApproval;
+import citu.teknoybuyandselladmin.models.SellApproval;
 
 
 public class DonationsActivity extends BaseActivity {
 
     private static final String TAG = "DonatedActivity";
 
+    private DonateApprovalAdapter listAdapter;
+
     private ProgressBar mProgressBar;
+
+    private String sortBy[];
+
+    private String searchQuery = "";
+    private String category = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,20 +47,19 @@ public class DonationsActivity extends BaseActivity {
         setupUI();
 
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetDonationsRequests);
-
-        getReservedItems();
+        sortBy = getResources().getStringArray(R.array.donate_sort_by);
+        getDonatedItems();
     }
 
-    public void getReservedItems(){
+    public void getDonatedItems(){
         Server.getDonateRequests(mProgressBar, new Ajax.Callbacks() {
+
+            ListView lv = (ListView) findViewById(R.id.listViewDonations);
+            TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
             @Override
             public void success(String responseBody) {
                 ArrayList<DonateApproval> request = new ArrayList<DonateApproval>();
                 JSONArray jsonArray = null;
-
-                ListView lv = (ListView) findViewById(R.id.listViewDonations);
-                TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
-
                 try {
                     jsonArray = new JSONArray(responseBody);
                     if (jsonArray.length() == 0) {
@@ -55,14 +68,29 @@ public class DonationsActivity extends BaseActivity {
                         lv.setVisibility(View.GONE);
                     } else {
                         request = DonateApproval.asList(jsonArray);
-                        DonateApprovalAdapter listAdapter = new DonateApprovalAdapter(DonationsActivity.this, R.layout.activity_item, request);
+                        listAdapter = new DonateApprovalAdapter(DonationsActivity.this, R.layout.list_item, request);
+                        listAdapter.sortItems("name");
                         lv.setAdapter(listAdapter);
+
+                        Spinner spinnerSortBy = (Spinner) findViewById(R.id.spinnerSortBy);
+                        spinnerSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                String lowerCaseSort = sortBy[position].toLowerCase();
+                                Log.d(TAG, lowerCaseSort);
+                                listAdapter.sortItems(lowerCaseSort);
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                DonateApproval donate = (DonateApproval) parent.getItemAtPosition(position);
-                                //int itemId = donate.getItemId();
-                                //int requestId = donate.getRequestId();
+                                DonateApproval donate = listAdapter.getDisplayView().get(position);
 
                                 Intent intent;
                                 intent = new Intent(DonationsActivity.this, DonationsDetailActivity.class);
@@ -86,14 +114,44 @@ public class DonationsActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                // Toast.makeText(LoginActivity.this, "Error: Invalid username or password", Toast.LENGTH_SHORT).show();
+                txtMessage.setText("Connection Error: Cannot connect to server.");
+                txtMessage.setVisibility(View.VISIBLE);
             }
         });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_donations, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_donations, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchMenuItem.getActionView();
+        int id = searchView.getContext()
+                .getResources()
+                .getIdentifier("android:id/search_src_text", null, null);
+        TextView textView = (TextView) searchView.findViewById(id);
+        textView.setTextColor(Color.BLACK);
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchQuery = query;
+                listAdapter.getFilter().filter(searchQuery + "," + category);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchQuery = newText;
+                listAdapter.getFilter().filter(searchQuery + "," + category);
+                return true;
+            }
+        });
+
         return true;
     }
 
@@ -101,11 +159,7 @@ public class DonationsActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_search || super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -116,6 +170,6 @@ public class DonationsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getReservedItems();
+        getDonatedItems();
     }
 }

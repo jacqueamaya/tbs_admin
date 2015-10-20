@@ -2,11 +2,15 @@ package citu.teknoybuyandselladmin.models;
 
 import android.util.Log;
 
+import com.bumptech.glide.util.Util;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import citu.teknoybuyandselladmin.Utils;
 
 /**
  * Created by Batistil on 9/20/2015.
@@ -29,6 +33,7 @@ public class DonateApproval {
     private String itemCategory;
     private String details;
     private String link;
+    private String strRequestDate;
 
     private int requestId;
     private int itemId;
@@ -68,11 +73,16 @@ public class DonateApproval {
         return itemCategory;
     }
 
+    public String getStrRequestDate() {
+        return strRequestDate;
+    }
+
     public static DonateApproval asSingle(JSONObject jsonObject) {
         DonateApproval donateApproval = new DonateApproval();
 
         try {
             donateApproval.requestDate = jsonObject.getLong(REQUEST_DATE);
+            donateApproval.strRequestDate = Utils.parseDate(donateApproval.requestDate);
             donateApproval.requestId = jsonObject.getInt(REQUEST_ID);
             donateApproval.requestExpiration = jsonObject.getLong(REQUEST_EXPIRATION);
 
