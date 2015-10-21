@@ -73,6 +73,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
                         txtMessage.setVisibility(View.VISIBLE);
                         lv.setVisibility(View.GONE);
                     } else {
+                        txtMessage.setVisibility(View.GONE);
                         request = SellApproval.asList(jsonArray);
                         listAdapter = new SellApprovalAdapter(ItemsOnQueueActivity.this, R.layout.list_item, request);
                         listAdapter.sortItems("price");

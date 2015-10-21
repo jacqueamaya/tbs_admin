@@ -96,6 +96,7 @@ public class ReservedItemsActivity extends BaseActivity {
                         txtMessage.setVisibility(View.VISIBLE);
                         lv.setVisibility(View.GONE);
                     } else {
+                        txtMessage.setVisibility(View.GONE);
                         reserved = ReservedItem.asList(jsonArray);
                         listAdapter = new ReservedItemListAdapter(ReservedItemsActivity.this, R.layout.list_item, reserved);
                         listAdapter.sortItems("price");

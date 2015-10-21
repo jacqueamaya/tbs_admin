@@ -62,7 +62,7 @@ public class NotificationsActivity extends BaseActivity {
                         txtMessage.setVisibility(View.VISIBLE);
                     } else {
                         notifications = Notification.asList(jsonArray);
-
+                        txtMessage.setVisibility(View.GONE);
                         ListView lv = (ListView) findViewById(R.id.listViewNotif);
                         final NotificationListAdapter listAdapter = new NotificationListAdapter(NotificationsActivity.this, R.layout.item_notification, notifications);
                         lv.setAdapter(listAdapter);
