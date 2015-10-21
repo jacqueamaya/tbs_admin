@@ -99,7 +99,7 @@ public class ReservedItemsActivity extends BaseActivity {
                         txtMessage.setVisibility(View.GONE);
                         reserved = ReservedItem.asList(jsonArray);
                         listAdapter = new ReservedItemListAdapter(ReservedItemsActivity.this, R.layout.list_item, reserved);
-                        listAdapter.sortItems("price");
+                        listAdapter.sortItems("date");
                         lv.setAdapter(listAdapter);
 
                         Spinner spinnerSortBy = (Spinner) findViewById(R.id.spinnerSortBy);
