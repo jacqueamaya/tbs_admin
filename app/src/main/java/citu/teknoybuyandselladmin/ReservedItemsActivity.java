@@ -198,6 +198,7 @@ public class ReservedItemsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        txtCategory.setText("Categories");
         getReservedItems();
     }
 

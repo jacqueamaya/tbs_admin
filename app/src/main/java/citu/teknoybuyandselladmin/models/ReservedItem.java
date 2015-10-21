@@ -13,6 +13,7 @@ public class ReservedItem {
 
     private static final String TAG = "ReservedIten";
     public static final String CATEGORY = "category";
+    public static final String CATEGORY_NAME = "category_name";
     public static final String STATUS = "status";
     public static final String RESERVED_DATE = "reserved_date";
     public static final String RESERVE_EXPIRATION = "request_expiration";
@@ -81,12 +82,11 @@ public class ReservedItem {
     public static ReservedItem asSingle(JSONObject jsonObject) {
         ReservedItem reservedItem = new ReservedItem();
         JSONObject item;
-
         try {
             item = jsonObject.getJSONObject(ITEM);
 
             reservedItem.itemId = item.getInt(ITEM_ID);
-            reservedItem.category = item.getString(CATEGORY);
+            reservedItem.category = item.getJSONObject(CATEGORY).getString(CATEGORY_NAME);
             reservedItem.status = jsonObject.getString(STATUS);
             reservedItem.reservedDate = jsonObject.getLong(RESERVED_DATE);
             reservedItem.requestId = jsonObject.getInt(REQUEST_ID);
