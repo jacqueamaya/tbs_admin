@@ -136,7 +136,7 @@ public class ReservedDetailActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                Toast.makeText(ReservedDetailActivity.this, "Connection Error: Item set availability failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReservedDetailActivity.this, "Error: Item set availability failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -182,7 +182,7 @@ public class ReservedDetailActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                Toast.makeText(ReservedDetailActivity.this, "Connection Error: Failed to claim item", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReservedDetailActivity.this, "Error: Failed to claim item", Toast.LENGTH_SHORT).show();
             }
         });
     }

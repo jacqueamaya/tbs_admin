@@ -164,8 +164,8 @@ public class DonationsDetailActivity extends BaseActivity {
         Utils.alert(DonationsDetailActivity.this, "Approve Item", "Are you sure you want to approve this item?", new Utils.Callbacks() {
             @Override
             public void ok() {
-                if ("".equals(mTxtCategory.getText().toString()) || mTxtCategory.getText().toString() == null) {
-                    Utils.alertInfo(DonationsDetailActivity.this, "Please select a category first");
+                if ("".equals(mTxtCategory.getText().toString()) || mTxtCategory.getText().toString() == null || "".equals(mTxtStars.getText().toString()) || mTxtStars.getText().toString() == null) {
+                    Utils.alertInfo(DonationsDetailActivity.this, "Please select a category first and input the  number of stars required.");
                 }
                 else{
                     approveDonation();
@@ -207,7 +207,7 @@ public class DonationsDetailActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                Toast.makeText(DonationsDetailActivity.this, "Connection Error: Donation approval failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DonationsDetailActivity.this, "Error: Donation approval failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -242,7 +242,7 @@ public class DonationsDetailActivity extends BaseActivity {
                         finish();
                     } else {
                         Log.v(TAG, "Disapproval failed");
-                        Toast.makeText(DonationsDetailActivity.this, "Error; Item disapproval failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DonationsDetailActivity.this, "Error: Item disapproval failed", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -252,7 +252,7 @@ public class DonationsDetailActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                Toast.makeText(DonationsDetailActivity.this, "Connection Error: Item disapproval failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DonationsDetailActivity.this, "Error: Item disapproval failed", Toast.LENGTH_SHORT).show();
             }
         });
     }

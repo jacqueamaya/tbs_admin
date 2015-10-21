@@ -202,7 +202,7 @@ public class QueueItemDetailActivity extends BaseActivity {
                         finish();
                     } else {
                         Log.v(TAG, "approval failed");
-                        Toast.makeText(QueueItemDetailActivity.this, "Error; Item approval failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(QueueItemDetailActivity.this, "Error: Item approval failed", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -212,7 +212,7 @@ public class QueueItemDetailActivity extends BaseActivity {
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.v(TAG, "Request error");
-                Toast.makeText(QueueItemDetailActivity.this, " Connection Error: Item approval failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(QueueItemDetailActivity.this, "Error: Item approval failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
