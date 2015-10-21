@@ -181,7 +181,7 @@ public class DonationsDetailActivity extends BaseActivity {
         data.put(ITEM_ID,mItemId+"");
         data.put(REQUEST_ID, mRequestId + "");
         data.put(STARS_REQUIRED, mTxtStars.getText().toString());
-        data.put(CATEGORY_ITEM, mTxtCategory.getText().toString());
+        data.put(CATEGORY, mTxtCategory.getText().toString());
 
         donationProgress.setIndeterminate(true);
         donationProgress.setMessage("Please wait. . ");
