@@ -148,7 +148,7 @@ public class DonateApprovalAdapter extends BaseAdapter implements Filterable {
                         return obj1.getStrRequestDate().compareTo(obj2.getStrRequestDate());
                     }
                 };
-                Collections.sort(mDisplayedValues, dateComparator);
+                Collections.sort(mDisplayedValues, Collections.reverseOrder(dateComparator));
                 break;
         }
         notifyDataSetChanged();

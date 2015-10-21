@@ -75,7 +75,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
                     } else {
                         request = SellApproval.asList(jsonArray);
                         listAdapter = new SellApprovalAdapter(ItemsOnQueueActivity.this, R.layout.list_item, request);
-                        listAdapter.sortItems("price");
+                        listAdapter.sortItems("date");
                         lv.setAdapter(listAdapter);
 
                         Spinner spinnerSortBy = (Spinner) findViewById(R.id.spinnerSortBy);

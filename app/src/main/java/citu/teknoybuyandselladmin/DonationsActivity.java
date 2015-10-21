@@ -75,7 +75,7 @@ public class DonationsActivity extends BaseActivity {
                     } else {
                         request = DonateApproval.asList(jsonArray);
                         listAdapter = new DonateApprovalAdapter(DonationsActivity.this, R.layout.list_item, request);
-                        listAdapter.sortItems("name");
+                        listAdapter.sortItems("date");
                         lv.setAdapter(listAdapter);
 
                         Spinner spinnerSortBy = (Spinner) findViewById(R.id.spinnerSortBy);

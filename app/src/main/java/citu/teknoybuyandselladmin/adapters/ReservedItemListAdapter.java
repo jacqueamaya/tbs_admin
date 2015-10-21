@@ -164,7 +164,7 @@ public class ReservedItemListAdapter extends BaseAdapter implements Filterable{
                         return obj1.getReservedDate() < obj2.getReservedDate() ? -1 : obj1.getReservedDate() > obj2.getReservedDate() ? 1 : 0;
                     }
                 };
-                Collections.sort(mDisplayedValues, dateComparator);
+                Collections.sort(mDisplayedValues, Collections.reverseOrder(dateComparator));
                 break;
         }
         notifyDataSetChanged();
