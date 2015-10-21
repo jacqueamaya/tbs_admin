@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -42,6 +43,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
     private String sortBy[];
 
     private String searchQuery = "";
+    String lowerCaseSort = "date";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +55,11 @@ public class ItemsOnQueueActivity extends BaseActivity {
         mProgressBar.setVisibility(View.GONE);
 
         sortBy = getResources().getStringArray(R.array.sort_by);
-        getReservedItems();
+
+        getSellRequests();
     }
 
-    public void getReservedItems() {
+    public void getSellRequests() {
         Server.getSellRequests(mProgressBar, new Ajax.Callbacks() {
             TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
             ListView lv = (ListView) findViewById(R.id.listViewQueue);
@@ -76,14 +79,14 @@ public class ItemsOnQueueActivity extends BaseActivity {
                         txtMessage.setVisibility(View.GONE);
                         request = SellApproval.asList(jsonArray);
                         listAdapter = new SellApprovalAdapter(ItemsOnQueueActivity.this, R.layout.list_item, request);
-                        listAdapter.sortItems("date");
+                        listAdapter.sortItems(lowerCaseSort);
                         lv.setAdapter(listAdapter);
 
                         Spinner spinnerSortBy = (Spinner) findViewById(R.id.spinnerSortBy);
                         spinnerSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                String lowerCaseSort = sortBy[position].toLowerCase();
+                                lowerCaseSort = sortBy[position].toLowerCase();
                                 Log.d(TAG, lowerCaseSort);
                                 listAdapter.sortItems(lowerCaseSort);
                             }
@@ -178,6 +181,6 @@ public class ItemsOnQueueActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getReservedItems();
+        getSellRequests();
     }
 }

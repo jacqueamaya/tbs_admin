@@ -101,6 +101,11 @@ public class NotificationsActivity extends BaseActivity {
                                             Intent intent;
                                             intent = new Intent(NotificationsActivity.this, DonationsActivity.class);
                                             startActivity(intent);
+                                        } else if (notificationType.equals("edit")) {
+                                            Log.v(TAG, "donate");
+                                            Intent intent;
+                                            intent = new Intent(NotificationsActivity.this, ItemsOnQueueActivity.class);
+                                            startActivity(intent);
                                         }
                                     }
 

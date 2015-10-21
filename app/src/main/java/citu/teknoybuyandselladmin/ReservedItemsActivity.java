@@ -42,6 +42,7 @@ public class ReservedItemsActivity extends BaseActivity {
 
     private String searchQuery = "";
     private String category = "";
+    private String lowerCaseSort = "date";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +107,7 @@ public class ReservedItemsActivity extends BaseActivity {
                         spinnerSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                String lowerCaseSort = sortBy[position].toLowerCase();
+                                lowerCaseSort = sortBy[position].toLowerCase();
                                 Log.d(TAG, lowerCaseSort);
                                 listAdapter.sortItems(lowerCaseSort);
                             }
