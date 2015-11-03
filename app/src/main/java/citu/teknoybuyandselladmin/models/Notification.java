@@ -24,15 +24,22 @@ public class Notification {
     public static final String NAME = "name";
     public static final String PICTURE = "picture";
     public static final String USERNAME = "username";
+    public static final String PURPOSE = "purpose";
 
     private String ownerUsername;
     private String makerUsername;
     private String itemName;
+    private String itemPurpose;
     private String notificationType;
     private String itemLink;
     private String status;
 
     private long id;
+
+    public String getItemPurpose() {
+        return itemPurpose;
+    }
+
     private long notificationDate;
 
     public String getOwnerUsername() {
@@ -83,6 +90,7 @@ public class Notification {
             n.status = jsonObject.getString(STATUS);
             n.itemName = item.getString(NAME);
             n.itemLink = item.getString(PICTURE);
+            n.itemPurpose = item.getString(PURPOSE);
             n.ownerUsername = ownerStudent.getString(USERNAME);
             n.makerUsername = maker.getString(USERNAME);
         } catch (JSONException e) {

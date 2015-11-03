@@ -81,6 +81,7 @@ public class NotificationsActivity extends BaseActivity {
                                     @Override
                                     public void success(String responseBody) {
                                         String notificationType = NotificationsActivity.this.notif.getNotificationType();
+                                        String itemPurpose = NotificationsActivity.this.notif.getItemPurpose();
                                         if (notificationType.equals("sell")) {
                                             Log.v(TAG, "sell");
                                             Intent intent;
@@ -101,10 +102,15 @@ public class NotificationsActivity extends BaseActivity {
                                             Intent intent;
                                             intent = new Intent(NotificationsActivity.this, DonationsActivity.class);
                                             startActivity(intent);
-                                        } else if (notificationType.equals("edit")) {
-                                            Log.v(TAG, "donate");
+                                        } else if (notificationType.equals("edit") && itemPurpose.equals("Sell")) {
+                                            Log.v(TAG, "edit sell item");
                                             Intent intent;
                                             intent = new Intent(NotificationsActivity.this, ItemsOnQueueActivity.class);
+                                            startActivity(intent);
+                                        } else if (notificationType.equals("edit") && itemPurpose.equals("Donate")) {
+                                            Log.v(TAG, "edit donated item");
+                                            Intent intent;
+                                            intent = new Intent(NotificationsActivity.this, DonationsActivity.class);
                                             startActivity(intent);
                                         }
                                     }
