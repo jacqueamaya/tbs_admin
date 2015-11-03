@@ -132,6 +132,7 @@ public class ReservedItemsActivity extends BaseActivity {
                                 intent.putExtra("itemPrice", reserve.getPrice());
                                 intent.putExtra("itemDetail", reserve.getDetails());
                                 intent.putExtra("itemLink", reserve.getLink());
+                                intent.putExtra("itemStarsRequired", reserve.getStarsRequired());
                                 startActivity(intent);
                             }
                         });

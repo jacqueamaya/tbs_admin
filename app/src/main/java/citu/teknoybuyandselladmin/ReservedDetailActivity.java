@@ -29,9 +29,9 @@ public class ReservedDetailActivity extends BaseActivity {
 
     private int mRequestId;
     private int mItemId;
+    private int mItemStarsRequired;
 
     private float mItemPrice;
-
     private String mItemName;
     private String mItemDetail;
     private String mItemStatus;
@@ -62,6 +62,7 @@ public class ReservedDetailActivity extends BaseActivity {
         mItemPrice = intent.getFloatExtra("itemPrice", 0);
         mItemLink = intent.getStringExtra("itemLink");
         mItemStatus = intent.getStringExtra("itemStatus");
+        mItemStarsRequired = intent.getIntExtra("itemStarsRequired", 0);
 
         mTxtTitle = (TextView) findViewById(R.id.txtTitle);
         mTxtPrice = (TextView) findViewById(R.id.txtPriceLabel);
@@ -83,7 +84,11 @@ public class ReservedDetailActivity extends BaseActivity {
                 .into(mThumbnail);
         mTxtTitle.setText(mItemName);
         mTxtDetails.setText(mItemDetail);
-        mTxtPrice.setText("Price: PHP " +mItemPrice);
+        if(mItemStarsRequired == 0) {
+            mTxtPrice.setText("Price: PHP " +mItemPrice);
+        } else {
+            mTxtPrice.setText("Stars Required: " + mItemStarsRequired);
+        }
 
         if("Reserved".equals(mItemStatus)){
             Log.v(TAG,mItemStatus+" Item reserved. Claimed button disabled");

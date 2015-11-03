@@ -24,12 +24,14 @@ public class ReservedItem {
     public static final String DESCRIPTION = "description";
     public static final String PRICE = "price";
     public static final String PICTURE = "picture";
+    public static final String STARS_REQUIRED = "stars_required";
 
     private String category;
     private String itemName;
     private String status;
     private String details;
     private String link;
+    private int starsRequired;
 
     private int requestId;
     private int itemId;
@@ -79,6 +81,10 @@ public class ReservedItem {
         return category;
     }
 
+    public int getStarsRequired() {
+        return starsRequired;
+    }
+
     public static ReservedItem asSingle(JSONObject jsonObject) {
         ReservedItem reservedItem = new ReservedItem();
         JSONObject item;
@@ -94,6 +100,7 @@ public class ReservedItem {
             reservedItem.details = item.getString(DESCRIPTION);
             reservedItem.price = (float) item.getDouble(PRICE);
             reservedItem.link = item.getString(PICTURE);
+            reservedItem.starsRequired = item.getInt(STARS_REQUIRED);
         } catch (JSONException e) {
             Log.e(TAG, "Error creating a ReservedItem object from JSONObject", e);
         }
