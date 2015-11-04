@@ -85,7 +85,7 @@ public class ReservedDetailActivity extends BaseActivity {
         mTxtTitle.setText(mItemName);
         mTxtDetails.setText(mItemDetail);
         if(mItemStarsRequired == 0) {
-            mTxtPrice.setText("Price: PHP " +mItemPrice);
+            mTxtPrice.setText("Price: PHP " + Utils.formatFloat(mItemPrice));
         } else {
             mTxtPrice.setText("Stars Required: " + mItemStarsRequired);
         }

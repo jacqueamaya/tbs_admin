@@ -93,7 +93,7 @@ public class QueueItemDetailActivity extends BaseActivity {
                 .into(mThumbnail);
 
         mTxtTitle.setText(mItemName);
-        mTxtPrice.setText("Price: PHP " + mItemPrice);
+        mTxtPrice.setText("Price: PHP " + Utils.formatFloat(mItemPrice));
         mTxtDetails.setText(mItemDetail);
     }
 

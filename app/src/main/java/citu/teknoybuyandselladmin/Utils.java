@@ -71,4 +71,8 @@ public final class Utils {
         return formattedDate;
     }
 
+    public static String formatFloat(float price){
+        return String.format("%.2f", price);
+    }
+
 }
