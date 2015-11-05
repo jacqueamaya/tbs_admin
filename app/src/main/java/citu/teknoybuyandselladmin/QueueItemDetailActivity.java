@@ -140,14 +140,17 @@ public class QueueItemDetailActivity extends BaseActivity {
         Server.addCategory(data, mQueueProgress, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
+                Log.v(TAG,responseBody);
                 try {
                     JSONObject json = new JSONObject(responseBody);
+                    String response = json.getString("statusText");
+
                     if (json.getInt("status") == 200) {
                         Log.v(TAG, "Category Added Successfully");
                         Snackbar.make(findViewById(R.id.appbar), "Category successfully added", Snackbar.LENGTH_SHORT).show();
                     } else {
                         Log.v(TAG, "Failed to add activity_category");
-                        Snackbar.make(findViewById(R.id.appbar), "Failed to add category", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.appbar), response, Snackbar.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -156,6 +159,7 @@ public class QueueItemDetailActivity extends BaseActivity {
 
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
+                Log.v(TAG,responseBody);
                 Log.v(TAG, "Request error");
                 Snackbar.make(findViewById(R.id.appbar), "Connection Error: Failed to add category", Snackbar.LENGTH_SHORT).show();
             }
