@@ -212,7 +212,7 @@ public class ReservedItemsActivity extends BaseActivity {
                 try {
                     JSONArray json = new JSONArray(responseBody);
                     if (json.length() != 0) {
-                        categories = Category.asArray(new JSONArray(responseBody));
+                        categories = Category.asArrayForCategorize(new JSONArray(responseBody));
                     } else {
                         Toast.makeText(ReservedItemsActivity.this, "Empty categories", Toast.LENGTH_SHORT).show();
                     }
