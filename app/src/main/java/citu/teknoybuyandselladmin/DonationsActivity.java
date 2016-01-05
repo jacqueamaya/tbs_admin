@@ -20,6 +20,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -44,6 +47,8 @@ public class DonationsActivity extends BaseActivity {
     private String searchQuery = "";
     private String lowerCaseSort = "date";
 
+    private Gson gson = new Gson();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,18 +70,19 @@ public class DonationsActivity extends BaseActivity {
 
             @Override
             public void success(String responseBody) {
-                ArrayList<DonateApproval> request = new ArrayList<DonateApproval>();
-                JSONArray jsonArray = null;
-                try {
-                    jsonArray = new JSONArray(responseBody);
-                    if (jsonArray.length() == 0) {
+                ArrayList<DonateApproval> donateRequests = new ArrayList<DonateApproval>();
+               // JSONArray jsonArray = null;
+               // try {
+               //     jsonArray = new JSONArray(responseBody);
+                donateRequests = gson.fromJson(responseBody,new TypeToken<ArrayList<DonateApproval>>(){}.getType());
+                    if (donateRequests.size() == 0) {
                         txtMessage.setText("No donate requests available");
                         txtMessage.setVisibility(View.VISIBLE);
                         lv.setVisibility(View.GONE);
                     } else {
                         txtMessage.setVisibility(View.GONE);
-                        request = DonateApproval.asList(jsonArray);
-                        listAdapter = new DonateApprovalAdapter(DonationsActivity.this, R.layout.list_item, request);
+                        //request = DonateApproval.asList(jsonArray);
+                        listAdapter = new DonateApprovalAdapter(DonationsActivity.this, R.layout.list_item, donateRequests);
                         listAdapter.sortItems(lowerCaseSort);
                         lv.setAdapter(listAdapter);
 
@@ -99,24 +105,27 @@ public class DonationsActivity extends BaseActivity {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 DonateApproval donate = listAdapter.getDisplayView().get(position);
+                                Log.e(TAG, "item id: " + donate.getItem().getId());
+                                Log.e(TAG,"request id: "+donate.getId());
 
                                 Intent intent;
                                 intent = new Intent(DonationsActivity.this, DonationsDetailActivity.class);
-                                intent.putExtra("itemId", donate.getItemId());
-                                intent.putExtra("requestId", donate.getRequestId());
-                                intent.putExtra("itemName", donate.getItemName());
-                                intent.putExtra("itemDetail", donate.getDetails());
-                                intent.putExtra("itemCategory", donate.getItemCategory());
-                                intent.putExtra("itemLink", donate.getLink());
+                                intent.putExtra("itemId", donate.getItem().getId());
+                                intent.putExtra("requestId", donate.getId());
+                                intent.putExtra("itemName", donate.getItem().getName());
+                                intent.putExtra("itemDetail", donate.getItem().getDescription());
+                                intent.putExtra("itemCategory", donate.getItem().getCategory().getCategory_name());
+                                intent.putExtra("itemLink", donate.getItem().getPicture());
+
 
                                 startActivity(intent);
                             }
                         });
                     }
 
-                } catch (JSONException e1) {
+               /* } catch (JSONException e1) {
                     e1.printStackTrace();
-                }
+                }*/
             }
 
             @Override

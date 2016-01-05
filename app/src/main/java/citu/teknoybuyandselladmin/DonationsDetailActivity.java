@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -54,6 +55,8 @@ public class DonationsDetailActivity extends BaseActivity {
 
     private ProgressDialog donationProgress;
     private ProgressBar mProgressBar;
+
+    private Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,7 +201,7 @@ public class DonationsDetailActivity extends BaseActivity {
                         Toast.makeText(DonationsDetailActivity.this, "Donation successfully approved", Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
-                        Log.v(TAG, "approval failed");
+                        Log.e(TAG, "approval failed");
                         Toast.makeText(DonationsDetailActivity.this, "Error: Donation approval failed", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -208,7 +211,8 @@ public class DonationsDetailActivity extends BaseActivity {
 
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
+                Log.e(TAG, "Request error");
+                Log.e(TAG, "message: "+responseBody);
                 Toast.makeText(DonationsDetailActivity.this, "Error: Donation approval failed", Toast.LENGTH_SHORT).show();
             }
         });
@@ -267,21 +271,27 @@ public class DonationsDetailActivity extends BaseActivity {
         Server.getCategories(mProgressBar, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
-                try {
-                    final String categories[] = Category.asArray(new JSONArray(responseBody));
+              ///  try {
+                    //final String categories[] = Category.asArray(new JSONArray(responseBody));
+                    Category[] categories = gson.fromJson(responseBody, Category[].class);
+                    String categoryNames[] = new String[categories.length];
+                    for(int i=0; i<categories.length; i++){
+                        categoryNames[i] =  categories[i].getCategory_name();
+                    }
+                    final String categoryNamesFinal[] = categoryNames;
                     new AlertDialog.Builder(DonationsDetailActivity.this)
                             .setTitle("Categories")
-                            .setItems(categories, new DialogInterface.OnClickListener() {
+                            .setItems(categoryNames, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    mTxtCategory.setText(categories[which]);
+                                    mTxtCategory.setText(categoryNamesFinal[which]);
                                 }
                             })
                             .create()
                             .show();
-                } catch (JSONException e) {
+              /*  } catch (JSONException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
 
             @Override

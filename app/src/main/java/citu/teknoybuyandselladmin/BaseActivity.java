@@ -70,6 +70,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                 case R.id.nav_reserved_items:
                     intent = new Intent(this, ReservedItemsActivity.class);
                     break;
+                case R.id.nav_rented_items:
+                    intent = new Intent(this, RentedItemsActivity.class);
+                    break;
                 case R.id.nav_donations:
                     intent = new Intent(this, DonationsActivity.class);
                     break;

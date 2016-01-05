@@ -47,91 +47,16 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txtPurpose"
+                    android:id="@+id/txtPriceLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtTitle"
                     android:layout_marginLeft="23dp"
-                    android:layout_marginRight="18dp"
-                    android:layout_marginTop="18dp"
-                    android:layout_toRightOf="@+id/imgThumbnail"
-                    android:textColor="@color/Black"
-                    android:textStyle="bold"
-                    android:textSize="16dp" />
-
-                <TextView
-                    android:id="@+id/txtPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/txtPurpose"
-                    android:layout_marginLeft="23dp"
-                    android:layout_marginRight="18dp"
-                    android:layout_marginTop="18dp"
-                    android:layout_toRightOf="@+id/imgThumbnail"
-                    android:textColor="@color/Black"
-                    android:textStyle="bold"
-                    android:textSize="16dp" />
-
-                <TextView
-                    android:id="@+id/lblCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/txtPrice"
-                    android:layout_marginLeft="23dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_toRightOf="@+id/imgThumbnail"
-                    android:text="Category: "
-                    android:textColor="@color/Black"
-                    android:textSize="16dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/txtPrice"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_toRightOf="@+id/lblCategory"
-                    android:textColor="@color/Black"
-                    android:textSize="16dp" />
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/progressGetCategory"
-                    android:layout_below="@+id/txtCategory"
-                    android:layout_marginLeft="46dp"
-                    android:layout_toRightOf="@+id/imgThumbnail"
-                    android:layout_marginTop="12dp"/>
-
-                <Button
-                    android:id="@+id/btnSelect"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/txtCategory"
-                    android:layout_marginLeft="23dp"
-                    android:layout_toRightOf="@+id/imgThumbnail"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/positivebutton"
-                    android:textColor="@color/White"
-                    android:onClick="onSelect"
-                    android:text="Choose" />
-
-                <Button
-                    android:id="@+id/btnAdd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/txtCategory"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/btnSelect"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/positivebutton"
-                    android:textColor="@color/White"
-                    android:onClick="addCategory"
-                    android:text="Add" />
+                    android:layout_marginRight="16dp"
+                    android:layout_toRightOf="@id/imgThumbnail"
+                    android:textColor="@color/Gray"
+                    android:textSize="20dp"
+                    android:textStyle="normal" />
 
                 <TextView
                     android:id="@+id/lblDetails"
@@ -139,18 +64,18 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/imgThumbnail"
                     android:layout_marginRight="18dp"
-                    android:layout_marginTop="25dp"
+                    android:layout_marginTop="10dp"
                     android:text="Details:"
                     android:textColor="@color/Black"
                     android:textSize="16dp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtDetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/lblDetails"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     android:textColor="@color/Gray"
                     android:textSize="16dp"
                     android:textStyle="normal" />
@@ -163,33 +88,32 @@
                     android:orientation="vertical">
 
                     <Button
-                        android:id="@+id/btnApprove"
+                        android:id="@+id/imgItemReturned"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginBottom="10dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:background="@drawable/positivebutton"
-                        android:onClick="onApprove"
-                        android:src="@drawable/button_sell"
-                        android:text="Approve"
+                        android:onClick="onReturned"
+                        android:text="Returned"
                         android:textColor="@color/White" />
 
                     <Button
-                        android:id="@+id/btnDeny"
+                        android:id="@+id/imgNotify"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_below="@+id/btnApprove"
                         android:layout_marginBottom="10dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
+                        android:onClick="onNotifyRenter"
                         android:background="@drawable/negativebutton"
-                        android:onClick="onDeny"
-                        android:src="@drawable/button_sell"
-                        android:text="Deny"
+                        android:text="NotifyRenter"
                         android:textColor="@color/Louie" />
 
                 </LinearLayout>
+
             </RelativeLayout>
 
         </RelativeLayout>

@@ -19,6 +19,8 @@ public final class Server {
     private static final String URL_ITEM_CLAIMED = "http://tbs-admin.herokuapp.com/api/item_claimed";
     private static final String URL_LOGIN = "http://tbs-admin.herokuapp.com/api/admin_login";
     private static final String URL_READ_NOTIFICATION = "http://tbs-admin.herokuapp.com/api/read_notification";
+    private static final String URL_RETURN_ITEM = "http://tbs-admin.herokuapp.com/api/return_rented";
+    private static final String URL_NOTIFY_RENTER = "http://tbs-admin.herokuapp.com/api/notify_renter";
 
     private static final String URL_CATEGORIES = "http://tbs-admin.herokuapp.com/api-x/categories/";
     private static final String URL_DONATED_ITEMS_DETAILS = "http://tbs-admin.herokuapp.com/api-x/donate_requests/";
@@ -28,6 +30,7 @@ public final class Server {
     private static final String URL_RESERVED_ITEMS = "http://tbs-admin.herokuapp.com/api-x/reservation_requests/";
     private static final String URL_SELL_REQUEST = "http://tbs-admin.herokuapp.com/api-x/sell_requests/";
     private static final String URL_TRANSACTIONS = "http://tbs-admin.herokuapp.com/api-x/transactions/";
+    private static final String URL_RENTED_ITEMS = "http://tbs-admin.herokuapp.com/api-x/rented_items/";
 
     private static final String TAG = "Server";
 
@@ -158,11 +161,33 @@ public final class Server {
         Ajax.get(URL_CATEGORIES, progressBar, callbacks);
     }
 
+    public static void getRentedItems(ProgressBar progressBar, Ajax.Callbacks callbacks) {
+        Ajax.get(URL_RENTED_ITEMS, progressBar, callbacks);
+    }
+
     public static void readNotification(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
         if (!data.containsKey(NotificationsActivity.NOTIFICATION_ID)) {
             throw new RuntimeException("Missing data.");
         }
 
         Ajax.post(URL_READ_NOTIFICATION, progressDialog, data, callbacks);
+    }
+
+    public static void returnRentedItem(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
+        if (!data.containsKey(RentedItemDetailActivity.RENT_ID) &&
+                !data.containsKey(RentedItemDetailActivity.ITEM_ID)) {
+            throw new RuntimeException("Missing data.");
+        }
+
+        Ajax.post(URL_RETURN_ITEM, progressDialog, data, callbacks);
+    }
+
+    public static void notifyRenter(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
+        if (!data.containsKey(RentedItemDetailActivity.RENT_ID) &&
+                !data.containsKey(RentedItemDetailActivity.ITEM_ID)) {
+            throw new RuntimeException("Missing data.");
+        }
+
+        Ajax.post(URL_NOTIFY_RENTER, progressDialog, data, callbacks);
     }
 }

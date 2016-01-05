@@ -12,6 +12,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -33,6 +36,8 @@ public class NotificationsActivity extends BaseActivity {
 
     public static final String NOTIFICATION_ID = "notification_id";
 
+    private Gson gson = new Gson();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,15 +58,16 @@ public class NotificationsActivity extends BaseActivity {
             @Override
             public void success(String responseBody) {
                 ArrayList<Notification> notifications = new ArrayList<Notification>();
-                JSONArray jsonArray = null;
+                //JSONArray jsonArray = null;
+                notifications = gson.fromJson(responseBody, new TypeToken<ArrayList<Notification>>(){}.getType());
 
-                try {
-                    jsonArray = new JSONArray(responseBody);
-                    if (jsonArray.length() == 0) {
+               // try {
+                   // jsonArray = new JSONArray(responseBody);
+                    if (notifications.size() == 0) {
                         txtMessage.setText("No new notifications");
                         txtMessage.setVisibility(View.VISIBLE);
                     } else {
-                        notifications = Notification.asList(jsonArray);
+                       // notifications = Notification.asList(jsonArray);
                         txtMessage.setVisibility(View.GONE);
                         ListView lv = (ListView) findViewById(R.id.listViewNotif);
                         final NotificationListAdapter listAdapter = new NotificationListAdapter(NotificationsActivity.this, R.layout.item_notification, notifications);
@@ -80,12 +86,22 @@ public class NotificationsActivity extends BaseActivity {
                                 Server.readNotification(data, readProgress, new Ajax.Callbacks() {
                                     @Override
                                     public void success(String responseBody) {
-                                        String notificationType = NotificationsActivity.this.notif.getNotificationType();
-                                        String itemPurpose = NotificationsActivity.this.notif.getItemPurpose();
+                                        String notificationType = NotificationsActivity.this.notif.getNotification_type();
+                                        String itemPurpose = NotificationsActivity.this.notif.getItem().getPurpose();
                                         if (notificationType.equals("sell")) {
                                             Log.v(TAG, "sell");
                                             Intent intent;
                                             intent = new Intent(NotificationsActivity.this, ItemsOnQueueActivity.class);
+                                            startActivity(intent);
+                                        } else if (notificationType.equals("for rent")) {
+                                            Log.v(TAG, "for rent");
+                                            Intent intent;
+                                            intent = new Intent(NotificationsActivity.this, ItemsOnQueueActivity.class);
+                                            startActivity(intent);
+                                        } else if (notificationType.equals("rent")) {
+                                            Log.v(TAG, "rent");
+                                            Intent intent;
+                                            intent = new Intent(NotificationsActivity.this, ReservedItemsActivity.class);
                                             startActivity(intent);
                                         } else if (notificationType.equals("buy")) {
                                             Log.v(TAG, "buy");
@@ -124,9 +140,9 @@ public class NotificationsActivity extends BaseActivity {
                         });
                     }
 
-                } catch (JSONException e1) {
+               /* } catch (JSONException e1) {
                     e1.printStackTrace();
-                }
+                }*/
 
             }
 

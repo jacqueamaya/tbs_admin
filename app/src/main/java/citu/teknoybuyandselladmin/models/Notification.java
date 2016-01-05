@@ -1,118 +1,86 @@
 package citu.teknoybuyandselladmin.models;
 
-
-import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-
 public class Notification {
 
-    private static final String TAG = "Notification";
-
-    public static final String ITEM = "item";
-    public static final String OWNER = "owner";
-    public static final String USER = "user";
-    public static final String MAKER = "maker";
-    public static final String ID = "id";
-    public static final String NOTIFICATION_TYPE = "notification_type";
-    public static final String NOTIFICATION_DATE = "notification_date";
-    public static final String STATUS = "status";
-    public static final String NAME = "name";
-    public static final String PICTURE = "picture";
-    public static final String USERNAME = "username";
-    public static final String PURPOSE = "purpose";
-
-    private String ownerUsername;
-    private String makerUsername;
-    private String itemName;
-    private String itemPurpose;
-    private String notificationType;
-    private String itemLink;
+    private int id;
+    private Users target;
+    private Users maker;
+    private Item item;
+    private String message;
+    private String notification_type;
     private String status;
+    private long notification_date;
+    private long notification_expiration;
 
-    private long id;
-
-    public String getItemPurpose() {
-        return itemPurpose;
+    public int getId() {
+        return id;
     }
 
-    private long notificationDate;
-
-    public String getOwnerUsername() {
-        return ownerUsername;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getMakerUsername() {
-        return makerUsername;
+    public Users getTarget() {
+        return target;
     }
 
-    public String getItemName() {
-        return itemName;
+    public void setTarget(Users target) {
+        this.target = target;
     }
 
-    public String getNotificationType() {
-        return notificationType;
+    public Users getMaker() {
+        return maker;
     }
 
-    public long getNotificationDate() {
-        return notificationDate;
+    public void setMaker(Users maker) {
+        this.maker = maker;
     }
 
-    public String getItemLink() {
-        return itemLink;
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getNotification_type() {
+        return notification_type;
+    }
+
+    public void setNotification_type(String notification_type) {
+        this.notification_type = notification_type;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public long getId() {
-        return id;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public static Notification asSingle(JSONObject jsonObject) {
-        Notification n = new Notification();
-        JSONObject item, owner, ownerStudent, maker;
-
-        try {
-            item = jsonObject.getJSONObject(ITEM);
-            owner = item.getJSONObject(OWNER);
-            ownerStudent = owner.getJSONObject(USER);
-            maker = jsonObject.getJSONObject(MAKER);
-
-            n.id = jsonObject.getLong(ID);
-            n.notificationType = jsonObject.getString(NOTIFICATION_TYPE);
-            n.notificationDate = jsonObject.getLong(NOTIFICATION_DATE);
-            n.status = jsonObject.getString(STATUS);
-            n.itemName = item.getString(NAME);
-            n.itemLink = item.getString(PICTURE);
-            n.itemPurpose = item.getString(PURPOSE);
-            n.ownerUsername = ownerStudent.getString(USERNAME);
-            n.makerUsername = maker.getString(USERNAME);
-        } catch (JSONException e) {
-            Log.e(TAG, "Cannot parse JSON OR Error getting fields", e);
-        }
-
-        return n;
+    public long getNotification_date() {
+        return notification_date;
     }
 
-    public static ArrayList<Notification> asList(JSONArray jsonArray) {
-        ArrayList<Notification> notifications = new ArrayList<>(jsonArray.length());
+    public void setNotification_date(long notification_date) {
+        this.notification_date = notification_date;
+    }
 
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                JSONObject notificationObject = jsonArray.getJSONObject(i);
-                Notification notification = Notification.asSingle(notificationObject);
-                notifications.add(notification);
-            } catch (JSONException e) {
-                Log.e(TAG, "JSONException on item#" + i, e);
-            }
-        }
+    public long getNotification_expiration() {
+        return notification_expiration;
+    }
 
-        return notifications;
+    public void setNotification_expiration(long notification_expiration) {
+        this.notification_expiration = notification_expiration;
     }
 }

@@ -28,17 +28,19 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
+import citu.teknoybuyandselladmin.adapters.RentedItemAdapter;
 import citu.teknoybuyandselladmin.adapters.ReservedItemListAdapter;
 import citu.teknoybuyandselladmin.models.Category;
+import citu.teknoybuyandselladmin.models.RentedItem;
 import citu.teknoybuyandselladmin.models.Reservation;
 
 
-public class ReservedItemsActivity extends BaseActivity {
+public class RentedItemsActivity extends BaseActivity {
 
-    private static final String TAG = "ReservedActivity";
+    private static final String TAG = "RentedItemsActivity";
     private ProgressBar mProgressBar;
     private TextView txtCategory;
-    private ReservedItemListAdapter listAdapter;
+    private RentedItemAdapter listAdapter;
 
     private Category categories[];
     private String categoryNames[];
@@ -61,13 +63,13 @@ public class ReservedItemsActivity extends BaseActivity {
         mProgressBar.setVisibility(View.GONE);
 
         sortBy = getResources().getStringArray(R.array.sort_by);
-        getReservedItems();
+        getRentedItems();
         getCategories();
 
         txtCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog displayCategories = new AlertDialog.Builder(ReservedItemsActivity.this)
+                AlertDialog displayCategories = new AlertDialog.Builder(RentedItemsActivity.this)
                         .setTitle("Categories")
                         .setItems(categoryNames, new DialogInterface.OnClickListener() {
                             @Override
@@ -86,66 +88,62 @@ public class ReservedItemsActivity extends BaseActivity {
         });
     }
 
-    public void getReservedItems(){
-        Server.getReservedItems(mProgressBar, new Ajax.Callbacks() {
+    public void getRentedItems(){
+        Server.getRentedItems(mProgressBar, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
-                ArrayList<Reservation> reservationRequest = new ArrayList<Reservation>();
-                reservationRequest = gson.fromJson(responseBody, new TypeToken<ArrayList<Reservation>>(){}.getType());
+                ArrayList<RentedItem> rentedItems = new ArrayList<RentedItem>();
+                rentedItems = gson.fromJson(responseBody, new TypeToken<ArrayList<RentedItem>>(){}.getType());
 
                 TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
                 ListView lv = (ListView) findViewById(R.id.listViewReserved);
 
-               // try {
-                //    jsonArray = new JSONArray(responseBody);
-                    if (reservationRequest.size() == 0) {
-                        txtMessage.setText("No reserved items");
-                        txtMessage.setVisibility(View.VISIBLE);
-                        lv.setVisibility(View.GONE);
-                    } else {
-                        txtMessage.setVisibility(View.GONE);
-                        //reserved = Reservation.asList(jsonArray);
-                        listAdapter = new ReservedItemListAdapter(ReservedItemsActivity.this, R.layout.list_item, reservationRequest);
-                        listAdapter.sortItems(lowerCaseSort);
-                        lv.setAdapter(listAdapter);
+                if (rentedItems.size() == 0) {
+                    txtMessage.setText("No reserved items");
+                    txtMessage.setVisibility(View.VISIBLE);
+                    lv.setVisibility(View.GONE);
+                } else {
+                    txtMessage.setVisibility(View.GONE);
+                    //reserved = Reservation.asList(jsonArray);
+                    listAdapter = new RentedItemAdapter(RentedItemsActivity.this, R.layout.list_item, rentedItems);
+                    listAdapter.sortItems(lowerCaseSort);
+                    lv.setAdapter(listAdapter);
 
-                        Spinner spinnerSortBy = (Spinner) findViewById(R.id.spinnerSortBy);
-                        spinnerSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                lowerCaseSort = sortBy[position].toLowerCase();
-                                Log.d(TAG, lowerCaseSort);
-                                listAdapter.sortItems(lowerCaseSort);
-                            }
+                    Spinner spinnerSortBy = (Spinner) findViewById(R.id.spinnerSortBy);
+                    spinnerSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            lowerCaseSort = sortBy[position].toLowerCase();
+                            Log.d(TAG, lowerCaseSort);
+                            listAdapter.sortItems(lowerCaseSort);
+                        }
 
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
 
-                            }
-                        });
+                        }
+                    });
 
-                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Reservation reserve = listAdapter.getDisplayView().get(position);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            RentedItem rentedItem = listAdapter.getDisplayView().get(position);
 
-                                Intent intent;
-                                intent = new Intent(ReservedItemsActivity.this, ReservedDetailActivity.class);
-                                intent.putExtra("itemId", reserve.getItem().getId());
-                                intent.putExtra("requestId", reserve.getId());
-                                intent.putExtra("itemName", reserve.getItem().getName());
-                                intent.putExtra("itemStatus", reserve.getStatus());
-                                intent.putExtra("itemPrice", reserve.getItem().getPrice());
-                                intent.putExtra("itemDetail", reserve.getItem().getDescription());
-                                intent.putExtra("itemLink", reserve.getItem().getPicture());
-                                intent.putExtra("itemStarsRequired", reserve.getItem().getStars_required());
-                                startActivity(intent);
-                            }
-                        });
-                    }
-               /* } catch (JSONException e1) {
-                    Log.e(TAG, "JSONException", e1);
-                }*/
+                            Intent intent;
+                            intent = new Intent(RentedItemsActivity.this, RentedItemDetailActivity.class);
+                            intent.putExtra("itemId", rentedItem.getItem().getId());
+                            intent.putExtra("rentId", rentedItem.getId());
+                            intent.putExtra("itemName", rentedItem.getItem().getName());
+                            intent.putExtra("itemPrice", rentedItem.getItem().getPrice());
+                            intent.putExtra("itemDetail", rentedItem.getItem().getDescription());
+                            intent.putExtra("itemLink", rentedItem.getItem().getPicture());
+                            intent.putExtra("itemStarsRequired", rentedItem.getItem().getStars_required());
+                            intent.putExtra("itemQuantity", rentedItem.getQuantity());
+                            intent.putExtra("itemCode", rentedItem.getItem_code());
+                            startActivity(intent);
+                        }
+                    });
+                }
             }
 
             @Override
@@ -207,7 +205,7 @@ public class ReservedItemsActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         txtCategory.setText("Categories");
-        getReservedItems();
+        getRentedItems();
     }
 
     public void getCategories() {
@@ -215,26 +213,21 @@ public class ReservedItemsActivity extends BaseActivity {
         Server.getCategories(mProgressBar, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
-                //try {
-                    //JSONArray json = new JSONArray(responseBody);
-                    if (!("".equals(responseBody))) {
-                        categories = gson.fromJson(responseBody, Category[].class);
-                        categoryNames = new String[categories.length];
-                        for(int i=0; i<categories.length; i++){
-                            categoryNames[i] =  categories[i].getCategory_name();
-                        }
-                    } else {
-                        Toast.makeText(ReservedItemsActivity.this, "Empty categories", Toast.LENGTH_SHORT).show();
+                if (!("".equals(responseBody))) {
+                    categories = gson.fromJson(responseBody, Category[].class);
+                    categoryNames = new String[categories.length];
+                    for(int i=0; i<categories.length; i++){
+                        categoryNames[i] =  categories[i].getCategory_name();
                     }
-               /* } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
+                } else {
+                    Toast.makeText(RentedItemsActivity.this, "Empty categories", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 categories = null;
-                Toast.makeText(ReservedItemsActivity.this, "Cannot connect to server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RentedItemsActivity.this, "Cannot connect to server", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -21,6 +21,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -28,13 +31,14 @@ import java.util.ArrayList;
 
 import citu.teknoybuyandselladmin.adapters.SellApprovalAdapter;
 import citu.teknoybuyandselladmin.models.Category;
+import citu.teknoybuyandselladmin.models.Notification;
 import citu.teknoybuyandselladmin.models.SellApproval;
 
 
 public class ItemsOnQueueActivity extends BaseActivity {
 
     private static final String TAG = "ItemsOnQueueActivity";
-    private JSONArray jsonArray;
+   // private JSONArray jsonArray;
 
     private ProgressBar mProgressBar;
 
@@ -44,6 +48,8 @@ public class ItemsOnQueueActivity extends BaseActivity {
 
     private String searchQuery = "";
     String lowerCaseSort = "date";
+
+    private Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,15 +75,15 @@ public class ItemsOnQueueActivity extends BaseActivity {
                 ArrayList<SellApproval> request = new ArrayList<SellApproval>();
                 Log.v(TAG, responseBody);
 
-                try {
-                    jsonArray = new JSONArray(responseBody);
-                    if (jsonArray.length() == 0) {
+                //try {
+                    request = gson.fromJson(responseBody, new TypeToken<ArrayList<SellApproval>>(){}.getType());
+                    if (request.size() == 0) {
                         txtMessage.setText("No sell requests available");
                         txtMessage.setVisibility(View.VISIBLE);
                         lv.setVisibility(View.GONE);
                     } else {
                         txtMessage.setVisibility(View.GONE);
-                        request = SellApproval.asList(jsonArray);
+                        //request = SellApproval.asList(jsonArray);
                         listAdapter = new SellApprovalAdapter(ItemsOnQueueActivity.this, R.layout.list_item, request);
                         listAdapter.sortItems(lowerCaseSort);
                         lv.setAdapter(listAdapter);
@@ -100,25 +106,26 @@ public class ItemsOnQueueActivity extends BaseActivity {
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                SellApproval sell = listAdapter.getDisplayView().get(position);
+                                SellApproval sellRequest = listAdapter.getDisplayView().get(position);
 
                                 Intent intent;
                                 intent = new Intent(ItemsOnQueueActivity.this, QueueItemDetailActivity.class);
-                                intent.putExtra("itemId", sell.getItemId());
-                                intent.putExtra("requestId", sell.getRequestId());
-                                intent.putExtra("itemName", sell.getItemName());
-                                intent.putExtra("itemPrice", sell.getPrice());
-                                intent.putExtra("itemDetail", sell.getDetails());
-                                intent.putExtra("itemLink", sell.getLink());
-                                intent.putExtra("itemCategoy", sell.getCategory());
+                                intent.putExtra("itemId", sellRequest.getItem().getId());
+                                intent.putExtra("requestId", sellRequest.getId());
+                                intent.putExtra("itemName", sellRequest.getItem().getName());
+                                intent.putExtra("itemPrice", sellRequest.getItem().getPrice());
+                                intent.putExtra("itemDetail", sellRequest.getItem().getDescription());
+                                intent.putExtra("itemLink", sellRequest.getItem().getPicture());
+                                intent.putExtra("itemCategory", sellRequest.getItem().getCategory().getCategory_name());
+                                intent.putExtra("itemPurpose", sellRequest.getItem().getPurpose());
                                 startActivity(intent);
                             }
                         });
                     }
 
-                } catch (JSONException e1) {
+               /* } catch (JSONException e1) {
                     e1.printStackTrace();
-                }
+                }*/
             }
 
             @Override

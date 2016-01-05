@@ -15,6 +15,10 @@
             android:icon="@drawable/glyph_reserved"
             android:title="@string/menu_reservedItems" />
         <item
+            android:id="@+id/nav_rented_items"
+            android:icon="@drawable/glyph_reserved"
+            android:title="@string/menu_rentedItems" />
+        <item
             android:id="@+id/nav_donations"
             android:icon="@drawable/glyph_donation"
             android:title="@string/menu_donations" />

@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -48,17 +49,20 @@ public class QueueItemDetailActivity extends BaseActivity {
     private String mItemDetail;
     private String mItemLink;
     private String mItemCategory;
+    private String mItemPurpose;
 
     private TextView mTxtTitle;
     private TextView mTxtPrice;
     private TextView mTxtDetails;
     private TextView mTxtCategory;
+    private TextView mTxtPurpose;
 
     private ImageView mThumbnail;
 
     private ProgressDialog mQueueProgress;
     private ProgressBar mProgressBar;
 
+    private Gson gson = new Gson();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,17 +71,19 @@ public class QueueItemDetailActivity extends BaseActivity {
 
         Intent intent = getIntent();
         mRequestId = intent.getIntExtra("requestId",0);
-        mItemId = intent.getIntExtra("itemId",0);
+        mItemId = intent.getIntExtra("itemId", 0);
         mItemName = intent.getStringExtra("itemName");
         mItemDetail = intent.getStringExtra("itemDetail");
         mItemLink = intent.getStringExtra("itemLink");
         mItemCategory = intent.getStringExtra("itemCategory");
         mItemPrice = intent.getFloatExtra("itemPrice", 0);
+        mItemPurpose = intent.getStringExtra("itemPurpose");
 
         mTxtTitle = (TextView) findViewById(R.id.txtTitle);
         mTxtPrice = (TextView) findViewById(R.id.txtPrice);
         mTxtDetails = (TextView) findViewById(R.id.txtDetails);
         mTxtCategory = (TextView) findViewById(R.id.txtCategory);
+        mTxtPurpose = (TextView) findViewById(R.id.txtPurpose);
         mThumbnail = (ImageView) findViewById(R.id.imgThumbnail);
 
         mQueueProgress = new ProgressDialog(this);
@@ -94,6 +100,7 @@ public class QueueItemDetailActivity extends BaseActivity {
 
         mTxtTitle.setText(mItemName);
         mTxtPrice.setText("Price: PHP " + Utils.formatFloat(mItemPrice));
+        mTxtPurpose.setText("Purpose: " + mItemPurpose);
         mTxtDetails.setText(mItemDetail);
     }
 
@@ -275,21 +282,27 @@ public class QueueItemDetailActivity extends BaseActivity {
         Server.getCategories(mProgressBar, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
-                try {
-                    final String categories[] = Category.asArray(new JSONArray(responseBody));
+               // try {
+                   // final String categories[] = Category.asArray(new JSONArray(responseBody));
+                    Category[] categories = gson.fromJson(responseBody, Category[].class);
+                    String categoryNames[] = new String[categories.length];
+                    for(int i=0; i<categories.length; i++){
+                        categoryNames[i] =  categories[i].getCategory_name();
+                    }
+                    final String categoryNamesFinal[] = categoryNames;
                     new AlertDialog.Builder(QueueItemDetailActivity.this)
                             .setTitle("Categories")
-                            .setItems(categories, new DialogInterface.OnClickListener() {
+                            .setItems(categoryNames, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    mTxtCategory.setText(categories[which]);
+                                    mTxtCategory.setText(categoryNamesFinal[which]);
                                 }
                             })
                             .create()
                             .show();
-                } catch (JSONException e) {
+               /* } catch (JSONException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
 
             @Override

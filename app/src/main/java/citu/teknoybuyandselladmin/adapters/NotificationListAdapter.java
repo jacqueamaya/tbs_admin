@@ -53,7 +53,7 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
         TextView text = (TextView) view.findViewById(R.id.textView);
         ImageView image = (ImageView) view.findViewById(R.id.image);
 
-        notificationDate = Utils.parseDate(notification.getNotificationDate());
+        notificationDate = Utils.parseDate(notification.getNotification_date());
         Log.v(TAG,notification.getStatus());
         if ("unread".equals(notification.getStatus())) {
             Log.v(TAG,"This notification is unread");
@@ -64,39 +64,39 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
         }
 
         Picasso.with(mContext)
-                .load(notification.getItemLink())
+                .load(notification.getItem().getPicture())
                 .placeholder(R.drawable.notif_user)
                 .resize(50, 50)
                 .centerCrop()
                 .into(image);
 
-        switch (notification.getNotificationType()) {
+        /*switch (notification.getNotification_type()) {
             case "sell":
-                message = "<b>" + Utils.capitalize(notification.getOwnerUsername()) + " </b> wants to <b>sell</b> his/her <b>" + notification.getItemName() + "</b>.<br><small>" + notificationDate + "</small>";
+                message = "<b>" + Utils.capitalize(notification.getItem().getOwner().getUser().getUsername()) + " </b> wants to <b>sell</b> his/her <b>" + notification.getItem().getName() + "</b>.<br><small>" + notificationDate + "</small>";
                 break;
             case "donate":
-                message = "<b>" + Utils.capitalize(notification.getOwnerUsername()) + " </b> wants to <b>donate</b> his/her <b>" + notification.getItemName() + "</b>.<br><small>" + notificationDate + "</small>";
+                message = "<b>" + Utils.capitalize(notification.getItem().getOwner().getUser().getUsername()) + " </b> wants to <b>donate</b> his/her <b>" + notification.getItem().getName() + "</b>.<br><small>" + notificationDate + "</small>";
                 break;
             case "buy":
-                message = "<b>" + Utils.capitalize(notification.getMakerUsername()) + " </b> wants to <b>buy</b> the <b>" + notification.getItemName() + "</b> owned by <b>" + Utils.capitalize(items.get(position).getOwnerUsername()) + "</b>.<br><small>" + notificationDate + "</small>";
+                message = "<b>" + Utils.capitalize(notification.getMaker().getUsername()) + " </b> wants to <b>buy</b> the <b>" + notification.getItem().getName() + "</b> owned by <b>" + Utils.capitalize(items.get(position).getItem().getOwner().getUser().getUsername()) + "</b>.<br><small>" + notificationDate + "</small>";
                 break;
             case "cancel":
-                message = "<b>" + Utils.capitalize(notification.getMakerUsername()) + " cancels</b> his/her reservation for <b>" + notification.getItemName() + "</b> owned by <b>" + Utils.capitalize(items.get(position).getOwnerUsername()) + "</b>.<br><small>" + notificationDate + "</small>";
+                message = "<b>" + Utils.capitalize(notification.getMaker().getUsername()) + " cancels</b> his/her reservation for <b>" + notification.getItem().getName() + "</b> owned by <b>" + Utils.capitalize(items.get(position).getItem().getOwner().getUser().getUsername()) + "</b>.<br><small>" + notificationDate + "</small>";
                 break;
             case "get":
-                message = "<b>" + Utils.capitalize(notification.getMakerUsername()) + " " + "</b> wants to <b>reserve</b> the donated item, <b>" + notification.getItemName() + "</b> owned by <b>" + Utils.capitalize(items.get(position).getOwnerUsername()) + "</b>.<br><small>" + notificationDate + "</small>";
+                message = "<b>" + Utils.capitalize(notification.getMaker().getUsername()) + " " + "</b> wants to <b>reserve</b> the donated item, <b>" + notification.getItem().getName() + "</b> owned by <b>" + Utils.capitalize(items.get(position).getItem().getOwner().getUser().getUsername()) + "</b>.<br><small>" + notificationDate + "</small>";
                 break;
             case "edit":
-                message = "<b>" + Utils.capitalize(notification.getOwnerUsername()) + " edited</b> his/her pending item, <b>" + notification.getItemName() + "</b>" + "</b>.<br><small>" + notificationDate + "</small>";
+                message = "<b>" + Utils.capitalize(notification.getItem().getOwner().getUser().getUsername()) + " edited</b> his/her pending item, <b>" + notification.getItem().getName() + "</b>" + "</b>.<br><small>" + notificationDate + "</small>";
                 break;
             case "delete":
-                message = "<b>" + Utils.capitalize(notification.getOwnerUsername()) + " deleted</b> his/her pending item, <b>" + notification.getItemName() + "</b>" + "</b>.<br><small>" + notificationDate + "</small>";
+                message = "<b>" + Utils.capitalize(notification.getItem().getOwner().getUser().getUsername()) + " deleted</b> his/her pending item, <b>" + notification.getItem().getName() + "</b>" + "</b>.<br><small>" + notificationDate + "</small>";
                 break;
             default:
                 message = "<i>This is a default notification message</i>";
-        }
+        }*/
 
-        text.setText(Html.fromHtml(message));
+        text.setText(Html.fromHtml(Utils.capitalize(notification.getMessage())));
 
         return view;
     }

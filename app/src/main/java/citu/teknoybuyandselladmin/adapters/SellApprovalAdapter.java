@@ -58,7 +58,7 @@ public class SellApprovalAdapter extends BaseAdapter implements Filterable {
     @Override
     public View getView(int position, View v, ViewGroup parent)
     {
-        SellApproval sell  = mDisplayedValues.get(position);
+        SellApproval sell  =  mDisplayedValues.get(position);
         View mView = v ;
         if(mView == null){
             LayoutInflater vi = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -68,14 +68,14 @@ public class SellApprovalAdapter extends BaseAdapter implements Filterable {
         TextView text = (TextView) mView.findViewById(R.id.textViewItem);
         ImageView image = (ImageView) mView.findViewById(R.id.image);
         Picasso.with(mContext)
-                .load(sell.getLink())
+                .load(sell.getItem().getPicture())
                 .placeholder(R.drawable.thumbsq_24dp)
                 .resize(50, 50)
                 .centerCrop()
                 .into(image);
-        requestDate = Utils.parseDate(sell.getRequestDate());
+        requestDate = Utils.parseDate(sell.getRequest_date());
         String message;
-        message = "<b>"+sell.getItemName()+"</b><br><small>"+requestDate+"</small>";
+        message = "<b>"+sell.getItem().getName()+"</b><br><small>"+requestDate+"</small>";
         text.setText(Html.fromHtml(message));
 
         return mView;
@@ -98,8 +98,8 @@ public class SellApprovalAdapter extends BaseAdapter implements Filterable {
                     results.values = mOriginalValues;
                 } else {
                     for (int i = 0; i < mOriginalValues.size(); i++) {
-                        String name = mOriginalValues.get(i).getItemName();
-                        String category = mOriginalValues.get(i).getCategory();
+                        String name = mOriginalValues.get(i).getItem().getName();
+                        String category = mOriginalValues.get(i).getItem().getCategory().getCategory_name();
                         if (category.equals(constraint.toString()) || name.toLowerCase().contains(constraint.toString().toLowerCase())) {
                             FilteredArrList.add(mOriginalValues.get(i));
                         }
@@ -128,7 +128,7 @@ public class SellApprovalAdapter extends BaseAdapter implements Filterable {
             case "price":
                 Comparator<SellApproval> priceComparator = new Comparator<SellApproval>() {
                     public int compare(SellApproval obj1, SellApproval obj2) {
-                        return obj1.getPrice() < obj2.getPrice() ? -1 : obj1.getPrice() > obj2.getPrice() ? 1 : 0;
+                        return obj1.getItem().getPrice() < obj2.getItem().getPrice() ? -1 : obj1.getItem().getPrice() > obj2.getItem().getPrice() ? 1 : 0;
                     }
                 };
                 Collections.sort(mDisplayedValues, priceComparator);
@@ -136,7 +136,7 @@ public class SellApprovalAdapter extends BaseAdapter implements Filterable {
             case "name":
                 Comparator<SellApproval> nameComparator = new Comparator<SellApproval>() {
                     public int compare(SellApproval obj1, SellApproval obj2) {
-                        return obj1.getItemName().compareTo(obj2.getItemName());
+                        return obj1.getItem().getName().compareTo(obj2.getItem().getName());
                     }
                 };
                 Collections.sort(mDisplayedValues, nameComparator);
@@ -144,7 +144,7 @@ public class SellApprovalAdapter extends BaseAdapter implements Filterable {
             default:
                 Comparator<SellApproval> dateComparator = new Comparator<SellApproval>() {
                     public int compare(SellApproval obj1, SellApproval obj2) {
-                        return obj1.getStrRequestDate().compareTo(obj2.getStrRequestDate());
+                        return obj1.getStr_request_date().compareTo(obj2.getStr_request_date());
                     }
                 };
                 Collections.sort(mDisplayedValues, Collections.reverseOrder(dateComparator));

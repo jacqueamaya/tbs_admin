@@ -17,13 +17,11 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.Utils;
-import citu.teknoybuyandselladmin.models.ReservedItem;
-import citu.teknoybuyandselladmin.models.SellApproval;
+import citu.teknoybuyandselladmin.models.Reservation;
 
 public class ReservedItemListAdapter extends BaseAdapter implements Filterable{
     private static final String TAG = "ReservedItemListAdapter";
@@ -31,10 +29,10 @@ public class ReservedItemListAdapter extends BaseAdapter implements Filterable{
     private int id;
     private String reservedDate;
 
-    private ArrayList<ReservedItem> mOriginalValues;
-    private ArrayList<ReservedItem> mDisplayedValues;
+    private ArrayList<Reservation> mOriginalValues;
+    private ArrayList<Reservation> mDisplayedValues;
 
-    public ReservedItemListAdapter(Context context, int textViewResourceId, ArrayList<ReservedItem> list)
+    public ReservedItemListAdapter(Context context, int textViewResourceId, ArrayList<Reservation> list)
     {
         mContext = context;
         id = textViewResourceId;
@@ -61,7 +59,7 @@ public class ReservedItemListAdapter extends BaseAdapter implements Filterable{
     @Override
     public View getView(int position, View v, ViewGroup parent)
     {
-        ReservedItem reservedItem = mDisplayedValues.get(position);
+        Reservation reservedItem = mDisplayedValues.get(position);
         View mView = v ;
         if(mView == null){
             LayoutInflater vi = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -71,9 +69,9 @@ public class ReservedItemListAdapter extends BaseAdapter implements Filterable{
         TextView text = (TextView) mView.findViewById(R.id.textViewItem);
 
         ImageView image = (ImageView) mView.findViewById(R.id.image);
-        Log.d(TAG, "Link: " + reservedItem.getLink());
+        Log.d(TAG, "Link: " + reservedItem.getItem().getPicture());
         Picasso.with(mContext)
-                .load(reservedItem.getLink())
+                .load(reservedItem.getItem().getPicture())
                 .placeholder(R.drawable.thumbsq_24dp)
                 .resize(50, 50)
                 .centerCrop()
@@ -81,9 +79,9 @@ public class ReservedItemListAdapter extends BaseAdapter implements Filterable{
 
         if(reservedItem != null )
         {
-            reservedDate = Utils.parseDate(reservedItem.getReservedDate());
+            reservedDate = Utils.parseDate(reservedItem.getReserved_date());
             String message;
-            message = "<b>" + reservedItem.getItemName() + "</b><br><small>"+reservedDate+"</small>";
+            message = "<b>" + reservedItem.getItem().getName() + "</b><br><small>"+reservedDate+"</small>";
             text.setText(Html.fromHtml(message));
         }
 
@@ -96,11 +94,11 @@ public class ReservedItemListAdapter extends BaseAdapter implements Filterable{
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();
-                List<ReservedItem> FilteredArrList = new ArrayList<ReservedItem>();
+                List<Reservation> FilteredArrList = new ArrayList<Reservation>();
                 String searchByCategory[] = constraint.toString().split(",");
 
                 if (mOriginalValues == null) {
-                    mOriginalValues = new ArrayList<ReservedItem>(mDisplayedValues); // saves the original data in mOriginalValues
+                    mOriginalValues = new ArrayList<Reservation>(mDisplayedValues); // saves the original data in mOriginalValues
                 }
 
                 if (constraint == "" || constraint.length() == 0 || searchByCategory.length == 0) {
@@ -109,8 +107,8 @@ public class ReservedItemListAdapter extends BaseAdapter implements Filterable{
                     results.values = mOriginalValues;
                 } else {
                     for (int i = 0; i < mOriginalValues.size(); i++) {
-                        String name = mOriginalValues.get(i).getItemName();
-                        String category = mOriginalValues.get(i).getCategory();
+                        String name = mOriginalValues.get(i).getItem().getName();
+                        String category = mOriginalValues.get(i).getItem().getCategory().getCategory_name();
                         if(searchByCategory.length == 2) {
                             if (category.equals(searchByCategory[1]) && name.toLowerCase().contains(searchByCategory[0].toLowerCase())) {
                                 FilteredArrList.add(mOriginalValues.get(i));
@@ -130,38 +128,38 @@ public class ReservedItemListAdapter extends BaseAdapter implements Filterable{
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                mDisplayedValues = (ArrayList<ReservedItem>) results.values;
+                mDisplayedValues = (ArrayList<Reservation>) results.values;
                 notifyDataSetChanged();
             }
         };
     }
 
-    public List<ReservedItem> getDisplayView() {
+    public List<Reservation> getDisplayView() {
         return mDisplayedValues;
     }
 
     public void sortItems(String sortBy) {
         switch (sortBy) {
             case "price":
-                Comparator<ReservedItem> priceComparator = new Comparator<ReservedItem>() {
-                    public int compare(ReservedItem obj1, ReservedItem obj2) {
-                        return obj1.getPrice() < obj2.getPrice() ? -1 : obj1.getPrice() > obj2.getPrice() ? 1 : 0;
+                Comparator<Reservation> priceComparator = new Comparator<Reservation>() {
+                    public int compare(Reservation obj1, Reservation obj2) {
+                        return obj1.getItem().getPrice() < obj2.getItem().getPrice() ? -1 : obj1.getItem().getPrice() > obj2.getItem().getPrice() ? 1 : 0;
                     }
                 };
                 Collections.sort(mDisplayedValues, priceComparator);
                 break;
             case "name":
-                Comparator<ReservedItem> nameComparator = new Comparator<ReservedItem>() {
-                    public int compare(ReservedItem obj1, ReservedItem obj2) {
-                        return obj1.getItemName().compareTo(obj2.getItemName());
+                Comparator<Reservation> nameComparator = new Comparator<Reservation>() {
+                    public int compare(Reservation obj1, Reservation obj2) {
+                        return obj1.getItem().getName().compareTo(obj2.getItem().getName());
                     }
                 };
                 Collections.sort(mDisplayedValues, nameComparator);
                 break;
             default:
-                Comparator<ReservedItem> dateComparator = new Comparator<ReservedItem>() {
-                    public int compare(ReservedItem obj1, ReservedItem obj2) {
-                        return obj1.getReservedDate() < obj2.getReservedDate() ? -1 : obj1.getReservedDate() > obj2.getReservedDate() ? 1 : 0;
+                Comparator<Reservation> dateComparator = new Comparator<Reservation>() {
+                    public int compare(Reservation obj1, Reservation obj2) {
+                        return obj1.getReserved_date() < obj2.getReserved_date() ? -1 : obj1.getReserved_date() > obj2.getReserved_date() ? 1 : 0;
                     }
                 };
                 Collections.sort(mDisplayedValues, Collections.reverseOrder(dateComparator));

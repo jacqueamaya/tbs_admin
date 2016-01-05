@@ -17,102 +17,58 @@ import citu.teknoybuyandselladmin.Utils;
  */
 public class DonateApproval {
 
-    private static final String TAG = "DonateApproval";
+    private int id;
+    private UserProfile donor;
+    private Item item;
+    private long request_date;
+    private long request_expiration;
+    private String str_request_date = Utils.parseDate(request_date);
 
-    public static final String REQUEST_DATE = "request_date";
-    public static final String REQUEST_EXPIRATION = "request_expiration";
-    public static final String REQUEST_ID = "id";
-    public static final String ITEM = "item";
-    public static final String ITEM_ID = "id";
-    public static final String ITEM_NAME = "name";
-    public static final String DESCRIPTION = "description";
-    public static final String PICTURE = "picture";
-    public static final String CATEGORY = "category";
-
-    private String itemName;
-    private String itemCategory;
-    private String details;
-    private String link;
-    private String strRequestDate;
-
-    private int requestId;
-    private int itemId;
-
-    private long requestDate;
-    private long requestExpiration;
-
-    public String getItemName() {
-        return itemName;
+    public String getStr_request_date() {
+        return str_request_date;
     }
 
-    public long getRequestDate() {
-        return requestDate;
+   /* public void setStr_request_date(long request_date) {
+        str_request_date = Utils.parseDate(request_date);
+    }*/
+
+    public int getId() {
+        return id;
     }
 
-    public int getRequestId() {
-        return requestId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public int getItemId() {
-        return itemId;
+    public UserProfile getDonor() {
+        return donor;
     }
 
-    public String getDetails() {
-        return details;
+    public void setDonor(UserProfile donor) {
+        this.donor = donor;
     }
 
-    public String getLink() {
-        return link;
+    public Item getItem() {
+        return item;
     }
 
-    public long getRequestExpiration() {
-        return requestExpiration;
+    public void setItem(Item item) {
+        this.item = item;
     }
 
-    public String getItemCategory() {
-        return itemCategory;
+    public long getRequest_date() {
+        return request_date;
     }
 
-    public String getStrRequestDate() {
-        return strRequestDate;
+    public void setRequest_date(long request_date) {
+        this.request_date = request_date;
     }
 
-    public static DonateApproval asSingle(JSONObject jsonObject) {
-        DonateApproval donateApproval = new DonateApproval();
-
-        try {
-            donateApproval.requestDate = jsonObject.getLong(REQUEST_DATE);
-            donateApproval.strRequestDate = Utils.parseDate(donateApproval.requestDate);
-            donateApproval.requestId = jsonObject.getInt(REQUEST_ID);
-            donateApproval.requestExpiration = jsonObject.getLong(REQUEST_EXPIRATION);
-
-            JSONObject item = jsonObject.getJSONObject(ITEM);
-            donateApproval.itemName = item.getString(ITEM_NAME);
-            donateApproval.itemId = item.getInt(ITEM_ID);
-            donateApproval.details = item.getString(DESCRIPTION);
-            donateApproval.link = item.getString(PICTURE);
-            donateApproval.itemCategory = item.optString(CATEGORY);
-
-        } catch (JSONException e) {
-            Log.e(TAG, "Error extracting data from JSON", e);
-        }
-
-        return donateApproval;
+    public long getRequest_expiration() {
+        return request_expiration;
     }
 
-    public static ArrayList<DonateApproval> asList(JSONArray jsonArray) {
-        ArrayList<DonateApproval> donatedItems = new ArrayList<>(jsonArray.length());
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                JSONObject requestObject = jsonArray.getJSONObject(i);
-                DonateApproval donate = DonateApproval.asSingle(requestObject);
-                donatedItems.add(donate);
-            } catch (JSONException e) {
-                Log.e(TAG, "Error getting JSONObject at index#" + i, e);
-            }
-        }
-
-        return donatedItems;
+    public void setRequest_expiration(long request_expiration) {
+        this.request_expiration = request_expiration;
     }
 }
