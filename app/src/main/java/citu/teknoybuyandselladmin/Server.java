@@ -106,7 +106,7 @@ public final class Server {
     public static void approveDonatedItem(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
         if (!data.containsKey("request_id") ||
                 !data.containsKey("item_id") ||
-                !data.containsKey("activity_category") ||
+                !data.containsKey("category") ||
                 !data.containsKey("stars_required")) {
             throw new RuntimeException("Missing data.");
         }

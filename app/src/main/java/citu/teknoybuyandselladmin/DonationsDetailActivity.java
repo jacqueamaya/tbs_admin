@@ -35,7 +35,6 @@ public class DonationsDetailActivity extends BaseActivity {
     private static final String TAG = "DonationsDetailActivity";
     private static final String ITEM_ID = "item_id";
     private static final String STARS_REQUIRED = "stars_required";
-    private static final String CATEGORY = "activity_category";
     public static final String CATEGORY_ITEM = "category";
 
     private int mRequestId;
@@ -186,7 +185,7 @@ public class DonationsDetailActivity extends BaseActivity {
         data.put(ITEM_ID,mItemId+"");
         data.put(REQUEST_ID, mRequestId + "");
         data.put(STARS_REQUIRED, mTxtStars.getText().toString());
-        data.put(CATEGORY, mTxtCategory.getText().toString());
+        data.put(CATEGORY_ITEM, mTxtCategory.getText().toString());
 
         donationProgress.setIndeterminate(true);
         donationProgress.setMessage("Please wait. . ");
