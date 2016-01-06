@@ -133,6 +133,7 @@ public class RentedItemsActivity extends BaseActivity {
                             intent = new Intent(RentedItemsActivity.this, RentedItemDetailActivity.class);
                             intent.putExtra("itemId", rentedItem.getItem().getId());
                             intent.putExtra("rentId", rentedItem.getId());
+                            intent.putExtra("renter", rentedItem.getRenter().getUsername());
                             intent.putExtra("itemName", rentedItem.getItem().getName());
                             intent.putExtra("itemPrice", rentedItem.getItem().getPrice());
                             intent.putExtra("itemDetail", rentedItem.getItem().getDescription());

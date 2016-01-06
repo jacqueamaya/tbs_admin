@@ -36,14 +36,16 @@ public class RentedItemDetailActivity extends BaseActivity {
     private String mItemDetail;
     private String mItemLink;
     private String mItemCode;
+    private String mRenter;
 
     private TextView mTxtTitle;
     private TextView mTxtPrice;
     private TextView mTxtDetails;
+    private TextView mTxtRentedBy;
 
     private ImageView mThumbnail;
-    private Button mBtnAvailable;
-    private Button mBtnClaimed;
+    private Button  mBtnReturned;
+    private Button mBtnNotify;
 
     private ProgressDialog mRentProgress;
 
@@ -51,7 +53,7 @@ public class RentedItemDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reserved_detail);
+        setContentView(R.layout.activity_rented_item_detail);
         setupUI();
 
         Intent intent = getIntent();
@@ -64,13 +66,15 @@ public class RentedItemDetailActivity extends BaseActivity {
         mItemStarsRequired = intent.getIntExtra("itemStarsRequired", 0);
         mItemQuantity =  intent.getIntExtra("itemQuantity", 0);
         mItemCode = intent.getStringExtra("itemCode");
+        mRenter = intent.getStringExtra("renter");
 
         mTxtTitle = (TextView) findViewById(R.id.txtTitle);
+        mTxtRentedBy = (TextView) findViewById(R.id.txtRentedBy);
         mTxtPrice = (TextView) findViewById(R.id.txtPriceLabel);
         mTxtDetails = (TextView) findViewById(R.id.txtDetails);
         mThumbnail = (ImageView) findViewById(R.id.imgThumbnail);
-        mBtnAvailable = (Button) findViewById(R.id.imgItemReturned);
-        mBtnClaimed = (Button) findViewById(R.id.imgNotify);
+        mBtnReturned = (Button) findViewById(R.id.btnReturned);
+        mBtnNotify = (Button) findViewById(R.id.btnNotify);
 
         mRentProgress = new ProgressDialog(this);
         mRentProgress.setCancelable(false);
@@ -84,6 +88,7 @@ public class RentedItemDetailActivity extends BaseActivity {
                 .load(mItemLink)
                 .into(mThumbnail);
         mTxtTitle.setText(mItemName);
+        mTxtRentedBy.setText("Rented by: "+mRenter);
         mTxtDetails.setText(mItemDetail);
         if(mItemStarsRequired == 0) {
             mTxtPrice.setText("Price: PHP " + Utils.formatFloat(mItemPrice));
@@ -94,7 +99,7 @@ public class RentedItemDetailActivity extends BaseActivity {
     }
 
     public void onReturned(View view) {
-        Utils.alert(RentedItemDetailActivity.this, "Return Item", "Set item status to available?", new Utils.Callbacks() {
+        Utils.alert(RentedItemDetailActivity.this, "Return Item", "Return rented item?", new Utils.Callbacks() {
             @Override
             public void ok() {
                 setItemReturned();

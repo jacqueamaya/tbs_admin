@@ -47,10 +47,22 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txtPriceLabel"
+                    android:id="@+id/txtRentedBy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtTitle"
+                    android:layout_marginLeft="23dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_toRightOf="@id/imgThumbnail"
+                    android:textColor="@color/Gray"
+                    android:textSize="20dp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/txtPriceLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtRentedBy"
                     android:layout_marginLeft="23dp"
                     android:layout_marginRight="16dp"
                     android:layout_toRightOf="@id/imgThumbnail"
@@ -88,7 +100,7 @@
                     android:orientation="vertical">
 
                     <Button
-                        android:id="@+id/imgItemReturned"
+                        android:id="@+id/btnReturned"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginBottom="10dp"
@@ -96,20 +108,21 @@
                         android:layout_marginRight="10dp"
                         android:background="@drawable/positivebutton"
                         android:onClick="onReturned"
+                        android:src="@drawable/button_sell"
                         android:text="Returned"
                         android:textColor="@color/White" />
 
                     <Button
-                        android:id="@+id/imgNotify"
+                        android:id="@+id/btnNotify"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:layout_below="@+id/btnApprove"
                         android:layout_marginBottom="10dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:onClick="onNotifyRenter"
                         android:background="@drawable/negativebutton"
-                        android:text="NotifyRenter"
+                        android:onClick="onNotifyRenter"
+                        android:src="@drawable/button_sell"
+                        android:text="Notify Renter"
                         android:textColor="@color/Louie" />
 
                 </LinearLayout>
