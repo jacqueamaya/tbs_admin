@@ -145,7 +145,7 @@ public class DonateApprovalAdapter extends BaseAdapter implements Filterable {
             default:
                 Comparator<DonateApproval> dateComparator = new Comparator<DonateApproval>() {
                     public int compare(DonateApproval obj1, DonateApproval obj2) {
-                        return obj1.getStr_request_date().compareTo(obj2.getStr_request_date());
+                        return Utils.parseDate(obj1.getRequest_date()).compareTo(Utils.parseDate(obj2.getRequest_date()));
                     }
                 };
                 Collections.sort(mDisplayedValues, Collections.reverseOrder(dateComparator));

@@ -29,7 +29,6 @@ import java.util.Map;
 
 import citu.teknoybuyandselladmin.models.Category;
 
-
 public class DonationsDetailActivity extends BaseActivity {
     private static final String REQUEST_ID = "request_id";
     private static final String TAG = "DonationsDetailActivity";

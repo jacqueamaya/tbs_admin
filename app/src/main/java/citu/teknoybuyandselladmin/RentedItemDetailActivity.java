@@ -38,10 +38,15 @@ public class RentedItemDetailActivity extends BaseActivity {
     private String mItemCode;
     private String mRenter;
 
+    private long mRentDate;
+    private long mRentExpiry;
+
     private TextView mTxtTitle;
     private TextView mTxtPrice;
     private TextView mTxtDetails;
     private TextView mTxtRentedBy;
+    private TextView mTxtRentDate;
+    private TextView mTxtRentExpiry;
 
     private ImageView mThumbnail;
     private Button  mBtnReturned;
@@ -67,6 +72,8 @@ public class RentedItemDetailActivity extends BaseActivity {
         mItemQuantity =  intent.getIntExtra("itemQuantity", 0);
         mItemCode = intent.getStringExtra("itemCode");
         mRenter = intent.getStringExtra("renter");
+        mRentDate = intent.getLongExtra("rentDate", 0);
+        mRentExpiry = intent.getLongExtra("rentExpiry", 0);
 
         mTxtTitle = (TextView) findViewById(R.id.txtTitle);
         mTxtRentedBy = (TextView) findViewById(R.id.txtRentedBy);
@@ -75,6 +82,8 @@ public class RentedItemDetailActivity extends BaseActivity {
         mThumbnail = (ImageView) findViewById(R.id.imgThumbnail);
         mBtnReturned = (Button) findViewById(R.id.btnReturned);
         mBtnNotify = (Button) findViewById(R.id.btnNotify);
+        mTxtRentDate = (TextView) findViewById(R.id.txtRentDate);
+        mTxtRentExpiry = (TextView) findViewById(R.id.txtRentExpiry);
 
         mRentProgress = new ProgressDialog(this);
         mRentProgress.setCancelable(false);
@@ -88,8 +97,11 @@ public class RentedItemDetailActivity extends BaseActivity {
                 .load(mItemLink)
                 .into(mThumbnail);
         mTxtTitle.setText(mItemName);
-        mTxtRentedBy.setText("Rented by: "+mRenter);
+        mTxtRentedBy.setText("Rented by: " + mRenter);
+        mTxtRentDate.setText("Rent Date: " + Utils.parseDate(mRentDate));
+        mTxtRentExpiry.setText("Rent Expiration: " + Utils.parseDate(mRentExpiry));
         mTxtDetails.setText(mItemDetail);
+
         if(mItemStarsRequired == 0) {
             mTxtPrice.setText("Price: PHP " + Utils.formatFloat(mItemPrice));
         } else {

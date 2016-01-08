@@ -17,11 +17,12 @@
     <string name="title_activity_transactions">Transactions</string>
     <string name="title_activity_dashboard">DashboardActivity</string>
 
-    <string name="theader_id">ID</string>
+    <string name="theader_num">NO</string>
     <string name="theader_type">TYPE</string>
-    <string name="theader_seller">SELLER</string>
-    <string name="theader_buyer">BUYER</string>
+    <string name="theader_seller">OWNED BY</string>
+    <string name="theader_buyer">RECEIVED BY</string>
     <string name="theader_date">DATE</string>
+    <string name="theader_item_code">ITEM CODE</string>
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
@@ -55,6 +56,6 @@
     <string name="title_activity_reserved_detail">Reserved Item Detail</string>
     <string name="action_search">Search</string>
     <string name="title_activity_splash">SplashActivity</string>
-    <string name="title_activity_rented_items">RentedItemsActivity</string>
+    <string name="title_activity_rented_items">Rented Items</string>
     <string name="title_activity_rented_item_detail">RentedItemDetailActivity</string>
 </resources>

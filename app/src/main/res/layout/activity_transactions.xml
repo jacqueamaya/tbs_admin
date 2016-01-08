@@ -42,6 +42,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
                 <TableLayout
                     android:id="@+id/transactionTable"
                     android:layout_width="match_parent"
@@ -51,7 +55,8 @@
                     android:layout_alignParentTop="true"
                     android:background="@color/White"
                     android:orientation="vertical"
-                    android:stretchColumns="*">
+                    android:stretchColumns="*"
+                    android:scrollbarAlwaysDrawHorizontalTrack="true">
 
                     <TableRow
                         android:id="@+id/row"
@@ -61,59 +66,86 @@
 
                         <TextView
                             android:id="@+id/transactionId"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".1"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
                             android:gravity="center_horizontal"
                             android:paddingBottom="5dp"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:paddingTop="5dp"
-                            android:text="@string/theader_id"
-                            android:textStyle="bold" />
+                            android:text="@string/theader_num"
+                            android:textStyle="bold"
+                            android:textSize="12sp"/>
+
+                        <TextView
+                            android:id="@+id/type"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingTop="5dp"
+                            android:text="@string/theader_type"
+                            android:textStyle="bold"
+                            android:textSize="12sp"/>
+
+                        <TextView
+                            android:id="@+id/item_code"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingTop="5dp"
+                            android:text="@string/theader_item_code"
+                            android:textStyle="bold"
+                            android:textSize="12sp"/>
 
                         <TextView
                             android:id="@+id/seller"
-                            android:layout_width="0dp"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight=".3"
                             android:gravity="center_horizontal"
                             android:paddingBottom="5dp"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:paddingTop="5dp"
                             android:text="@string/theader_seller"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:textSize="12sp"/>
 
                         <TextView
                             android:id="@+id/buyer"
-                            android:layout_width="0dp"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight=".3"
                             android:gravity="center_horizontal"
                             android:paddingBottom="5dp"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:paddingTop="5dp"
                             android:text="@string/theader_buyer"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:textSize="12sp"/>
 
                         <TextView
                             android:id="@+id/transactionDate"
-                            android:layout_width="0dp"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight=".3"
                             android:gravity="center_horizontal"
                             android:paddingBottom="5dp"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:paddingTop="5dp"
                             android:text="@string/theader_date"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:textSize="12sp"/>
 
                     </TableRow>
 
                 </TableLayout>
+                </HorizontalScrollView>
 
             </ScrollView>
 

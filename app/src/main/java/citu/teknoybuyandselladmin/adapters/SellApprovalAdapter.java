@@ -144,7 +144,7 @@ public class SellApprovalAdapter extends BaseAdapter implements Filterable {
             default:
                 Comparator<SellApproval> dateComparator = new Comparator<SellApproval>() {
                     public int compare(SellApproval obj1, SellApproval obj2) {
-                        return obj1.getStr_request_date().compareTo(obj2.getStr_request_date());
+                        return Utils.parseDate(obj1.getRequest_date()).compareTo(Utils.parseDate(obj2.getRequest_date()));
                     }
                 };
                 Collections.sort(mDisplayedValues, Collections.reverseOrder(dateComparator));

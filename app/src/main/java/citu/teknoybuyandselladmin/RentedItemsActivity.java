@@ -55,7 +55,7 @@ public class RentedItemsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reserved_items);
+        setContentView(R.layout.activity_rented_items);
         setupUI();
 
         txtCategory = (TextView) findViewById(R.id.txtCategory);
@@ -99,12 +99,11 @@ public class RentedItemsActivity extends BaseActivity {
                 ListView lv = (ListView) findViewById(R.id.listViewReserved);
 
                 if (rentedItems.size() == 0) {
-                    txtMessage.setText("No reserved items");
+                    txtMessage.setText("No rented items");
                     txtMessage.setVisibility(View.VISIBLE);
                     lv.setVisibility(View.GONE);
                 } else {
                     txtMessage.setVisibility(View.GONE);
-                    //reserved = Reservation.asList(jsonArray);
                     listAdapter = new RentedItemAdapter(RentedItemsActivity.this, R.layout.list_item, rentedItems);
                     listAdapter.sortItems(lowerCaseSort);
                     lv.setAdapter(listAdapter);
@@ -141,6 +140,8 @@ public class RentedItemsActivity extends BaseActivity {
                             intent.putExtra("itemStarsRequired", rentedItem.getItem().getStars_required());
                             intent.putExtra("itemQuantity", rentedItem.getQuantity());
                             intent.putExtra("itemCode", rentedItem.getItem_code());
+                            intent.putExtra("rentDate", rentedItem.getRent_date());
+                            intent.putExtra("rentExpiry", rentedItem.getRent_expiration());
                             startActivity(intent);
                         }
                     });
@@ -158,7 +159,7 @@ public class RentedItemsActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_reserved_items, menu);
+        inflater.inflate(R.menu.menu_rented_items, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
@@ -199,7 +200,7 @@ public class RentedItemsActivity extends BaseActivity {
 
     @Override
     public boolean checkItemClicked(MenuItem menuItem) {
-        return menuItem.getItemId() != R.id.nav_reserved_items;
+        return menuItem.getItemId() != R.id.nav_rented_items;
     }
 
     @Override

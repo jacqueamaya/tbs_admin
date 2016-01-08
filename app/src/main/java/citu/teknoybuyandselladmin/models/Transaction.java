@@ -4,9 +4,18 @@ public class Transaction {
 
     private int id;
     private Item item;
+    private String item_code;
     private UserProfile buyer;
     private UserProfile seller;
     private long date_claimed;
+
+    public String getItem_code() {
+        return item_code;
+    }
+
+    public void setItem_code(String item_code) {
+        this.item_code = item_code;
+    }
 
     public long getDate_claimed() {
         return date_claimed;

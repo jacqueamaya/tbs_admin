@@ -71,9 +71,6 @@ public class DonationsActivity extends BaseActivity {
             @Override
             public void success(String responseBody) {
                 ArrayList<DonateApproval> donateRequests = new ArrayList<DonateApproval>();
-               // JSONArray jsonArray = null;
-               // try {
-               //     jsonArray = new JSONArray(responseBody);
                 donateRequests = gson.fromJson(responseBody,new TypeToken<ArrayList<DonateApproval>>(){}.getType());
                     if (donateRequests.size() == 0) {
                         txtMessage.setText("No donate requests available");
@@ -122,10 +119,6 @@ public class DonationsActivity extends BaseActivity {
                             }
                         });
                     }
-
-               /* } catch (JSONException e1) {
-                    e1.printStackTrace();
-                }*/
             }
 
             @Override
