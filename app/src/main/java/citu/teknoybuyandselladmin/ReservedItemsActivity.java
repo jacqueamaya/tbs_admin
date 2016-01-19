@@ -208,6 +208,9 @@ public class ReservedItemsActivity extends BaseActivity {
         super.onResume();
         txtCategory.setText("Categories");
         getReservedItems();
+
+        Intent service = new Intent(ReservedItemsActivity.this, ExpirationCheckerService.class);
+        startService(service);
     }
 
     public void getCategories() {

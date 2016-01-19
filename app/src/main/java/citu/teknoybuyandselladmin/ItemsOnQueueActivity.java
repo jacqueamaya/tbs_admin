@@ -189,5 +189,8 @@ public class ItemsOnQueueActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         getSellRequests();
+
+        Intent service = new Intent(ItemsOnQueueActivity.this, ExpirationCheckerService.class);
+        startService(service);
     }
 }

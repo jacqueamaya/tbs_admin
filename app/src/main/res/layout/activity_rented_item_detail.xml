@@ -85,7 +85,7 @@
                     android:id="@+id/txtPriceLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/txtRentedBy"
+                    android:layout_below="@+id/txtRentExpiry"
                     android:layout_marginLeft="23dp"
                     android:layout_marginRight="16dp"
                     android:layout_toRightOf="@id/imgThumbnail"

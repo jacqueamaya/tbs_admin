@@ -158,4 +158,14 @@ public class NotificationsActivity extends BaseActivity {
     public boolean checkItemClicked(MenuItem menuItem) {
         return menuItem.getItemId() != R.id.nav_notifications;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        getNotifications();
+        Log.e(TAG,"onResume Notification");
+        Intent service = new Intent(NotificationsActivity.this, ExpirationCheckerService.class);
+        startService(service);
+    }
 }

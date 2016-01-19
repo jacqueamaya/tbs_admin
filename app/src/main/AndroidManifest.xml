@@ -78,6 +78,10 @@
         <activity
             android:name=".RentedItemDetailActivity"
             android:label="@string/title_activity_rented_item_detail"></activity>
+
+        <service
+            android:name=".ExpirationCheckerService"
+            android:exported="false" />
     </application>
 
 </manifest>

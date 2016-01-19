@@ -208,6 +208,9 @@ public class RentedItemsActivity extends BaseActivity {
         super.onResume();
         txtCategory.setText("Categories");
         getRentedItems();
+
+        Intent service = new Intent(RentedItemsActivity.this, ExpirationCheckerService.class);
+        startService(service);
     }
 
     public void getCategories() {

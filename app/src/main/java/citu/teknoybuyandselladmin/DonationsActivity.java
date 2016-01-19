@@ -181,5 +181,8 @@ public class DonationsActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         getDonatedItems();
+
+        Intent service = new Intent(DonationsActivity.this, ExpirationCheckerService.class);
+        startService(service);
     }
 }

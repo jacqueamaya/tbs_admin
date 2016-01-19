@@ -1,5 +1,6 @@
 package citu.teknoybuyandselladmin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -81,5 +82,13 @@ public class TransactionsActivity extends BaseActivity {
     @Override
     public boolean checkItemClicked(MenuItem menuItem) {
         return menuItem.getItemId() != R.id.nav_transactions;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Intent service = new Intent(TransactionsActivity.this, ExpirationCheckerService.class);
+        startService(service);
     }
 }
