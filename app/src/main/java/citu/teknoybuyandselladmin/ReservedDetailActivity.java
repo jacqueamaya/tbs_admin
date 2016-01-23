@@ -120,7 +120,9 @@ public class ReservedDetailActivity extends BaseActivity {
         mReserveProgress.setIndeterminate(true);
         mReserveProgress.setMessage("Please wait. . .");
 
+        Log.e(TAG, data.toString());
         Server.itemAvailable(data, mReserveProgress, new Ajax.Callbacks() {
+
             @Override
             public void success(String responseBody) {
                 try {

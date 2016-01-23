@@ -218,8 +218,6 @@ public class ReservedItemsActivity extends BaseActivity {
         Server.getCategories(mProgressBar, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
-                //try {
-                    //JSONArray json = new JSONArray(responseBody);
                     if (!("".equals(responseBody))) {
                         categories = gson.fromJson(responseBody, Category[].class);
                         categoryNames = new String[categories.length];
@@ -229,9 +227,6 @@ public class ReservedItemsActivity extends BaseActivity {
                     } else {
                         Toast.makeText(ReservedItemsActivity.this, "Empty categories", Toast.LENGTH_SHORT).show();
                     }
-               /* } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
             }
 
             @Override

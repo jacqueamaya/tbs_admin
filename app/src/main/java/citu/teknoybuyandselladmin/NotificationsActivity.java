@@ -58,11 +58,8 @@ public class NotificationsActivity extends BaseActivity {
             @Override
             public void success(String responseBody) {
                 ArrayList<Notification> notifications = new ArrayList<Notification>();
-                //JSONArray jsonArray = null;
                 notifications = gson.fromJson(responseBody, new TypeToken<ArrayList<Notification>>(){}.getType());
 
-               // try {
-                   // jsonArray = new JSONArray(responseBody);
                     if (notifications.size() == 0) {
                         txtMessage.setText("No new notifications");
                         txtMessage.setVisibility(View.VISIBLE);

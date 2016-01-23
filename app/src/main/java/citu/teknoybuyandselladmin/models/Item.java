@@ -16,7 +16,7 @@ public class Item {
     private String picture;
     private int stars_required;
     private int stars_to_use;
-    private double date_approved;
+    private long date_approved;
 
     public int getId() {
         return id;
@@ -114,11 +114,11 @@ public class Item {
         this.stars_to_use = stars_to_use;
     }
 
-    public double getDate_approved() {
+    public long getDate_approved() {
         return date_approved;
     }
 
-    public void setDate_approved(double date_approved) {
+    public void setDate_approved(long date_approved) {
         this.date_approved = date_approved;
     }
 }

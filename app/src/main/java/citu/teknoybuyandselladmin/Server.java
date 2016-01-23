@@ -141,6 +141,7 @@ public final class Server {
     }
 
     public static void itemClaimed(Map<String, String> data, ProgressDialog progressDialog, Ajax.Callbacks callbacks) {
+        Log.e(TAG,data.toString());
         if (!data.containsKey("request_id") ||
                 !data.containsKey("item_id")) {
             throw new RuntimeException("Missing data.");
