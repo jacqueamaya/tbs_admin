@@ -23,14 +23,12 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.util.ArrayList;
 
 import citu.teknoybuyandselladmin.adapters.ReservedItemListAdapter;
 import citu.teknoybuyandselladmin.models.Category;
 import citu.teknoybuyandselladmin.models.Reservation;
+import citu.teknoybuyandselladmin.services.ExpirationCheckerService;
 
 
 public class ReservedItemsActivity extends BaseActivity {

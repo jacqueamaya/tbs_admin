@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".AdminApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_logo"
         android:label="@string/app_name"
@@ -80,7 +81,10 @@
             android:label="@string/title_activity_rented_item_detail"></activity>
 
         <service
-            android:name=".ExpirationCheckerService"
+            android:name=".services.ExpirationCheckerService"
+            android:exported="false" />
+        <service
+            android:name=".services.NotificationService"
             android:exported="false" />
     </application>
 

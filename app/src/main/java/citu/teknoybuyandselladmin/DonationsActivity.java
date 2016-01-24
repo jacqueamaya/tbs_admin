@@ -1,9 +1,7 @@
 package citu.teknoybuyandselladmin;
 
-import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,20 +16,15 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.util.ArrayList;
 
 import citu.teknoybuyandselladmin.adapters.DonateApprovalAdapter;
-import citu.teknoybuyandselladmin.models.Category;
 import citu.teknoybuyandselladmin.models.DonateApproval;
-import citu.teknoybuyandselladmin.models.SellApproval;
+import citu.teknoybuyandselladmin.services.ExpirationCheckerService;
 
 
 public class DonationsActivity extends BaseActivity {

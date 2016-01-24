@@ -1,9 +1,7 @@
 package citu.teknoybuyandselladmin;
 
-import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,26 +11,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.util.ArrayList;
 
 import citu.teknoybuyandselladmin.adapters.SellApprovalAdapter;
-import citu.teknoybuyandselladmin.models.Category;
-import citu.teknoybuyandselladmin.models.Notification;
 import citu.teknoybuyandselladmin.models.SellApproval;
+import citu.teknoybuyandselladmin.services.ExpirationCheckerService;
 
 
 public class ItemsOnQueueActivity extends BaseActivity {
