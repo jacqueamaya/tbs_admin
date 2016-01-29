@@ -2,20 +2,18 @@ package citu.teknoybuyandselladmin.models;
 
 
 import citu.teknoybuyandselladmin.Utils;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class Reservation {
+public class Reservation extends RealmObject{
 
+    @PrimaryKey
     private int id;
     private UserProfile buyer;
     private Item item;
     private long reserved_date;
     private long reserved_expiration;
     private String status;
-    private String str_reserved_date = Utils.parseDate(reserved_date);
-
-    public String getStr_reserved_date() {
-        return str_reserved_date;
-    }
 
     public int getId() {
         return id;
@@ -64,4 +62,5 @@ public class Reservation {
     public void setStatus(String status) {
         this.status = status;
     }
+
 }

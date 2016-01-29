@@ -47,6 +47,7 @@ public final class Ajax {
                 progressBar.setProgress(0);
             }
 
+
             @Override
             protected HashMap<String, Object> doInBackground(String... params) {
 

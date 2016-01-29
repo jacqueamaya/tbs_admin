@@ -3,7 +3,6 @@ package citu.teknoybuyandselladmin;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -13,13 +12,11 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.util.ArrayList;
 
 import citu.teknoybuyandselladmin.adapters.TransactionAdapter;
 import citu.teknoybuyandselladmin.models.Transaction;
+import citu.teknoybuyandselladmin.services.ExpirationCheckerService;
 
 
 public class TransactionsActivity extends BaseActivity {

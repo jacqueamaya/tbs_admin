@@ -1,36 +1,22 @@
 package citu.teknoybuyandselladmin.models;
 
-import android.util.Log;
-
-import com.bumptech.glide.util.Util;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import citu.teknoybuyandselladmin.Utils;
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Batistil on 9/20/2015.
  */
-public class DonateApproval {
+public class DonateApproval extends RealmObject{
 
+    @PrimaryKey
     private int id;
     private UserProfile donor;
     private Item item;
     private long request_date;
     private long request_expiration;
-    private String str_request_date = Utils.parseDate(request_date);
-
-    public String getStr_request_date() {
-        return str_request_date;
-    }
-
-   /* public void setStr_request_date(long request_date) {
-        str_request_date = Utils.parseDate(request_date);
-    }*/
 
     public int getId() {
         return id;

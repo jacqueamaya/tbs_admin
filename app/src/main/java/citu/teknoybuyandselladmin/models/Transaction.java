@@ -1,13 +1,20 @@
 package citu.teknoybuyandselladmin.models;
 
-public class Transaction {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
+public class Transaction extends RealmObject{
+
+    @PrimaryKey
     private int id;
     private Item item;
     private String item_code;
     private UserProfile buyer;
     private UserProfile seller;
     private long date_claimed;
+    private float total_payment;
+    private float user_share;
+    private float tbs_share;
 
     public String getItem_code() {
         return item_code;
@@ -57,8 +64,27 @@ public class Transaction {
         this.seller = seller;
     }
 
+    public float getTotal_payment() {
+        return total_payment;
+    }
 
+    public void setTotal_payment(float total_payment) {
+        this.total_payment = total_payment;
+    }
 
+    public float getUser_share() {
+        return user_share;
+    }
 
+    public void setUser_share(float user_share) {
+        this.user_share = user_share;
+    }
 
+    public float getTbs_share() {
+        return tbs_share;
+    }
+
+    public void setTbs_share(float tbs_share) {
+        this.tbs_share = tbs_share;
+    }
 }

@@ -1,154 +1,94 @@
 package citu.teknoybuyandselladmin;
 
-import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import citu.teknoybuyandselladmin.adapters.NotificationListAdapter;
+import citu.teknoybuyandselladmin.adapters.NotificationAdapter;
 import citu.teknoybuyandselladmin.models.Notification;
+import citu.teknoybuyandselladmin.services.NotificationService;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 
 public class NotificationsActivity extends BaseActivity {
 
     private static final String TAG = "NotificationsActivity";
-
-    private Notification notif;
-    private ProgressDialog readProgress;
-    private ProgressBar mProgressBar;
-
     public static final String NOTIFICATION_ID = "notification_id";
 
+    private Notification notification;
+    private ProgressBar mProgressBar;
+    private TextView mTxtMessage;
+
+    private RecyclerView list;
+    private Realm realm;
+    private NotificationAdapter mAdapter;
+
+    private SwipeRefreshLayout refreshLayout;
+
+    private NotificationRefreshBroadcastReceiver mReceiver;
+
     private Gson gson = new Gson();
+
+    private String response = "";
+    private int result = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
         setupUI();
+        realm = Realm.getInstance(new RealmConfiguration.Builder(this).build());
 
-        readProgress = new ProgressDialog(this);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetNotifications);
+        mTxtMessage = (TextView) findViewById(R.id.txtMessage);
+        mReceiver = new NotificationRefreshBroadcastReceiver();
+
+        RealmResults<Notification> notifications = realm.where(Notification.class).findAll();
+        if(notifications.size() == 0){
+            Log.e(TAG,"No notif cached"+notifications.size());
+            getNotifications();
+        }
+
+        mAdapter = new NotificationAdapter(notifications);
+        list = (RecyclerView) findViewById(R.id.list);
+        list.setHasFixedSize(true);
+        list.setLayoutManager(new LinearLayoutManager(NotificationsActivity.this));
+        list.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
+        list.setAdapter(mAdapter);
+
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Toast.makeText(NotificationsActivity.this, "Refreshing ...", Toast.LENGTH_SHORT).show();
+                // call this after refreshing is done
+                getNotifications();
+                refreshLayout.setRefreshing(false);
+            }
+        });
 
         getNotifications();
     }
 
-    public void getNotifications() {
-        String username = "admin";
-        Server.getNotifications(username,mProgressBar, new Ajax.Callbacks() {
-            TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
-
-            @Override
-            public void success(String responseBody) {
-                ArrayList<Notification> notifications = new ArrayList<Notification>();
-                notifications = gson.fromJson(responseBody, new TypeToken<ArrayList<Notification>>(){}.getType());
-
-                    if (notifications.size() == 0) {
-                        txtMessage.setText("No new notifications");
-                        txtMessage.setVisibility(View.VISIBLE);
-                    } else {
-                       // notifications = Notification.asList(jsonArray);
-                        txtMessage.setVisibility(View.GONE);
-                        ListView lv = (ListView) findViewById(R.id.listViewNotif);
-                        final NotificationListAdapter listAdapter = new NotificationListAdapter(NotificationsActivity.this, R.layout.item_notification, notifications);
-                        lv.setAdapter(listAdapter);
-                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                notif = (Notification) parent.getItemAtPosition(position);
-                                view.setBackgroundResource(R.color.forNotifs);
-
-                                Map<String, String> data = new HashMap<>();
-                                data.put(NOTIFICATION_ID, notif.getId() + "");
-
-                                readProgress.setIndeterminate(true);
-                                readProgress.setMessage("Loading. . .");
-                                Server.readNotification(data, readProgress, new Ajax.Callbacks() {
-                                    @Override
-                                    public void success(String responseBody) {
-                                        String notificationType = NotificationsActivity.this.notif.getNotification_type();
-                                        String itemPurpose = NotificationsActivity.this.notif.getItem().getPurpose();
-                                        if (notificationType.equals("sell")) {
-                                            Log.v(TAG, "sell");
-                                            Intent intent;
-                                            intent = new Intent(NotificationsActivity.this, ItemsOnQueueActivity.class);
-                                            startActivity(intent);
-                                        } else if (notificationType.equals("for rent")) {
-                                            Log.v(TAG, "for rent");
-                                            Intent intent;
-                                            intent = new Intent(NotificationsActivity.this, ItemsOnQueueActivity.class);
-                                            startActivity(intent);
-                                        } else if (notificationType.equals("rent")) {
-                                            Log.v(TAG, "rent");
-                                            Intent intent;
-                                            intent = new Intent(NotificationsActivity.this, ReservedItemsActivity.class);
-                                            startActivity(intent);
-                                        } else if (notificationType.equals("buy")) {
-                                            Log.v(TAG, "buy");
-                                            Intent intent;
-                                            intent = new Intent(NotificationsActivity.this, ReservedItemsActivity.class);
-                                            startActivity(intent);
-                                        } else if (notificationType.equals("get")) {
-                                            Log.v(TAG, "get");
-                                            Intent intent;
-                                            intent = new Intent(NotificationsActivity.this, ReservedItemsActivity.class);
-                                            startActivity(intent);
-                                        } else if (notificationType.equals("donate")) {
-                                            Log.v(TAG, "donate");
-                                            Intent intent;
-                                            intent = new Intent(NotificationsActivity.this, DonationsActivity.class);
-                                            startActivity(intent);
-                                        } else if (notificationType.equals("edit") && itemPurpose.equals("Sell")) {
-                                            Log.v(TAG, "edit sell item");
-                                            Intent intent;
-                                            intent = new Intent(NotificationsActivity.this, ItemsOnQueueActivity.class);
-                                            startActivity(intent);
-                                        } else if (notificationType.equals("edit") && itemPurpose.equals("Donate")) {
-                                            Log.v(TAG, "edit donated item");
-                                            Intent intent;
-                                            intent = new Intent(NotificationsActivity.this, DonationsActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void error(int statusCode, String responseBody, String statusText) {
-                                        Log.v(TAG, "Cannot connect to server");
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-               /* } catch (JSONException e1) {
-                    e1.printStackTrace();
-                }*/
-
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                txtMessage.setText("Connection Error: Cannot connect to server. Please check your internet connection");
-                txtMessage.setVisibility(View.VISIBLE);
-            }
-        });
+    private void getNotifications() {
+        Intent intent = new Intent(this, NotificationService.class);
+        startService(intent);
     }
 
     @Override
@@ -159,10 +99,28 @@ public class NotificationsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        getNotifications();
-        Log.e(TAG,"onResume Notification");
-        Intent service = new Intent(NotificationsActivity.this, ExpirationCheckerService.class);
-        startService(service);
+        Log.e(TAG, "onResume: " + response);
+        registerReceiver(mReceiver, new IntentFilter(NotificationService.class.getCanonicalName()));
+        mAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mReceiver);
+    }
+
+    private class NotificationRefreshBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            refreshLayout.setRefreshing(false);
+            mProgressBar.setVisibility(View.GONE);
+
+            Log.e(TAG,intent.getStringExtra("response"));
+
+        }
+
+    }
+
 }

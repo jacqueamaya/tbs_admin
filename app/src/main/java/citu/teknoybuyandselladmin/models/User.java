@@ -1,9 +1,13 @@
 package citu.teknoybuyandselladmin.models;
 
-public class Users {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class User extends RealmObject{
+    @PrimaryKey
     private int id;
     private String username;
-    private boolean is_staff;
+    private String password;
 
     public int getId() {
         return id;
@@ -13,19 +17,19 @@ public class Users {
         this.id = id;
     }
 
-    public boolean is_staff() {
-        return is_staff;
-    }
-
-    public void setIs_staff(boolean is_staff) {
-        this.is_staff = is_staff;
-    }
-
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
