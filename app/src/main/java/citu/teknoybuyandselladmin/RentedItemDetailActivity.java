@@ -68,7 +68,6 @@ public class RentedItemDetailActivity extends BaseActivity {
         mItemDetail = intent.getStringExtra("itemDetail");
         mItemPrice = intent.getFloatExtra("itemPrice", 0);
         mItemLink = intent.getStringExtra("itemLink");
-        mItemStarsRequired = intent.getIntExtra("itemStarsRequired", 0);
         mItemQuantity =  intent.getIntExtra("itemQuantity", 0);
         mItemCode = intent.getStringExtra("itemCode");
         mRenter = intent.getStringExtra("renter");

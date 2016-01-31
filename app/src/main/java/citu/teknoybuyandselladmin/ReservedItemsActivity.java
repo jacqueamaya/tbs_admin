@@ -1,34 +1,35 @@
 package citu.teknoybuyandselladmin;
 
-import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import java.util.ArrayList;
-
-import citu.teknoybuyandselladmin.adapters.ReservedItemListAdapter;
+import citu.teknoybuyandselladmin.adapters.ReservationAdapter;
 import citu.teknoybuyandselladmin.models.Category;
 import citu.teknoybuyandselladmin.models.Reservation;
 import citu.teknoybuyandselladmin.services.ExpirationCheckerService;
+import citu.teknoybuyandselladmin.services.ReservationService;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 public class ReservedItemsActivity extends BaseActivity {
@@ -36,7 +37,6 @@ public class ReservedItemsActivity extends BaseActivity {
     private static final String TAG = "ReservedActivity";
     private ProgressBar mProgressBar;
     private TextView txtCategory;
-    private ReservedItemListAdapter listAdapter;
 
     private Category categories[];
     private String categoryNames[];
@@ -46,7 +46,11 @@ public class ReservedItemsActivity extends BaseActivity {
     private String category = "";
     private String lowerCaseSort = "date";
 
-    private Gson gson = new Gson();
+    private Realm realm;
+    private ReservationAdapter mAdapter;
+    private SwipeRefreshLayout refreshLayout;
+    private RecyclerView list;
+    private ReservationBroadcastReceiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,14 +58,16 @@ public class ReservedItemsActivity extends BaseActivity {
         setContentView(R.layout.activity_reserved_items);
         setupUI();
 
+        realm = Realm.getDefaultInstance();
+        mReceiver = new ReservationBroadcastReceiver();
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        list = (RecyclerView) findViewById(R.id.listViewReserved);
         txtCategory = (TextView) findViewById(R.id.txtCategory);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetReserveRequests);
         mProgressBar.setVisibility(View.GONE);
 
         sortBy = getResources().getStringArray(R.array.sort_by);
-        getReservedItems();
-        getCategories();
-
+        /*getCategories();
         txtCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,76 +87,33 @@ public class ReservedItemsActivity extends BaseActivity {
                         .create();
                 displayCategories.show();
             }
+        });*/
+
+
+        getReservedItems();
+        RealmResults<Reservation> results = realm.where(Reservation.class).findAll();
+        if(results.size() == 0){
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+        mAdapter = new ReservationAdapter(results);
+        list.setHasFixedSize(true);
+        list.setLayoutManager(new LinearLayoutManager(ReservedItemsActivity.this));
+        list.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
+        list.setAdapter(mAdapter);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getReservedItems();
+                mAdapter.notifyDataSetChanged();
+                refreshLayout.setRefreshing(false);
+            }
         });
     }
 
-    public void getReservedItems(){
-        Server.getReservedItems(mProgressBar, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                ArrayList<Reservation> reservationRequest = new ArrayList<Reservation>();
-                reservationRequest = gson.fromJson(responseBody, new TypeToken<ArrayList<Reservation>>(){}.getType());
-
-                TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
-                ListView lv = (ListView) findViewById(R.id.listViewReserved);
-
-               // try {
-                //    jsonArray = new JSONArray(responseBody);
-                    if (reservationRequest.size() == 0) {
-                        txtMessage.setText("No reserved items");
-                        txtMessage.setVisibility(View.VISIBLE);
-                        lv.setVisibility(View.GONE);
-                    } else {
-                        txtMessage.setVisibility(View.GONE);
-                        //reserved = Reservation.asList(jsonArray);
-                        listAdapter = new ReservedItemListAdapter(ReservedItemsActivity.this, R.layout.list_item, reservationRequest);
-                        listAdapter.sortItems(lowerCaseSort);
-                        lv.setAdapter(listAdapter);
-
-                        Spinner spinnerSortBy = (Spinner) findViewById(R.id.spinnerSortBy);
-                        spinnerSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                lowerCaseSort = sortBy[position].toLowerCase();
-                                Log.d(TAG, lowerCaseSort);
-                                listAdapter.sortItems(lowerCaseSort);
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
-                        });
-
-                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Reservation reserve = listAdapter.getDisplayView().get(position);
-
-                                Intent intent;
-                                intent = new Intent(ReservedItemsActivity.this, ReservedDetailActivity.class);
-                                intent.putExtra("itemId", reserve.getItem().getId());
-                                intent.putExtra("requestId", reserve.getId());
-                                intent.putExtra("itemName", reserve.getItem().getName());
-                                intent.putExtra("itemStatus", reserve.getStatus());
-                                intent.putExtra("itemPrice", reserve.getItem().getPrice());
-                                intent.putExtra("itemDetail", reserve.getItem().getDescription());
-                                intent.putExtra("itemLink", reserve.getItem().getPicture());
-                                intent.putExtra("itemStarsRequired", reserve.getItem().getStars_required());
-                                startActivity(intent);
-                            }
-                        });
-                    }
-               /* } catch (JSONException e1) {
-                    Log.e(TAG, "JSONException", e1);
-                }*/
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.e(TAG, "Request error");
-            }
-        });
+    private void getReservedItems() {
+        Intent intent = new Intent(this, ReservationService.class);
+        startService(intent);
     }
 
     @Override
@@ -174,14 +137,14 @@ public class ReservedItemsActivity extends BaseActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchQuery = query;
-                listAdapter.getFilter().filter(searchQuery + "," + category);
+                //listAdapter.getFilter().filter(searchQuery + "," + category);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 searchQuery = newText;
-                listAdapter.getFilter().filter(searchQuery + "," + category);
+                //listAdapter.getFilter().filter(searchQuery + "," + category);
                 return true;
             }
         });
@@ -205,13 +168,19 @@ public class ReservedItemsActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         txtCategory.setText("Categories");
-        getReservedItems();
+        registerReceiver(mReceiver, new IntentFilter(ReservationService.class.getCanonicalName()));
+        mAdapter.notifyDataSetChanged();
 
-        Intent service = new Intent(ReservedItemsActivity.this, ExpirationCheckerService.class);
-        startService(service);
+        startService(new Intent(this, ExpirationCheckerService.class));
     }
 
-    public void getCategories() {
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mReceiver);
+    }
+
+    /*public void getCategories() {
         mProgressBar.setVisibility(View.GONE);
         Server.getCategories(mProgressBar, new Ajax.Callbacks() {
             @Override
@@ -233,5 +202,22 @@ public class ReservedItemsActivity extends BaseActivity {
                 Toast.makeText(ReservedItemsActivity.this, "Cannot connect to server", Toast.LENGTH_SHORT).show();
             }
         });
+    }*/
+
+
+    private class ReservationBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            refreshLayout.setRefreshing(false);
+            Log.e(TAG, intent.getStringExtra("response"));
+            mProgressBar.setVisibility(View.GONE);
+            mAdapter.notifyDataSetChanged();
+
+            if(intent.getIntExtra("result",0) == -1){
+                Snackbar.make(list, "No internet connection", Snackbar.LENGTH_SHORT).show();
+            }
+        }
+
     }
 }

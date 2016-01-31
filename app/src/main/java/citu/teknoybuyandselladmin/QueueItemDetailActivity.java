@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -20,17 +19,13 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import citu.teknoybuyandselladmin.adapters.SellApprovalAdapter;
 import citu.teknoybuyandselladmin.models.Category;
-import citu.teknoybuyandselladmin.models.SellApproval;
 
 
 public class QueueItemDetailActivity extends BaseActivity {

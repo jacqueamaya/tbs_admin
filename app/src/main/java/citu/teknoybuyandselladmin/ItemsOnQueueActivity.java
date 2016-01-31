@@ -1,40 +1,42 @@
 package citu.teknoybuyandselladmin;
 
-import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import java.util.ArrayList;
-
-import citu.teknoybuyandselladmin.adapters.SellApprovalAdapter;
+import citu.teknoybuyandselladmin.adapters.ItemsOnQueueAdapter;
 import citu.teknoybuyandselladmin.models.SellApproval;
 import citu.teknoybuyandselladmin.services.ExpirationCheckerService;
+import citu.teknoybuyandselladmin.services.ItemsOnQueueService;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 public class ItemsOnQueueActivity extends BaseActivity {
 
     private static final String TAG = "ItemsOnQueueActivity";
-   // private JSONArray jsonArray;
 
+    private ItemsOnQueueBroadcastReceiver mReceiver;
     private ProgressBar mProgressBar;
-
-    private SellApprovalAdapter listAdapter;
+    private SwipeRefreshLayout refreshLayout;
+    private RecyclerView list;
+    private Realm realm;
+    private ItemsOnQueueAdapter mAdapter;
 
     private String sortBy[];
 
@@ -49,84 +51,40 @@ public class ItemsOnQueueActivity extends BaseActivity {
         setContentView(R.layout.activity_items_on_queue);
         setupUI();
 
+        realm = Realm.getDefaultInstance();
+        sortBy = getResources().getStringArray(R.array.sort_by);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetSellRequests);
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        mReceiver = new ItemsOnQueueBroadcastReceiver();
         mProgressBar.setVisibility(View.GONE);
 
-        sortBy = getResources().getStringArray(R.array.sort_by);
-
         getSellRequests();
-    }
+        RealmResults<SellApproval> results = realm.where(SellApproval.class).findAll();
 
-    public void getSellRequests() {
-        Server.getSellRequests(mProgressBar, new Ajax.Callbacks() {
-            TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
-            ListView lv = (ListView) findViewById(R.id.listViewQueue);
+        if(results.size() == 0){
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+        mAdapter = new ItemsOnQueueAdapter(results);
+        list = (RecyclerView) findViewById(R.id.listQueue);
+        list.setHasFixedSize(true);
+        list.setLayoutManager(new LinearLayoutManager(ItemsOnQueueActivity.this));
+        list.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
+        list.setAdapter(mAdapter);
 
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void success(final String responseBody) {
-                ArrayList<SellApproval> request = new ArrayList<SellApproval>();
-                Log.v(TAG, responseBody);
-
-                //try {
-                    request = gson.fromJson(responseBody, new TypeToken<ArrayList<SellApproval>>(){}.getType());
-                    if (request.size() == 0) {
-                        txtMessage.setText("No sell requests available");
-                        txtMessage.setVisibility(View.VISIBLE);
-                        lv.setVisibility(View.GONE);
-                    } else {
-                        txtMessage.setVisibility(View.GONE);
-                        //request = SellApproval.asList(jsonArray);
-                        listAdapter = new SellApprovalAdapter(ItemsOnQueueActivity.this, R.layout.list_item, request);
-                        listAdapter.sortItems(lowerCaseSort);
-                        lv.setAdapter(listAdapter);
-
-                        Spinner spinnerSortBy = (Spinner) findViewById(R.id.spinnerSortBy);
-                        spinnerSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                lowerCaseSort = sortBy[position].toLowerCase();
-                                Log.d(TAG, lowerCaseSort);
-                                listAdapter.sortItems(lowerCaseSort);
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
-                        });
-
-                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                SellApproval sellRequest = listAdapter.getDisplayView().get(position);
-
-                                Intent intent;
-                                intent = new Intent(ItemsOnQueueActivity.this, QueueItemDetailActivity.class);
-                                intent.putExtra("itemId", sellRequest.getItem().getId());
-                                intent.putExtra("requestId", sellRequest.getId());
-                                intent.putExtra("itemName", sellRequest.getItem().getName());
-                                intent.putExtra("itemPrice", sellRequest.getItem().getPrice());
-                                intent.putExtra("itemDetail", sellRequest.getItem().getDescription());
-                                intent.putExtra("itemLink", sellRequest.getItem().getPicture());
-                                intent.putExtra("itemCategory", sellRequest.getItem().getCategory().getCategory_name());
-                                intent.putExtra("itemPurpose", sellRequest.getItem().getPurpose());
-                                startActivity(intent);
-                            }
-                        });
-                    }
-
-               /* } catch (JSONException e1) {
-                    e1.printStackTrace();
-                }*/
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                txtMessage.setText("Connection Error: Cannot connect to server.");
-                txtMessage.setVisibility(View.VISIBLE);
+            public void onRefresh() {
+                getSellRequests();
+                mAdapter.notifyDataSetChanged();
+                refreshLayout.setRefreshing(false);
             }
         });
+
+    }
+
+    private void getSellRequests() {
+        Intent intent = new Intent(this, ItemsOnQueueService.class);
+        startService(intent);
     }
 
     @Override
@@ -135,7 +93,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_items_on_queue, menu);
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        /*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchMenuItem.getActionView();
         int id = searchView.getContext()
@@ -160,7 +118,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
                 listAdapter.getFilter().filter(searchQuery);
                 return true;
             }
-        });
+        });*/
 
         return true;
     }
@@ -180,9 +138,31 @@ public class ItemsOnQueueActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getSellRequests();
+        registerReceiver(mReceiver, new IntentFilter(ItemsOnQueueService.class.getCanonicalName()));
+        mAdapter.notifyDataSetChanged();
 
-        Intent service = new Intent(ItemsOnQueueActivity.this, ExpirationCheckerService.class);
-        startService(service);
+        startService(new Intent(this, ExpirationCheckerService.class));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mReceiver);
+    }
+
+    private class ItemsOnQueueBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            refreshLayout.setRefreshing(false);
+            Log.e(TAG, intent.getStringExtra("response"));
+            mProgressBar.setVisibility(View.GONE);
+            mAdapter.notifyDataSetChanged();
+
+            if(intent.getIntExtra("result",0) == -1){
+                Snackbar.make(list, "No internet connection", Snackbar.LENGTH_SHORT).show();
+            }
+        }
+
     }
 }

@@ -1,37 +1,39 @@
 package citu.teknoybuyandselladmin;
 
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import java.util.ArrayList;
-
-import citu.teknoybuyandselladmin.adapters.DonateApprovalAdapter;
+import citu.teknoybuyandselladmin.adapters.DonationAdapter;
 import citu.teknoybuyandselladmin.models.DonateApproval;
+import citu.teknoybuyandselladmin.services.DonationService;
 import citu.teknoybuyandselladmin.services.ExpirationCheckerService;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 public class DonationsActivity extends BaseActivity {
 
     private static final String TAG = "DonatedActivity";
-
-    private DonateApprovalAdapter listAdapter;
 
     private ProgressBar mProgressBar;
 
@@ -40,7 +42,11 @@ public class DonationsActivity extends BaseActivity {
     private String searchQuery = "";
     private String lowerCaseSort = "date";
 
-    private Gson gson = new Gson();
+    private Realm realm;
+    private DonationAdapter mAdapter;
+    private SwipeRefreshLayout refreshLayout;
+    private RecyclerView list;
+    private DonationBroadcastReceiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,79 +54,40 @@ public class DonationsActivity extends BaseActivity {
         setContentView(R.layout.activity_donations);
         setupUI();
 
+        realm = Realm.getDefaultInstance();
+        mReceiver = new DonationBroadcastReceiver();
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        list = (RecyclerView) findViewById(R.id.listViewDonations);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetDonationsRequests);
         mProgressBar.setVisibility(View.GONE);
 
         sortBy = getResources().getStringArray(R.array.donate_sort_by);
+
         getDonatedItems();
-    }
+        RealmResults<DonateApproval> results = realm.where(DonateApproval.class).findAll();
+        Log.e(TAG,results.get(0).getItem().getName());
+        if(results.size() == 0){
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+        mAdapter = new DonationAdapter(results);
+        list.setHasFixedSize(true);
+        list.setLayoutManager(new LinearLayoutManager(DonationsActivity.this));
+        list.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
+        list.setAdapter(mAdapter);
 
-    public void getDonatedItems(){
-        Server.getDonateRequests(mProgressBar, new Ajax.Callbacks() {
-
-            ListView lv = (ListView) findViewById(R.id.listViewDonations);
-            TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
-
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void success(String responseBody) {
-                ArrayList<DonateApproval> donateRequests = new ArrayList<DonateApproval>();
-                donateRequests = gson.fromJson(responseBody,new TypeToken<ArrayList<DonateApproval>>(){}.getType());
-                    if (donateRequests.size() == 0) {
-                        txtMessage.setText("No donate requests available");
-                        txtMessage.setVisibility(View.VISIBLE);
-                        lv.setVisibility(View.GONE);
-                    } else {
-                        txtMessage.setVisibility(View.GONE);
-                        //request = DonateApproval.asList(jsonArray);
-                        listAdapter = new DonateApprovalAdapter(DonationsActivity.this, R.layout.list_item, donateRequests);
-                        listAdapter.sortItems(lowerCaseSort);
-                        lv.setAdapter(listAdapter);
-
-                        Spinner spinnerSortBy = (Spinner) findViewById(R.id.spinnerSortBy);
-                        spinnerSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                lowerCaseSort = sortBy[position].toLowerCase();
-                                Log.d(TAG, lowerCaseSort);
-                                listAdapter.sortItems(lowerCaseSort);
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
-                        });
-
-                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                DonateApproval donate = listAdapter.getDisplayView().get(position);
-                                Log.e(TAG, "item id: " + donate.getItem().getId());
-                                Log.e(TAG,"request id: "+donate.getId());
-
-                                Intent intent;
-                                intent = new Intent(DonationsActivity.this, DonationsDetailActivity.class);
-                                intent.putExtra("itemId", donate.getItem().getId());
-                                intent.putExtra("requestId", donate.getId());
-                                intent.putExtra("itemName", donate.getItem().getName());
-                                intent.putExtra("itemDetail", donate.getItem().getDescription());
-                                intent.putExtra("itemCategory", donate.getItem().getCategory().getCategory_name());
-                                intent.putExtra("itemLink", donate.getItem().getPicture());
-
-
-                                startActivity(intent);
-                            }
-                        });
-                    }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                txtMessage.setText("Connection Error: Cannot connect to server.");
-                txtMessage.setVisibility(View.VISIBLE);
+            public void onRefresh() {
+                getDonatedItems();
+                mAdapter.notifyDataSetChanged();
+                refreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    private void getDonatedItems() {
+        Intent intent = new Intent(this, DonationService.class);
+        startService(intent);
     }
 
     @Override
@@ -143,14 +110,14 @@ public class DonationsActivity extends BaseActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchQuery = query;
-                listAdapter.getFilter().filter(searchQuery);
+                //listAdapter.getFilter().filter(searchQuery);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 searchQuery = newText;
-                listAdapter.getFilter().filter(searchQuery);
+               // listAdapter.getFilter().filter(searchQuery);
                 return true;
             }
         });
@@ -173,9 +140,31 @@ public class DonationsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getDonatedItems();
+        registerReceiver(mReceiver, new IntentFilter(DonationService.class.getCanonicalName()));
+        mAdapter.notifyDataSetChanged();
 
-        Intent service = new Intent(DonationsActivity.this, ExpirationCheckerService.class);
-        startService(service);
+        startService(new Intent(this, ExpirationCheckerService.class));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mReceiver);
+    }
+
+    private class DonationBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            refreshLayout.setRefreshing(false);
+            Log.e(TAG, intent.getStringExtra("response"));
+            mProgressBar.setVisibility(View.GONE);
+            mAdapter.notifyDataSetChanged();
+
+            if(intent.getIntExtra("result",0) == -1){
+                Snackbar.make(list, "No internet connection", Snackbar.LENGTH_SHORT).show();
+            }
+        }
+
     }
 }

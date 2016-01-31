@@ -8,6 +8,7 @@ public class SellApproval extends RealmObject{
 
     @PrimaryKey
     private int id;
+
     private UserProfile seller;
     private Item item;
     private long request_date;

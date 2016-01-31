@@ -13,17 +13,10 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import citu.teknoybuyandselladmin.Ajax;
 import citu.teknoybuyandselladmin.DonationsActivity;
 import citu.teknoybuyandselladmin.ItemsOnQueueActivity;
-import citu.teknoybuyandselladmin.NotificationsActivity;
 import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.ReservedItemsActivity;
-import citu.teknoybuyandselladmin.Server;
 import citu.teknoybuyandselladmin.Utils;
 import citu.teknoybuyandselladmin.models.Notification;
 import io.realm.RealmResults;

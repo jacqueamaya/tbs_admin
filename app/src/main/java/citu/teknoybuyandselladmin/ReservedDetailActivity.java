@@ -62,7 +62,6 @@ public class ReservedDetailActivity extends BaseActivity {
         mItemPrice = intent.getFloatExtra("itemPrice", 0);
         mItemLink = intent.getStringExtra("itemLink");
         mItemStatus = intent.getStringExtra("itemStatus");
-        mItemStarsRequired = intent.getIntExtra("itemStarsRequired", 0);
 
         mTxtTitle = (TextView) findViewById(R.id.txtTitle);
         mTxtPrice = (TextView) findViewById(R.id.txtPriceLabel);

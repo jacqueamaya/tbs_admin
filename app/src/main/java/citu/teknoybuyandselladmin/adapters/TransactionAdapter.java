@@ -11,14 +11,19 @@ import java.util.ArrayList;
 import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.Utils;
 import citu.teknoybuyandselladmin.models.Transaction;
+import io.realm.RealmResults;
 
 public class TransactionAdapter {
 
     private Context mContext;
-    private ArrayList<Transaction> mItems;
+    private RealmResults<Transaction> mItems;
 
-    public TransactionAdapter(Context context, ArrayList<Transaction> list) {
+    public TransactionAdapter(Context context, RealmResults<Transaction> list) {
         mContext = context;
+        mItems = list;
+    }
+
+    public void update(RealmResults<Transaction> list){
         mItems = list;
     }
 

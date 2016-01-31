@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import citu.teknoybuyandselladmin.adapters.NotificationAdapter;
 import citu.teknoybuyandselladmin.models.Notification;
+import citu.teknoybuyandselladmin.services.ExpirationCheckerService;
 import citu.teknoybuyandselladmin.services.NotificationService;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -31,9 +33,8 @@ public class NotificationsActivity extends BaseActivity {
     private static final String TAG = "NotificationsActivity";
     public static final String NOTIFICATION_ID = "notification_id";
 
-    private Notification notification;
-    private ProgressBar mProgressBar;
     private TextView mTxtMessage;
+    private ProgressBar mProgressBar;
 
     private RecyclerView list;
     private Realm realm;
@@ -43,28 +44,24 @@ public class NotificationsActivity extends BaseActivity {
 
     private NotificationRefreshBroadcastReceiver mReceiver;
 
-    private Gson gson = new Gson();
-
-    private String response = "";
-    private int result = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
         setupUI();
-        realm = Realm.getInstance(new RealmConfiguration.Builder(this).build());
+        realm = Realm.getDefaultInstance();
 
-        mProgressBar = (ProgressBar) findViewById(R.id.progressGetNotifications);
         mTxtMessage = (TextView) findViewById(R.id.txtMessage);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressGetNotifications);
         mReceiver = new NotificationRefreshBroadcastReceiver();
 
+        mProgressBar.setVisibility(View.GONE);
+        getNotifications();
         RealmResults<Notification> notifications = realm.where(Notification.class).findAll();
-        if(notifications.size() == 0){
-            Log.e(TAG,"No notif cached"+notifications.size());
-            getNotifications();
-        }
 
+        if(notifications.size() == 0){
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
         mAdapter = new NotificationAdapter(notifications);
         list = (RecyclerView) findViewById(R.id.list);
         list.setHasFixedSize(true);
@@ -76,14 +73,11 @@ public class NotificationsActivity extends BaseActivity {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Toast.makeText(NotificationsActivity.this, "Refreshing ...", Toast.LENGTH_SHORT).show();
-                // call this after refreshing is done
                 getNotifications();
+                mAdapter.notifyDataSetChanged();
                 refreshLayout.setRefreshing(false);
             }
         });
-
-        getNotifications();
     }
 
     private void getNotifications() {
@@ -99,9 +93,10 @@ public class NotificationsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e(TAG, "onResume: " + response);
         registerReceiver(mReceiver, new IntentFilter(NotificationService.class.getCanonicalName()));
         mAdapter.notifyDataSetChanged();
+
+        startService(new Intent(this, ExpirationCheckerService.class));
     }
 
     @Override
@@ -115,10 +110,13 @@ public class NotificationsActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             refreshLayout.setRefreshing(false);
+            Log.e(TAG, intent.getStringExtra("response"));
             mProgressBar.setVisibility(View.GONE);
+            mAdapter.notifyDataSetChanged();
 
-            Log.e(TAG,intent.getStringExtra("response"));
-
+            if(intent.getIntExtra("result",0) == -1){
+                Snackbar.make(list,"No internet connection",Snackbar.LENGTH_SHORT).show();
+            }
         }
 
     }

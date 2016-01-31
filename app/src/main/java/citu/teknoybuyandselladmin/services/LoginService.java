@@ -16,8 +16,9 @@ import retrofit.Response;
 /**
  * Created by Batistil on 1/29/2016.
  */
-public class LoginService extends IntentService {
+public class LoginService extends ConnectionService {
     public static final String TAG = "LoginService";
+    public static final String ACTION = LoginService.class.getCanonicalName();
 
     public LoginService() {
         super(TAG);
@@ -43,23 +44,23 @@ public class LoginService extends IntentService {
                 if (status.getStatus() == HttpURLConnection.HTTP_OK) {
                     Log.i(TAG, "status code: " + status.getStatus());
                     Log.i(TAG, "Login Success: " + statusText);
-                    notifySuccess(statusText);
+                    notifySuccess(ACTION, statusText);
                 } else {
                     Log.e(TAG, "Login Error: " + statusText);
-                    notifyFailure(statusText);
+                    notifyFailure(ACTION, statusText);
                 }
             } else {
                 Log.e(TAG, "HTTP " + statusCode);
                 Log.e(TAG, response.errorBody().string());
-                notifyFailure(response.errorBody().string());
+                notifyFailure(ACTION, response.errorBody().string());
             }
         } catch (IOException e) {
             Log.e(TAG, e.getMessage(), e);
-            notifyFailure(e.getMessage());
+            notifyFailure(ACTION, e.getMessage());
         }
     }
 
-    protected void notifySuccess(String responseBody) {
+   /* protected void notifySuccess(String responseBody) {
         Intent intent = new Intent(LoginService.class.getCanonicalName());
         intent.putExtra("result", 1);
         intent.putExtra("response", responseBody);
@@ -71,5 +72,5 @@ public class LoginService extends IntentService {
         intent.putExtra("result", -1);
         intent.putExtra("response", responseBody);
         sendBroadcast(intent);
-    }
+    }*/
 }

@@ -81,15 +81,24 @@
             android:name=".RentedItemDetailActivity"
             android:label="@string/title_activity_rented_item_detail"></activity>
 
-        <service
-            android:name=".services.ExpirationCheckerService"
+
+
+        <service android:name=".services.ExpirationCheckerService"
             android:exported="false" />
-        <service
-            android:name=".services.NotificationService"
+        <service android:name=".services.NotificationService"
             android:exported="false" />
-        <service
-            android:name=".services.LoginService"
+        <service android:name=".services.LoginService"
             android:exported="false" />
+        <service android:name=".services.DonationService"
+            android:exported="false"/>
+        <service android:name=".services.ItemsOnQueueService"
+            android:exported="false"/>
+        <service android:name=".services.RentedItemService"
+            android:exported="false"/>
+        <service android:name=".services.ReservationService"
+            android:exported="false"/>
+        <service android:name=".services.TransactionService"
+            android:exported="false"/>
     </application>
 
 </manifest>

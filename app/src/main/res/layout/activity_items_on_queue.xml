@@ -10,51 +10,38 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.design.widget.CoordinatorLayout
+        <!-- The ActionBar -->
+        <include
+            layout="@layout/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content" />
+
+                <!-- <RelativeLayout
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content">
+
+                     <Spinner
+                         android:id="@+id/spinnerSortBy"
+                         android:layout_width="100dp"
+                         android:layout_height="wrap_content"
+                         android:layout_alignParentEnd="true"
+                         android:layout_alignParentRight="true"
+                         android:layout_alignParentTop="true"
+                         android:layout_gravity="end"
+                         android:entries="@array/sort_by"
+                         android:paddingBottom="10dp" />
+
+                 </RelativeLayout>-->
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <android.support.design.widget.AppBarLayout
-                    android:id="@+id/appbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-                    <android.support.v7.widget.Toolbar
-                        android:id="@+id/toolbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:background="?attr/colorPrimaryDark"
-                        app:layout_scrollFlags="scroll|enterAlways"
-                        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <Spinner
-                            android:id="@+id/spinnerSortBy"
-                            android:layout_width="100dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_gravity="end"
-                            android:entries="@array/sort_by"
-                            android:paddingBottom="10dp" />
-
-                    </RelativeLayout>
-
-                </android.support.design.widget.AppBarLayout>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <ProgressBar
                     android:id="@+id/progressGetSellRequests"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_centerInParent="true"
                     android:indeterminate="true" />
 
@@ -67,17 +54,22 @@
                     android:textSize="20sp"
                     android:visibility="gone" />
 
-                <ListView
-                    android:id="@+id/listViewQueue"
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:id="@+id/refresh_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/appbar" />
+                    android:layout_height="match_parent">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/listQueue"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/appbar" />
+
+                </android.support.v4.widget.SwipeRefreshLayout>
 
             </RelativeLayout>
-
-        </android.support.design.widget.CoordinatorLayout>
 
     </LinearLayout>
 

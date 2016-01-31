@@ -22,7 +22,7 @@ import io.realm.RealmConfiguration;
 import retrofit.Call;
 import retrofit.Response;
 
-public class NotificationService extends IntentService{
+public class NotificationService extends ConnectionService{
     public static final String TAG = "NotificationService";
     public static final String ACTION = NotificationService.class.getCanonicalName();
 
@@ -36,45 +36,31 @@ public class NotificationService extends IntentService{
         Log.e(TAG,"getting notifications. . . ");
         TbsService service = ServiceManager.getInstance();
         try {
-
             Call<List<Notification>> call = service.getNotifications();
             Response<List<Notification>> response = call.execute();
 
             if(response.code() == HttpURLConnection.HTTP_OK){
                 List<Notification> notifications = response.body();
-                Log.e(TAG,response.body().toString());
 
-                Realm realm = Realm.getInstance(new RealmConfiguration.Builder(this).build());
+                Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();
+                realm.where(Notification.class).findAll().clear();
                 realm.copyToRealmOrUpdate(notifications);
                 realm.commitTransaction();
                 realm.close();
 
-                notifySuccess("Successful");
+                //Log.e(TAG, notifications.get(0).getMessage());
+                notifySuccess(ACTION, "Successful");
             }else{
                 String error = response.errorBody().string();
                 Log.e(TAG, "Error: " + error);
-                notifyFailure("Error");
+                notifyFailure(ACTION, "Error");
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
-            notifyFailure("Unable to connect to server");
+            notifyFailure(ACTION, "Request Error");
         }
-    }
-
-    protected void notifySuccess(String responseBody){
-        Intent intent = new Intent(NotificationService.class.getCanonicalName());
-        intent.putExtra("result", 1);
-        intent.putExtra("response", responseBody);
-        sendBroadcast(intent);
-    }
-
-    protected void notifyFailure(String responseBody){
-        Intent intent = new Intent(NotificationService.class.getCanonicalName());
-        intent.putExtra("result", -1);
-        intent.putExtra("response",  responseBody);
-        sendBroadcast(intent);
     }
 
 }
