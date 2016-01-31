@@ -191,4 +191,6 @@ public final class Server {
 
         Ajax.post(URL_NOTIFY_RENTER, progressDialog, data, callbacks);
     }
+
+
 }

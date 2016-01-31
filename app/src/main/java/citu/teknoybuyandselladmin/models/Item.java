@@ -1,9 +1,14 @@
 package citu.teknoybuyandselladmin.models;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created by Batistil on 12/28/2015.
  */
-public class Item {
+public class Item extends RealmObject{
+
+    @PrimaryKey
     private int id;
     private UserProfile owner;
     private String name;
@@ -13,6 +18,7 @@ public class Item {
     private String purpose;
     private float price;
     private int quantity;
+    private int reserved_quantity;
     private String picture;
     private int stars_required;
     private int stars_to_use;
@@ -120,5 +126,13 @@ public class Item {
 
     public void setDate_approved(long date_approved) {
         this.date_approved = date_approved;
+    }
+
+    public int getReserved_quantity() {
+        return reserved_quantity;
+    }
+
+    public void setReserved_quantity(int reserved_quantity) {
+        this.reserved_quantity = reserved_quantity;
     }
 }

@@ -1,6 +1,7 @@
 package citu.teknoybuyandselladmin;
 
-import android.app.ProgressDialog;
+import io.realm.Realm;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,16 +18,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import citu.teknoybuyandselladmin.adapters.NotificationAdapter;
 import citu.teknoybuyandselladmin.models.Notification;
-import citu.teknoybuyandselladmin.services.ExpirationCheckerService;
 import citu.teknoybuyandselladmin.services.NotificationService;
-
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 public class NotificationsActivity extends BaseActivity {
 
@@ -35,9 +34,11 @@ public class NotificationsActivity extends BaseActivity {
 
     private Notification notification;
     private ProgressBar mProgressBar;
+    private TextView mTxtMessage;
 
-    private ArrayList<Notification> mNotifications = new ArrayList<Notification>();
     private RecyclerView list;
+    private Realm realm;
+
     private NotificationAdapter mAdapter;
 
     private SwipeRefreshLayout refreshLayout;
@@ -54,15 +55,38 @@ public class NotificationsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
         setupUI();
-
+        realm = Realm.getInstance(new RealmConfiguration.Builder(this).build());
 
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetNotifications);
+        mTxtMessage = (TextView) findViewById(R.id.txtMessage);
         mReceiver = new NotificationRefreshBroadcastReceiver();
+
+        RealmResults<Notification> notifications = realm.where(Notification.class).findAll();
+        if(notifications.size() == 0){
+            Log.e(TAG,"No notif cached"+notifications.size());
+            getNotifications();
+        }
+
+        mAdapter = new NotificationAdapter(notifications);
+        list = (RecyclerView) findViewById(R.id.list);
+        list.setHasFixedSize(true);
+        list.setLayoutManager(new LinearLayoutManager(NotificationsActivity.this));
+        list.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
+        list.setAdapter(mAdapter);
+
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Toast.makeText(NotificationsActivity.this, "Refreshing ...", Toast.LENGTH_SHORT).show();
+                // call this after refreshing is done
+                getNotifications();
+                refreshLayout.setRefreshing(false);
+            }
+        });
 
         getNotifications();
 
-        Log.e(TAG,"Size: "+ mNotifications.size() + "");
-        mAdapter = new NotificationAdapter(mNotifications);
         list = (RecyclerView) findViewById(R.id.list);
         list.setHasFixedSize(true);
         list.setLayoutManager(new LinearLayoutManager(NotificationsActivity.this));
@@ -78,46 +102,12 @@ public class NotificationsActivity extends BaseActivity {
                 refreshLayout.setRefreshing(false);
             }
         });
-
-
     }
 
     private void getNotifications() {
         Intent intent = new Intent(this, NotificationService.class);
         startService(intent);
     }
-
-    /*public void getNotifications() {
-        String username = "admin";
-        Server.getNotifications(username, mProgressBar, new Ajax.Callbacks() {
-            TextView txtMessage = (TextView) findViewById(R.id.txtMessage);
-
-            @Override
-            public void success(String responseBody) {
-                ArrayList<Notification> notifications = gson.fromJson(responseBody, new TypeToken<ArrayList<Notification>>() {
-                }.getType());
-
-                if (notifications.size() == 0) {
-                    txtMessage.setText("No new notifications");
-                    txtMessage.setVisibility(View.VISIBLE);
-                } else {
-                    txtMessage.setVisibility(View.GONE);
-
-                    RecyclerView list = (RecyclerView) findViewById(R.id.list);
-                    list.setHasFixedSize(true);
-                    list.setLayoutManager(new LinearLayoutManager(NotificationsActivity.this));
-                    list.setAdapter(new NotificationAdapter(notifications));
-                }
-
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                txtMessage.setText("Connection Error: Cannot connect to server. Please check your internet connection");
-                txtMessage.setVisibility(View.VISIBLE);
-            }
-        });
-    }*/
 
     @Override
     public boolean checkItemClicked(MenuItem menuItem) {
@@ -143,17 +133,10 @@ public class NotificationsActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             refreshLayout.setRefreshing(false);
-            response = intent.getStringExtra("response");
-            result = intent.getIntExtra("service result", 0);
 
-            mNotifications = gson.fromJson(response, new TypeToken<ArrayList<Notification>>() {
-            }.getType());
-            mAdapter = new NotificationAdapter(mNotifications);
-            list.setAdapter(mAdapter);
-
-            Log.e(TAG, "Received: " + response);
-            Log.e(TAG, "Received: " + mNotifications.size());
             mProgressBar.setVisibility(View.GONE);
+
+            Log.e(TAG,intent.getStringExtra("response"));
         }
 
     }

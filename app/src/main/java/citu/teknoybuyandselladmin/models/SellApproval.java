@@ -1,19 +1,17 @@
 package citu.teknoybuyandselladmin.models;
 
 import citu.teknoybuyandselladmin.Utils;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class SellApproval {
+public class SellApproval extends RealmObject{
 
+    @PrimaryKey
     private int id;
     private UserProfile seller;
     private Item item;
     private long request_date;
     private long request_expiration;
-    private String str_request_date = Utils.parseDate(request_date);
-
-    public String getStr_request_date() {
-        return str_request_date;
-    }
 
     public int getId() {
         return id;
@@ -54,4 +52,5 @@ public class SellApproval {
     public void setRequest_expiration(long request_expiration) {
         this.request_expiration = request_expiration;
     }
+
 }

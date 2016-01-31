@@ -3,6 +3,7 @@
     package="citu.teknoybuyandselladmin">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".AdminApplication"
@@ -85,6 +86,9 @@
             android:exported="false" />
         <service
             android:name=".services.NotificationService"
+            android:exported="false" />
+        <service
+            android:name=".services.LoginService"
             android:exported="false" />
     </application>
 
