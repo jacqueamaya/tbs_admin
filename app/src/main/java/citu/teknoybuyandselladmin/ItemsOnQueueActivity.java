@@ -138,6 +138,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         registerReceiver(mReceiver, new IntentFilter(ItemsOnQueueService.class.getCanonicalName()));
         mAdapter.notifyDataSetChanged();
 

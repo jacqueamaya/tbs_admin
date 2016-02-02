@@ -2,32 +2,31 @@ package citu.teknoybuyandselladmin;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import citu.teknoybuyandselladmin.models.Category;
+import citu.teknoybuyandselladmin.services.AddCategoryService;
+import citu.teknoybuyandselladmin.services.ApproveDonationService;
+import citu.teknoybuyandselladmin.services.DenyDonationService;
+import citu.teknoybuyandselladmin.services.GetCategoriesService;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class DonationsDetailActivity extends BaseActivity {
     private static final String REQUEST_ID = "request_id";
@@ -41,7 +40,7 @@ public class DonationsDetailActivity extends BaseActivity {
 
     private String mItemName;
     private String mItemDetail;
-    private String mItemCategory;
+    private String mCategories[];
     private String mItemLink;
 
     private TextView mTxtTitle;
@@ -56,6 +55,9 @@ public class DonationsDetailActivity extends BaseActivity {
 
     private Gson gson = new Gson();
 
+    private DonationDetailBroadcastReceiver mReceiver;
+    private Realm realm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +70,6 @@ public class DonationsDetailActivity extends BaseActivity {
         mItemId = intent.getIntExtra("itemId",0);
         mItemName = intent.getStringExtra("itemName");
         mItemDetail = intent.getStringExtra("itemDetail");
-        mItemCategory = intent.getStringExtra("itemCategory");
         mItemLink = intent.getStringExtra("itemLink");
 
         mTxtTitle = (TextView) findViewById(R.id.txtTitle);
@@ -77,6 +78,8 @@ public class DonationsDetailActivity extends BaseActivity {
         mTxtCategory = (TextView) findViewById(R.id.txtCategory);
         thumbnail = (ImageView) findViewById(R.id.imgThumbnail);
 
+        mReceiver = new DonationDetailBroadcastReceiver();
+        realm = Realm.getDefaultInstance();
         donationProgress = new ProgressDialog(this);
         donationProgress.setCancelable(false);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetCategoryDonate);
@@ -92,7 +95,6 @@ public class DonationsDetailActivity extends BaseActivity {
                 .into(thumbnail);
         mTxtTitle.setText(mItemName);
         mTxtDetails.setText(mItemDetail);
-        //mTxtCategory.setText(mItemCategory);
 
     }
 
@@ -129,49 +131,22 @@ public class DonationsDetailActivity extends BaseActivity {
     }
 
     public void saveCategory(EditText category){
-        Log.v(TAG,category.getText().toString());
-        Map<String,String> data = new HashMap<>();
-        data.put(CATEGORY_ITEM, category.getText().toString());
-
-        donationProgress.setIndeterminate(true);
-        donationProgress.setMessage("Please wait. . .");
-
-        Server.addCategory(data, donationProgress, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                try {
-                    JSONObject json = new JSONObject(responseBody);
-                    String response = json.getString("statusText");
-
-                    if (json.getInt("status") == 200) {
-                        Log.v(TAG, "Category Added Successfully");
-                        Snackbar.make(findViewById(R.id.appbar), "Category successfully added", Snackbar.LENGTH_SHORT).show();
-                    } else {
-                        Log.v(TAG, "Failed to add activity_category");
-                        Snackbar.make(findViewById(R.id.appbar), response, Snackbar.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                Snackbar.make(findViewById(R.id.appbar), "Connection Error: Failed to add category", Snackbar.LENGTH_SHORT).show();
-            }
-        });
+        Log.v(TAG, category.getText().toString());
+        Intent intent = new Intent(this, AddCategoryService.class);
+        intent.putExtra("category", category.getText().toString());
+        startService(intent);
     }
 
     public void onApprove(View view){
+        Log.e(TAG, "Approve item?");
         Utils.alert(DonationsDetailActivity.this, "Approve Item", "Are you sure you want to approve this item?", new Utils.Callbacks() {
             @Override
             public void ok() {
                 if ("".equals(mTxtCategory.getText().toString()) || mTxtCategory.getText().toString() == null || "".equals(mTxtStars.getText().toString()) || mTxtStars.getText().toString() == null) {
                     Utils.alertInfo(DonationsDetailActivity.this, "Please select a category first and input the  number of stars required.");
-                }
-                else{
+                } else {
                     approveDonation();
+                    Log.e(TAG, "yes, approve item");
                 }
             }
         });
@@ -179,98 +154,78 @@ public class DonationsDetailActivity extends BaseActivity {
 
     public void approveDonation(){
         Log.v(TAG, "Item REQUEST_ID: " + mItemId);
-        Map<String,String> data = new HashMap<>();
-
-        data.put(ITEM_ID,mItemId+"");
-        data.put(REQUEST_ID, mRequestId + "");
-        data.put(STARS_REQUIRED, mTxtStars.getText().toString());
-        data.put(CATEGORY_ITEM, mTxtCategory.getText().toString());
-
-        donationProgress.setIndeterminate(true);
-        donationProgress.setMessage("Please wait. . ");
-
-        Server.approveDonatedItem(data, donationProgress, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                try {
-                    JSONObject json = new JSONObject(responseBody);
-                    if (json.getInt("status") == 200) {
-                        Log.v(TAG, "Successful Donation Approval");
-                        Toast.makeText(DonationsDetailActivity.this, "Donation successfully approved", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Log.e(TAG, "approval failed");
-                        Toast.makeText(DonationsDetailActivity.this, "Error: Donation approval failed", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.e(TAG, "Request error");
-                Log.e(TAG, "message: "+responseBody);
-                Toast.makeText(DonationsDetailActivity.this, "Error: Donation approval failed", Toast.LENGTH_SHORT).show();
-            }
-        });
+        int starsRequired = Integer.parseInt(mTxtStars.getText().toString());
+        Intent intent = new Intent(this, ApproveDonationService.class);
+        intent.putExtra("requestId", mRequestId);
+        intent.putExtra("itemId", mItemId);
+        intent.putExtra("category", mTxtCategory.getText().toString());
+        intent.putExtra("starsRequired", starsRequired);
+        startService(intent);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     public void onDeny(View view){
+        Log.e(TAG, "Approve item?");
         Utils.alert(DonationsDetailActivity.this, "Deny Item", "Are you sure you want to deny this item?", new Utils.Callbacks() {
             @Override
             public void ok() {
                 denyDonation();
+                Log.e(TAG, "yes, approve item");
             }
         });
     }
 
     public void denyDonation(){
         Log.v(TAG, "Item REQUEST_ID: " + mItemId);
-        Map<String,String> data = new HashMap<>();
-
-        data.put(ITEM_ID,mItemId+"");
-        data.put(REQUEST_ID,mRequestId+"");
-
-        donationProgress.setIndeterminate(true);
-        donationProgress.setMessage("Please wait. . ");
-
-        Server.denyDonatedItem(data, donationProgress, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                try {
-                    JSONObject json = new JSONObject(responseBody);
-                    if (json.getInt("status") == 200) {
-                        Log.v(TAG, "Successful Disapproval");
-                        Toast.makeText(DonationsDetailActivity.this, "Item successfully disapproved", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Log.v(TAG, "Disapproval failed");
-                        Toast.makeText(DonationsDetailActivity.this, "Error: Item disapproval failed", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                Toast.makeText(DonationsDetailActivity.this, "Error: Item disapproval failed", Toast.LENGTH_SHORT).show();
-            }
-        });
+        Intent intent  = new Intent(this, DenyDonationService.class);
+        intent.putExtra("requestId", mRequestId);
+        intent.putExtra("itemId", mItemId);
+        startService(intent);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public boolean checkItemClicked(MenuItem menuItem) {
         return menuItem.getItemId() != R.id.nav_donations;
     }
+
+    public void getCategories(){
+        Intent intent = new Intent(this, GetCategoriesService.class);
+        startService(intent);
+    }
+
+    public void updateCategoryList(){
+        RealmResults<Category> categories = realm.where(Category.class).findAll();
+        mCategories = new String[categories.size()];
+
+        for(int i=0; i<categories.size(); i++){
+            mCategories[i] =  categories.get(i).getCategory_name();
+        }
+    }
+
     public void onSelect(View view) {
-        Server.getCategories(mProgressBar, new Ajax.Callbacks() {
+        getCategories();
+        RealmResults<Category> categories = realm.where(Category.class).findAll();
+
+        if(categories.size() == 0){
+            mProgressBar.setVisibility(View.VISIBLE);
+            Log.e(TAG, "no categories from realm");
+        } else{
+            updateCategoryList();
+            new AlertDialog.Builder(DonationsDetailActivity.this)
+                    .setTitle("Categories")
+                    .setItems(mCategories, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mTxtCategory.setText(mCategories[which]);
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+        /*Server.getCategories(mProgressBar, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
-              ///  try {
-                    //final String categories[] = Category.asArray(new JSONArray(responseBody));
                     Category[] categories = gson.fromJson(responseBody, Category[].class);
                     String categoryNames[] = new String[categories.length];
                     for(int i=0; i<categories.length; i++){
@@ -287,15 +242,68 @@ public class DonationsDetailActivity extends BaseActivity {
                             })
                             .create()
                             .show();
-              /*  } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
             }
 
             @Override
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.e(TAG, "Error: Cannot connect to server");
             }
-        });
+        });*/
+    }
+
+    public void closeActivity(){
+        DonationsDetailActivity.this.finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(GetCategoriesService.ACTION);
+        filter.addAction(ApproveDonationService.ACTION);
+        filter.addAction(DenyDonationService.ACTION);
+        filter.addAction(AddCategoryService.ACTION);
+        registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mReceiver);
+    }
+
+    private class DonationDetailBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e(TAG, intent.getStringExtra("response"));
+            mProgressBar.setVisibility(View.GONE);
+            String response = intent.getStringExtra("response");
+
+            if(intent.getIntExtra("result",0) == -1){
+                Log.e(TAG, response);
+                //Toast.makeText(QueueItemDetailActivity.this, response , Toast.LENGTH_SHORT).show();
+                Snackbar.make(mTxtDetails, response, Snackbar.LENGTH_SHORT).show();
+            }else{
+                if("get_categories".equals(response)){
+                    Log.e(TAG, "fetched all categories");
+                    updateCategoryList();
+                }else if("add_category".equals(response)){
+                    Log.e(TAG, "add category");
+                    updateCategoryList();
+                    Snackbar.make(mTxtDetails, "Category successfully added", Snackbar.LENGTH_SHORT).show();
+                }else if("approved_donation".equals(response)){
+                    Log.e(TAG, "approved item");
+                    mProgressBar.setVisibility(View.GONE);
+                    Snackbar.make(mTxtDetails, "Item successfully approved", Snackbar.LENGTH_SHORT).show();
+                    closeActivity();
+                }else if("disapproved_donation".equals(response)){
+                    Log.e(TAG, "denied item");
+                    mProgressBar.setVisibility(View.GONE);
+                    Snackbar.make(mTxtDetails, "Item successfully denied", Snackbar.LENGTH_SHORT).show();
+                    closeActivity();
+                }
+            }
+        }
+
     }
 }

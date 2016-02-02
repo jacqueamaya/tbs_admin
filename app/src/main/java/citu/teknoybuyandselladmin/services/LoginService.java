@@ -1,6 +1,5 @@
 package citu.teknoybuyandselladmin.services;
 
-import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 
@@ -9,7 +8,6 @@ import java.net.HttpURLConnection;
 
 import citu.teknoybuyandselladmin.ServiceManager;
 import citu.teknoybuyandselladmin.models.ResponseStatus;
-import citu.teknoybuyandselladmin.models.User;
 import retrofit.Call;
 import retrofit.Response;
 
@@ -59,18 +57,4 @@ public class LoginService extends ConnectionService {
             notifyFailure(ACTION, e.getMessage());
         }
     }
-
-   /* protected void notifySuccess(String responseBody) {
-        Intent intent = new Intent(LoginService.class.getCanonicalName());
-        intent.putExtra("result", 1);
-        intent.putExtra("response", responseBody);
-        sendBroadcast(intent);
-    }
-
-    protected void notifyFailure(String responseBody) {
-        Intent intent = new Intent(LoginService.class.getCanonicalName());
-        intent.putExtra("result", -1);
-        intent.putExtra("response", responseBody);
-        sendBroadcast(intent);
-    }*/
 }

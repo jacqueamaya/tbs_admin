@@ -35,8 +35,6 @@ public class DonationService extends ConnectionService{
             if(response.code() == HttpURLConnection.HTTP_OK){
                 List<DonateApproval> donateApprovals = response.body();
 
-                Log.e(TAG,donateApprovals.get(0).getItem().getName());
-
                 Realm realm  = Realm.getDefaultInstance();
                 realm.beginTransaction();
                 realm.where(DonateApproval.class).findAll().clear();

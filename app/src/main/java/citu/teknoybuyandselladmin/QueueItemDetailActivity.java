@@ -2,8 +2,11 @@ package citu.teknoybuyandselladmin;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -14,18 +17,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import citu.teknoybuyandselladmin.models.Category;
+import citu.teknoybuyandselladmin.services.AddCategoryService;
+import citu.teknoybuyandselladmin.services.ApproveItemService;
+import citu.teknoybuyandselladmin.services.DenyItemService;
+import citu.teknoybuyandselladmin.services.GetCategoriesService;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 public class QueueItemDetailActivity extends BaseActivity {
@@ -45,6 +47,7 @@ public class QueueItemDetailActivity extends BaseActivity {
     private String mItemLink;
     private String mItemCategory;
     private String mItemPurpose;
+    private String mCategories[];
 
     private TextView mTxtTitle;
     private TextView mTxtPrice;
@@ -56,6 +59,9 @@ public class QueueItemDetailActivity extends BaseActivity {
 
     private ProgressDialog mQueueProgress;
     private ProgressBar mProgressBar;
+
+    private QueuedDetailBroadcastReceiver mReceiver;
+    private Realm realm;
 
     private Gson gson = new Gson();
     @Override
@@ -70,7 +76,6 @@ public class QueueItemDetailActivity extends BaseActivity {
         mItemName = intent.getStringExtra("itemName");
         mItemDetail = intent.getStringExtra("itemDetail");
         mItemLink = intent.getStringExtra("itemLink");
-        mItemCategory = intent.getStringExtra("itemCategory");
         mItemPrice = intent.getFloatExtra("itemPrice", 0);
         mItemPurpose = intent.getStringExtra("itemPurpose");
 
@@ -81,11 +86,15 @@ public class QueueItemDetailActivity extends BaseActivity {
         mTxtPurpose = (TextView) findViewById(R.id.txtPurpose);
         mThumbnail = (ImageView) findViewById(R.id.imgThumbnail);
 
+        realm = Realm.getDefaultInstance();
+        mReceiver = new QueuedDetailBroadcastReceiver();
         mQueueProgress = new ProgressDialog(this);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetCategory);
         mQueueProgress.setCancelable(false);
 
         getQueueItemDetails();
+        getCategories();
+
     }
     public void getQueueItemDetails(){
         setTitle(mItemName);
@@ -132,40 +141,10 @@ public class QueueItemDetailActivity extends BaseActivity {
     }
 
     public void saveCategory(EditText category){
-        Log.v(TAG,category.getText().toString());
-        Map<String,String> data = new HashMap<>();
-        data.put(CATEGORY_ITEM, category.getText().toString());
-
-        mQueueProgress.setIndeterminate(true);
-        mQueueProgress.setMessage("Please wait. . .");
-
-        Server.addCategory(data, mQueueProgress, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                Log.v(TAG,responseBody);
-                try {
-                    JSONObject json = new JSONObject(responseBody);
-                    String response = json.getString("statusText");
-
-                    if (json.getInt("status") == 200) {
-                        Log.v(TAG, "Category Added Successfully");
-                        Snackbar.make(findViewById(R.id.appbar), "Category successfully added", Snackbar.LENGTH_SHORT).show();
-                    } else {
-                        Log.v(TAG, "Failed to add activity_category");
-                        Snackbar.make(findViewById(R.id.appbar), response, Snackbar.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG,responseBody);
-                Log.v(TAG, "Request error");
-                Snackbar.make(findViewById(R.id.appbar), "Connection Error: Failed to add category", Snackbar.LENGTH_SHORT).show();
-            }
-        });
+        Log.v(TAG, category.getText().toString());
+        Intent intent = new Intent(this, AddCategoryService.class);
+        intent.putExtra("category", category.getText().toString());
+        startService(intent);
     }
 
     public void onApprove(View view){
@@ -174,8 +153,7 @@ public class QueueItemDetailActivity extends BaseActivity {
             public void ok() {
                 if ("".equals(mTxtCategory.getText().toString()) || mTxtCategory.getText().toString() == null) {
                     Utils.alertInfo(QueueItemDetailActivity.this, "Please select a category first");
-                }
-                else{
+                } else {
                     approveItem();
                 }
 
@@ -185,42 +163,12 @@ public class QueueItemDetailActivity extends BaseActivity {
 
     public void approveItem(){
         Log.v(TAG, "Item REQUEST_ID: " + mItemId);
-        Map<String,String> data = new HashMap<>();
-
-        data.put(ITEM_ID, mItemId +"");
-        data.put(REQUEST_ID, mRequestId + "");
-        data.put(CATEGORY_ITEM, mTxtCategory.getText().toString());
-
-        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
-        Log.v(TAG, "Request REQUEST_ID: " + mRequestId);
-
-        mQueueProgress.setIndeterminate(true);
-        mQueueProgress.setMessage("Please wait. . .");
-
-        Server.approveQueuedItem(data, mQueueProgress, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                try {
-                    JSONObject json = new JSONObject(responseBody);
-                    if (json.getInt("status") == 200) {
-                        Log.v(TAG, "Successful Approval");
-                        Toast.makeText(QueueItemDetailActivity.this, "Item successfully approved", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Log.v(TAG, "approval failed");
-                        Toast.makeText(QueueItemDetailActivity.this, "Error: Item approval failed", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                Toast.makeText(QueueItemDetailActivity.this, "Error: Item approval failed", Toast.LENGTH_SHORT).show();
-            }
-        });
+        Intent intent = new Intent(this, ApproveItemService.class);
+        intent.putExtra("requestId", mRequestId);
+        intent.putExtra("itemId", mItemId);
+        intent.putExtra("category", mTxtCategory.getText().toString());
+        startService(intent);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     public void onDeny(View view) {
@@ -234,38 +182,11 @@ public class QueueItemDetailActivity extends BaseActivity {
 
     public void denyItem(){
         Log.v(TAG, "Item REQUEST_ID: " + mItemId);
-        Map<String,String> data = new HashMap<>();
-
-        data.put(ITEM_ID, mItemId + "");
-        data.put(REQUEST_ID, mRequestId + "");
-
-        mQueueProgress.setIndeterminate(true);
-        mQueueProgress.setMessage("Please wait. . .");
-
-        Server.denyQueuedItem(data, mQueueProgress, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                try {
-                    JSONObject json = new JSONObject(responseBody);
-                    if (json.getInt("status") == 200) {
-                        Log.v(TAG, "Successful Disapproval");
-                        Toast.makeText(QueueItemDetailActivity.this, "Item successfully disapproved", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Log.v(TAG, "Disapproval failed");
-                        Toast.makeText(QueueItemDetailActivity.this, "Error; Item disapproval failed", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                Toast.makeText(QueueItemDetailActivity.this, "Error: Item disapproval failed", Toast.LENGTH_SHORT).show();
-            }
-        });
+        Intent intent  = new Intent(this, DenyItemService.class);
+        intent.putExtra("requestId", mRequestId);
+        intent.putExtra("itemId", mItemId);
+        startService(intent);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -273,37 +194,95 @@ public class QueueItemDetailActivity extends BaseActivity {
         return menuItem.getItemId() != R.id.nav_items_queue;
     }
 
-    public void onSelect(View view) {
-        Server.getCategories(mProgressBar, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-               // try {
-                   // final String categories[] = Category.asArray(new JSONArray(responseBody));
-                    Category[] categories = gson.fromJson(responseBody, Category[].class);
-                    String categoryNames[] = new String[categories.length];
-                    for(int i=0; i<categories.length; i++){
-                        categoryNames[i] =  categories[i].getCategory_name();
-                    }
-                    final String categoryNamesFinal[] = categoryNames;
-                    new AlertDialog.Builder(QueueItemDetailActivity.this)
-                            .setTitle("Categories")
-                            .setItems(categoryNames, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    mTxtCategory.setText(categoryNamesFinal[which]);
-                                }
-                            })
-                            .create()
-                            .show();
-               /* } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
-            }
+    public void getCategories(){
+        Intent intent = new Intent(this, GetCategoriesService.class);
+        startService(intent);
+    }
 
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.e(TAG, "Error: Cannot connect to server");
+    public void updateCategoryList(){
+        RealmResults<Category> categories = realm.where(Category.class).findAll();
+        mCategories = new String[categories.size()];
+
+        for(int i=0; i<categories.size(); i++){
+            mCategories[i] =  categories.get(i).getCategory_name();
+        }
+    }
+
+    public void onSelect(View view) {
+        getCategories();
+        RealmResults<Category> categories = realm.where(Category.class).findAll();
+
+        if(categories.size() == 0){
+            mProgressBar.setVisibility(View.VISIBLE);
+        } else{
+            updateCategoryList();
+            new AlertDialog.Builder(QueueItemDetailActivity.this)
+                    .setTitle("Categories")
+                    .setItems(mCategories, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mTxtCategory.setText(mCategories[which]);
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+
+    }
+
+    public void closeActivity(){
+        QueueItemDetailActivity.this.finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(GetCategoriesService.ACTION);
+        filter.addAction(ApproveItemService.ACTION);
+        filter.addAction(DenyItemService.ACTION);
+        filter.addAction(AddCategoryService.ACTION);
+        registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mReceiver);
+    }
+
+    private class QueuedDetailBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e(TAG, intent.getStringExtra("response"));
+            mProgressBar.setVisibility(View.GONE);
+            String response = intent.getStringExtra("response");
+
+            if(intent.getIntExtra("result",0) == -1){
+                Log.e(TAG, response);
+                //Toast.makeText(QueueItemDetailActivity.this, response , Toast.LENGTH_SHORT).show();
+                Snackbar.make(mTxtDetails, response, Snackbar.LENGTH_SHORT).show();
+            }else{
+                if("get_categories".equals(response)){
+                    Log.e(TAG, "fetched all categories");
+                    updateCategoryList();
+                }else if("add_category".equals(response)){
+                    Log.e(TAG, "add category");
+                    updateCategoryList();
+                    Snackbar.make(mTxtDetails, "Category successfully added", Snackbar.LENGTH_SHORT).show();
+                }else if("approved_item".equals(response)){
+                    Log.e(TAG, "approved item");
+                    mProgressBar.setVisibility(View.GONE);
+                    Snackbar.make(mTxtDetails, "Item successfully approved", Snackbar.LENGTH_SHORT).show();
+                    closeActivity();
+                }else if("disapproved_item".equals(response)){
+                    Log.e(TAG, "denied item");
+                    mProgressBar.setVisibility(View.GONE);
+                    Snackbar.make(mTxtDetails, "Item successfully denied", Snackbar.LENGTH_SHORT).show();
+                    closeActivity();
+                }
             }
-        });
+        }
+
     }
 }

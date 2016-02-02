@@ -1,23 +1,21 @@
 package citu.teknoybuyandselladmin;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
+import citu.teknoybuyandselladmin.services.ItemReturnedService;
 
 
 public class RentedItemDetailActivity extends BaseActivity {
@@ -49,10 +47,11 @@ public class RentedItemDetailActivity extends BaseActivity {
     private TextView mTxtRentExpiry;
 
     private ImageView mThumbnail;
-    private Button  mBtnReturned;
-    private Button mBtnNotify;
+    private Button mBtnReturned;
+   // private Button mBtnNotify;
 
     private ProgressDialog mRentProgress;
+    private RentedBroadcastReceiver mReceiver;
 
 
     @Override
@@ -68,7 +67,7 @@ public class RentedItemDetailActivity extends BaseActivity {
         mItemDetail = intent.getStringExtra("itemDetail");
         mItemPrice = intent.getFloatExtra("itemPrice", 0);
         mItemLink = intent.getStringExtra("itemLink");
-        mItemQuantity =  intent.getIntExtra("itemQuantity", 0);
+        mItemQuantity = intent.getIntExtra("itemQuantity", 0);
         mItemCode = intent.getStringExtra("itemCode");
         mRenter = intent.getStringExtra("renter");
         mRentDate = intent.getLongExtra("rentDate", 0);
@@ -80,17 +79,18 @@ public class RentedItemDetailActivity extends BaseActivity {
         mTxtDetails = (TextView) findViewById(R.id.txtDetails);
         mThumbnail = (ImageView) findViewById(R.id.imgThumbnail);
         mBtnReturned = (Button) findViewById(R.id.btnReturned);
-        mBtnNotify = (Button) findViewById(R.id.btnNotify);
+        //mBtnNotify = (Button) findViewById(R.id.btnNotify);
         mTxtRentDate = (TextView) findViewById(R.id.txtRentDate);
         mTxtRentExpiry = (TextView) findViewById(R.id.txtRentExpiry);
 
+        mReceiver = new RentedBroadcastReceiver();
         mRentProgress = new ProgressDialog(this);
         mRentProgress.setCancelable(false);
 
         getRentDetails();
     }
 
-    public void getRentDetails(){
+    public void getRentDetails() {
         setTitle(mItemName);
         Picasso.with(RentedItemDetailActivity.this)
                 .load(mItemLink)
@@ -101,7 +101,7 @@ public class RentedItemDetailActivity extends BaseActivity {
         mTxtRentExpiry.setText("Rent Expiration: " + Utils.parseDate(mRentExpiry));
         mTxtDetails.setText(mItemDetail);
 
-        if(mItemStarsRequired == 0) {
+        if (mItemStarsRequired == 0) {
             mTxtPrice.setText("Price: PHP " + Utils.formatFloat(mItemPrice));
         } else {
             mTxtPrice.setText("Stars Required: " + mItemStarsRequired);
@@ -110,60 +110,33 @@ public class RentedItemDetailActivity extends BaseActivity {
     }
 
     public void onReturned(View view) {
+        Log.e(TAG, "return item?");
         Utils.alert(RentedItemDetailActivity.this, "Return Item", "Return rented item?", new Utils.Callbacks() {
             @Override
             public void ok() {
                 setItemReturned();
+                Log.e(TAG, "yes, return item");
             }
         });
     }
 
-    public void setItemReturned(){
-        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
-        Map<String, String> data = new HashMap<>();
-
-        data.put(ITEM_ID, mItemId + "");
-        data.put(RENT_ID, mRentId + "");
-
-        mRentProgress.setIndeterminate(true);
-        mRentProgress.setMessage("Please wait. . .");
-
-        Server.returnRentedItem(data, mRentProgress, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                try {
-                    JSONObject json = new JSONObject(responseBody);
-                    if (json.getInt("status") == 200) {
-                        Log.v(TAG, "Successfully set item returned");
-                        Toast.makeText(RentedItemDetailActivity.this, "Rented item was returned", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Log.v(TAG, "failed");
-                        Toast.makeText(RentedItemDetailActivity.this, "Error: Failed to return item", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                Toast.makeText(RentedItemDetailActivity.this, "Error: Failed to return item", Toast.LENGTH_SHORT).show();
-            }
-        });
+    public void setItemReturned() {
+        Intent intent = new Intent(this, ItemReturnedService.class);
+        intent.putExtra("requestId", mRentId);
+        intent.putExtra("itemId", mItemId);
+        startService(intent);
     }
 
     public void onNotifyRenter(View view) {
         Utils.alert(RentedItemDetailActivity.this, "Notify Renter", "Remind renter?", new Utils.Callbacks() {
             @Override
             public void ok() {
-                notifyRenter();
+                // notifyRenter();
             }
         });
     }
 
-    public void notifyRenter(){
+    /*public void notifyRenter(){
         Log.v(TAG, "Item ITEM_ID: " + mItemId);
         Log.v(TAG, "Item REQUEST_ID: " + mRentId);
         Map<String, String> data = new HashMap<>();
@@ -198,10 +171,46 @@ public class RentedItemDetailActivity extends BaseActivity {
                 Toast.makeText(RentedItemDetailActivity.this, "Error: Failed to send notification", Toast.LENGTH_SHORT).show();
             }
         });
+    }*/
+
+    public void clodeActivity(){
+        RentedItemDetailActivity.this.finish();
     }
 
     @Override
     public boolean checkItemClicked(MenuItem menuItem) {
         return menuItem.getItemId() != R.id.nav_reserved_items;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(ItemReturnedService.ACTION);
+        registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mReceiver);
+    }
+
+    private class RentedBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e(TAG, intent.getStringExtra("response"));
+            String response = intent.getStringExtra("response");
+
+            if (intent.getIntExtra("result", 0) == -1) {
+                Snackbar.make(mTxtDetails, "No internet connection", Snackbar.LENGTH_SHORT).show();
+            } else {
+                if ("return_item".equals(response)) {
+                    Log.e(TAG, "Successfully returned item");
+                    clodeActivity();
+                }
+            }
+        }
+    }
+
 }

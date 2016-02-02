@@ -1,24 +1,14 @@
 package citu.teknoybuyandselladmin.services;
 
-import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
-import java.util.Map;
 
 import citu.teknoybuyandselladmin.ServiceManager;
 import citu.teknoybuyandselladmin.models.Notification;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import retrofit.Call;
 import retrofit.Response;
 

@@ -1,24 +1,23 @@
 package citu.teknoybuyandselladmin;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
+import citu.teknoybuyandselladmin.services.ItemAvailableService;
+import citu.teknoybuyandselladmin.services.ItemClaimedService;
+import io.realm.Realm;
 
 
 public class ReservedDetailActivity extends BaseActivity {
@@ -47,7 +46,8 @@ public class ReservedDetailActivity extends BaseActivity {
 
     private ProgressDialog mReserveProgress;
 
-
+    private ReservedDetailBroadcastReceiver mReceiver;
+    private Realm realm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +62,7 @@ public class ReservedDetailActivity extends BaseActivity {
         mItemPrice = intent.getFloatExtra("itemPrice", 0);
         mItemLink = intent.getStringExtra("itemLink");
         mItemStatus = intent.getStringExtra("itemStatus");
+        mItemStarsRequired = intent.getIntExtra("starsRequired", 0);
 
         mTxtTitle = (TextView) findViewById(R.id.txtTitle);
         mTxtPrice = (TextView) findViewById(R.id.txtPriceLabel);
@@ -70,9 +71,12 @@ public class ReservedDetailActivity extends BaseActivity {
         mBtnAvailable = (Button) findViewById(R.id.imgAvailable);
         mBtnClaimed = (Button) findViewById(R.id.imgClaimed);
 
+        mReceiver = new ReservedDetailBroadcastReceiver();
+        realm = Realm.getDefaultInstance();
         mReserveProgress = new ProgressDialog(this);
         mReserveProgress.setCancelable(false);
 
+        Log.e(TAG,mItemStatus);
         getReservedDetails();
     }
 
@@ -111,40 +115,11 @@ public class ReservedDetailActivity extends BaseActivity {
 
     public void setItemAvailable(){
         Log.v(TAG, "Item REQUEST_ID: " + mItemId);
-        Map<String, String> data = new HashMap<>();
 
-        data.put(ITEM_ID, mItemId + "");
-        data.put(REQUEST_ID, mRequestId + "");
-
-        mReserveProgress.setIndeterminate(true);
-        mReserveProgress.setMessage("Please wait. . .");
-
-        Log.e(TAG, data.toString());
-        Server.itemAvailable(data, mReserveProgress, new Ajax.Callbacks() {
-
-            @Override
-            public void success(String responseBody) {
-                try {
-                    JSONObject json = new JSONObject(responseBody);
-                    if (json.getInt("status") == 200) {
-                        Log.v(TAG, "Successfully set item imgAvailable");
-                        Toast.makeText(ReservedDetailActivity.this, "Item successfully set available", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Log.v(TAG, "failed");
-                        Toast.makeText(ReservedDetailActivity.this, "Error: Item set availability failed", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                Toast.makeText(ReservedDetailActivity.this, "Error: Item set availability failed", Toast.LENGTH_SHORT).show();
-            }
-        });
+        Intent intent = new Intent(this, ItemAvailableService.class);
+        intent.putExtra("requestId",mRequestId);
+        intent.putExtra("itemId", mItemId);
+        startService(intent);
     }
 
     public void onClaimed(View view) {
@@ -159,42 +134,61 @@ public class ReservedDetailActivity extends BaseActivity {
     public void claimItem(){
         Log.v(TAG, "Item ITEM_ID: " + mItemId);
         Log.v(TAG, "Item REQUEST_ID: " + mRequestId);
-        Map<String, String> data = new HashMap<>();
 
-        data.put(ITEM_ID, mItemId + "");
-        data.put(REQUEST_ID, mRequestId + "");
-
-        mReserveProgress.setIndeterminate(true);
-        mReserveProgress.setMessage("Please wait. . .");
-
-        Server.itemClaimed(data, mReserveProgress, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                try {
-                    JSONObject json = new JSONObject(responseBody);
-                    if (json.getInt("status") == 200) {
-                        Log.v(TAG, "Successfully claimed");
-                        Toast.makeText(ReservedDetailActivity.this, "Item successfully claimed", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Log.v(TAG, "failed");
-                        Toast.makeText(ReservedDetailActivity.this, "Error: Failed to claim item", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                Toast.makeText(ReservedDetailActivity.this, "Error: Failed to claim item", Toast.LENGTH_SHORT).show();
-            }
-        });
+        Intent intent = new Intent(this, ItemClaimedService.class);
+        intent.putExtra("requestId",mRequestId);
+        intent.putExtra("itemId", mItemId);
+        startService(intent);
     }
 
     @Override
     public boolean checkItemClicked(MenuItem menuItem) {
         return menuItem.getItemId() != R.id.nav_reserved_items;
     }
+
+    public void closeActivity(){
+        ReservedDetailActivity.this.finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(ItemAvailableService.ACTION);
+        filter.addAction(ItemClaimedService.ACTION);
+        registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mReceiver);
+    }
+
+    private class ReservedDetailBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e(TAG, intent.getStringExtra("response"));
+            //mProgressBar.setVisibility(View.GONE);
+            String response = intent.getStringExtra("response");
+
+            if(intent.getIntExtra("result",0) == -1){
+                Log.e(TAG, response);
+                //Toast.makeText(QueueItemDetailActivity.this, response , Toast.LENGTH_SHORT).show();
+                Snackbar.make(mTxtDetails, response, Snackbar.LENGTH_SHORT).show();
+            }else{
+                if("item_available".equals(response)){
+                    Log.e(TAG, "item_available");
+                    Snackbar.make(mTxtDetails, "Item successfully approved", Snackbar.LENGTH_SHORT).show();
+                    closeActivity();
+                }else if("item_claimed".equals(response)){
+                    Log.e(TAG, "item_claimed");
+                    Snackbar.make(mTxtDetails, "Item successfully denied", Snackbar.LENGTH_SHORT).show();
+                    closeActivity();
+                }
+            }
+        }
+
+    }
+
 }

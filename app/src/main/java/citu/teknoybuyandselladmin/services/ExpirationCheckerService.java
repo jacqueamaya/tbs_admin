@@ -6,7 +6,6 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.URL;
 
 import citu.teknoybuyandselladmin.ServiceManager;
 import citu.teknoybuyandselladmin.models.ResponseStatus;

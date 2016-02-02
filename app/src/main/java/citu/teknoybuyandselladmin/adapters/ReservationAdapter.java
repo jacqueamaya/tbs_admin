@@ -79,9 +79,11 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             intent.putExtra("itemDetail", reservation.getItem().getDescription());
             intent.putExtra("itemPrice", reservation.getItem().getPrice());
             intent.putExtra("itemLink", reservation.getItem().getPicture());
-            intent.putExtra("itemPrice", reservation.getItem().getPrice());
-            intent.putExtra("itemLink", reservation.getItem().getPicture());
-            intent.putExtra("itemStatus", reservation.getItem().getPicture());
+            intent.putExtra("itemStatus", reservation.getStatus());
+            intent.putExtra("starsRequired", reservation.getItem().getStars_required());
+
+            Log.e(TAG,reservation.getItem().getStatus());
+
 
             context.startActivity(intent);
         }

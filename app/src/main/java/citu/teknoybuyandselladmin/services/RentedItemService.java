@@ -25,7 +25,7 @@ public class RentedItemService extends ConnectionService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.e(TAG,"getting reservations. . .");
+        Log.e(TAG,"getting rented items. . .");
 
         TbsService service = ServiceManager.getInstance();
         try{

@@ -134,7 +134,7 @@
                         android:text="Returned"
                         android:textColor="@color/White" />
 
-                    <Button
+                    <!--<Button
                         android:id="@+id/btnNotify"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
@@ -145,7 +145,7 @@
                         android:onClick="onNotifyRenter"
                         android:src="@drawable/button_sell"
                         android:text="Notify Renter"
-                        android:textColor="@color/Louie" />
+                        android:textColor="@color/Louie" />-->
 
                 </LinearLayout>
 

@@ -76,7 +76,6 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
             intent.putExtra("itemId", donation.getItem().getId());
             intent.putExtra("itemName", donation.getItem().getName());
             intent.putExtra("itemDetail", donation.getItem().getDescription());
-            intent.putExtra("itemCategory", donation.getItem().getCategory().getCategory_name());
             intent.putExtra("itemLink", donation.getItem().getPicture());
             context.startActivity(intent);
         }

@@ -76,7 +76,6 @@ public class ItemsOnQueueAdapter extends RecyclerView.Adapter<ItemsOnQueueAdapte
             intent.putExtra("itemName", sellApproval.getItem().getName());
             intent.putExtra("itemDetail", sellApproval.getItem().getDescription());
             intent.putExtra("itemLink", sellApproval.getItem().getPicture());
-            intent.putExtra("itemCategory", sellApproval.getItem().getCategory().getCategory_name());
             intent.putExtra("itemPrice", sellApproval.getItem().getPrice());
             intent.putExtra("itemPurpose", sellApproval.getItem().getPurpose());
             context.startActivity(intent);

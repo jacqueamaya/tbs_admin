@@ -20,7 +20,6 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import citu.teknoybuyandselladmin.adapters.DonationAdapter;
@@ -65,7 +64,6 @@ public class DonationsActivity extends BaseActivity {
 
         getDonatedItems();
         RealmResults<DonateApproval> results = realm.where(DonateApproval.class).findAll();
-        Log.e(TAG,results.get(0).getItem().getName());
         if(results.size() == 0){
             mProgressBar.setVisibility(View.VISIBLE);
         }

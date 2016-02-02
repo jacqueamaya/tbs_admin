@@ -14,14 +14,10 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.util.ArrayList;
 
 import citu.teknoybuyandselladmin.adapters.TransactionAdapter;
 import citu.teknoybuyandselladmin.models.Transaction;
 import citu.teknoybuyandselladmin.services.ExpirationCheckerService;
-import citu.teknoybuyandselladmin.services.NotificationService;
 import citu.teknoybuyandselladmin.services.TransactionService;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -58,7 +54,6 @@ public class TransactionsActivity extends BaseActivity {
         mProgressBar.setVisibility(View.GONE);
         getTransactions();
         transactions = realm.where(Transaction.class).findAll();
-        Log.e(TAG, transactions.get(0).getItem().getName());
         if(transactions.size() == 0){
             mProgressBar.setVisibility(View.VISIBLE);
         }

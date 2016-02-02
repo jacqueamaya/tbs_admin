@@ -99,6 +99,24 @@
             android:exported="false"/>
         <service android:name=".services.TransactionService"
             android:exported="false"/>
+        <service android:name=".services.ApproveItemService"
+            android:exported="false"/>
+        <service android:name=".services.DenyItemService"
+            android:exported="false"/>
+        <service android:name=".services.ApproveDonationService"
+            android:exported="false"/>
+        <service android:name=".services.DenyDonationService"
+            android:exported="false"/>
+        <service android:name=".services.ItemAvailableService"
+            android:exported="false"/>
+        <service android:name=".services.ItemClaimedService"
+            android:exported="false"/>
+        <service android:name=".services.ItemReturnedService"
+            android:exported="false"/>
+        <service android:name=".services.AddCategoryService"
+            android:exported="false"/>
+        <service android:name=".services.GetCategoriesService"
+            android:exported="false"/>
     </application>
 
 </manifest>

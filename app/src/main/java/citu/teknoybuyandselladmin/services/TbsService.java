@@ -35,15 +35,15 @@ public interface TbsService {
     Call<ResponseStatus> approveQueuedItem(@Field("request_id") int id, @Field("item_id") int itemId, @Field("category") String category);
 
     @FormUrlEncoded
-    @POST("api/admin_approveItem")
+    @POST("api/admin_disapproveItem")
     Call<ResponseStatus> denyQueuedItem(@Field("request_id") int id, @Field("item_id") int itemId);
 
     @FormUrlEncoded
-    @POST("api/admin_approveItem")
+    @POST("api/admin_approveDonation")
     Call<ResponseStatus> approveDonatedItem(@Field("request_id") int id, @Field("item_id") int itemId, @Field("category") String category, @Field("stars_required") int stars);
 
     @FormUrlEncoded
-    @POST("api/admin_approveItem")
+    @POST("api/admin_disapproveDonation")
     Call<ResponseStatus> denyDonatedItem(@Field("request_id") int id, @Field("item_id") int itemId);
 
     @FormUrlEncoded
