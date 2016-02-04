@@ -17,6 +17,9 @@
     <string name="title_activity_transactions">Transactions</string>
     <string name="title_activity_dashboard">DashboardActivity</string>
 
+    <string name="item_details">Details</string>
+    <string name="category">Category: </string>
+
     <string name="theader_num">NO</string>
     <string name="theader_type">TYPE</string>
     <string name="theader_seller">OWNED BY</string>

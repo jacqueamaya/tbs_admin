@@ -14,8 +14,11 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import citu.teknoybuyandselladmin.QueueItemDetailActivity;
 import citu.teknoybuyandselladmin.R;
+import citu.teknoybuyandselladmin.models.Item;
 import citu.teknoybuyandselladmin.models.SellApproval;
 import io.realm.RealmResults;
+import io.realm.Sort;
+
 /**
  * Created by Batistil on 1/31/2016.
  */
@@ -48,6 +51,7 @@ public class ItemsOnQueueAdapter extends RecyclerView.Adapter<ItemsOnQueueAdapte
         return mItemsOnQueue.size();
     }
 
+
     public class ItemsOnQueueViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         SimpleDraweeView simpleDraweeView;
@@ -78,6 +82,10 @@ public class ItemsOnQueueAdapter extends RecyclerView.Adapter<ItemsOnQueueAdapte
             intent.putExtra("itemLink", sellApproval.getItem().getPicture());
             intent.putExtra("itemPrice", sellApproval.getItem().getPrice());
             intent.putExtra("itemPurpose", sellApproval.getItem().getPurpose());
+            intent.putExtra("itemOwner", sellApproval.getItem().getOwner().getUser().getUsername());
+            intent.putExtra("itemQuantity", sellApproval.getItem().getQuantity());
+            intent.putExtra("rentDuration", sellApproval.getItem().getRent_duration());
+            intent.putExtra("requestDate", sellApproval.getRequest_date());
             context.startActivity(intent);
         }
     }

@@ -25,6 +25,7 @@ import citu.teknoybuyandselladmin.services.ExpirationCheckerService;
 import citu.teknoybuyandselladmin.services.ItemsOnQueueService;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 
 public class ItemsOnQueueActivity extends BaseActivity {
@@ -36,6 +37,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView list;
     private Realm realm;
+    private RealmResults<SellApproval> results;
     private ItemsOnQueueAdapter mAdapter;
 
     private String sortBy[];
@@ -59,7 +61,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
         mProgressBar.setVisibility(View.GONE);
 
         getSellRequests();
-        RealmResults<SellApproval> results = realm.where(SellApproval.class).findAll();
+        results = realm.where(SellApproval.class).findAll();
 
         if(results.size() == 0){
             mProgressBar.setVisibility(View.VISIBLE);
@@ -123,10 +125,10 @@ public class ItemsOnQueueActivity extends BaseActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         return id == R.id.action_search || super.onOptionsItemSelected(item);
     }
 

@@ -19,6 +19,7 @@ public class Item extends RealmObject{
     private float price;
     private int quantity;
     private int reserved_quantity;
+    private int rent_duration;
     private String picture;
     private int stars_required;
     private int stars_to_use;
@@ -134,5 +135,13 @@ public class Item extends RealmObject{
 
     public void setReserved_quantity(int reserved_quantity) {
         this.reserved_quantity = reserved_quantity;
+    }
+
+    public int getRent_duration() {
+        return rent_duration;
+    }
+
+    public void setRent_duration(int rent_duration) {
+        this.rent_duration = rent_duration;
     }
 }

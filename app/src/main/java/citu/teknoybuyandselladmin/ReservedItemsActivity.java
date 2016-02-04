@@ -166,7 +166,7 @@ public class ReservedItemsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        txtCategory.setText("Categories");
+        //txtCategory.setText("Categories");
         registerReceiver(mReceiver, new IntentFilter(ReservationService.class.getCanonicalName()));
         mAdapter.notifyDataSetChanged();
 

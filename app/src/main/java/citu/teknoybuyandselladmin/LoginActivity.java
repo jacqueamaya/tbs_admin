@@ -105,36 +105,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
         }
-        /*Server.login(data, mLoginProgress, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                try {
-                    JSONObject json = new JSONObject(responseBody);
-                    if (json.getInt("status") == 200) {
-                        Log.v(TAG, "Successful Login");
-                        Log.d(TAG, "Response: " + json.toString());
 
-                        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                        editor.putString("username", Utils.capitalize(username));
-                        editor.apply();
-
-                        startActivity(new Intent(LoginActivity.this, NotificationsActivity.class));
-                        finish();
-                    } else {
-                        Log.v(TAG, "Invalid username or password");
-                        Toast.makeText(LoginActivity.this, "Error: Invalid username or password", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v("LoginActivity", "Request error");
-                Toast.makeText(LoginActivity.this, "Error: Cannot connect to server", Toast.LENGTH_SHORT).show();
-            }
-        });*/
     }
 
     private class LoginBroadcastReceiver extends BroadcastReceiver {
@@ -156,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             } else {
                 mLoginProgress.hide();
-                Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Unable to login", Toast.LENGTH_SHORT).show();
             }
         }
 

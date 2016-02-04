@@ -7,17 +7,25 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -39,26 +47,44 @@ public class QueueItemDetailActivity extends BaseActivity {
 
     private int mRequestId;
     private int mItemId;
+    private int mRentDuration;
+    private int mQuantity;
 
     private float mItemPrice;
 
+    private long mDatePosted;
+
+    private String mItemOwner;
     private String mItemName;
     private String mItemDetail;
     private String mItemLink;
     private String mItemCategory;
+
     private String mItemPurpose;
-    private String mCategories[];
+    private String mCategoryList[];
 
     private TextView mTxtTitle;
     private TextView mTxtPrice;
+    private TextView mTxtQuantity;
+    private TextView mTxtOwner;
+    private TextView mTxtDatePosted;
     private TextView mTxtDetails;
     private TextView mTxtCategory;
     private TextView mTxtPurpose;
+    private TextView mTxtRentDuration;
 
-    private ImageView mThumbnail;
+    private SimpleDraweeView mItem;
+
+    private ImageView mAddCategory;
+    private ImageView mRentImg;
+    private Button mApprove;
+    private Button mDeny;
+
+    private Spinner mCategories;
 
     private ProgressDialog mQueueProgress;
     private ProgressBar mProgressBar;
+    private ArrayAdapter categoryAdapter;
 
     private QueuedDetailBroadcastReceiver mReceiver;
     private Realm realm;
@@ -68,44 +94,86 @@ public class QueueItemDetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_items_on_queue_detail);
-        setupUI();
+        //setupUI();
+        setupToolbar();
 
         Intent intent = getIntent();
-        mRequestId = intent.getIntExtra("requestId",0);
+        mRequestId = intent.getIntExtra("requestId", 0);
         mItemId = intent.getIntExtra("itemId", 0);
         mItemName = intent.getStringExtra("itemName");
         mItemDetail = intent.getStringExtra("itemDetail");
         mItemLink = intent.getStringExtra("itemLink");
         mItemPrice = intent.getFloatExtra("itemPrice", 0);
         mItemPurpose = intent.getStringExtra("itemPurpose");
+        mItemOwner = intent.getStringExtra("itemOwner");
+        mQuantity = intent.getIntExtra("itemQuantity", 0);
+        mRentDuration = intent.getIntExtra("rentDuration", 0);
+        mDatePosted = intent.getLongExtra("requestDate", 0);
 
-        mTxtTitle = (TextView) findViewById(R.id.txtTitle);
+        if("Rent".equals(mItemPurpose)){
+            mItemPurpose = " For Rent";
+        } else if("Sell".equals(mItemPurpose)){
+            mItemPurpose = " For Sale";
+        }
+
+
+        mItem = (SimpleDraweeView) findViewById(R.id.imgItem);
+        mTxtTitle = (TextView) findViewById(R.id.txtItem);
         mTxtPrice = (TextView) findViewById(R.id.txtPrice);
-        mTxtDetails = (TextView) findViewById(R.id.txtDetails);
-        mTxtCategory = (TextView) findViewById(R.id.txtCategory);
+        mTxtQuantity = (TextView) findViewById(R.id.txtQuantity);
         mTxtPurpose = (TextView) findViewById(R.id.txtPurpose);
-        mThumbnail = (ImageView) findViewById(R.id.imgThumbnail);
+        mTxtRentDuration = (TextView) findViewById(R.id.txtRentDuration);
+        mAddCategory = (ImageView) findViewById(R.id.addCategory);
+        mRentImg = (ImageView) findViewById(R.id.rentImg);
+        mTxtDetails = (TextView) findViewById(R.id.txtDescription);
+        mTxtOwner = (TextView) findViewById(R.id.txtOwner);
+        mTxtDatePosted = (TextView) findViewById(R.id.txtDatePosted);
+        mCategories = (Spinner) findViewById(R.id.spinnerCategories);
 
         realm = Realm.getDefaultInstance();
         mReceiver = new QueuedDetailBroadcastReceiver();
-        mQueueProgress = new ProgressDialog(this);
-        mProgressBar = (ProgressBar) findViewById(R.id.progressGetCategory);
-        mQueueProgress.setCancelable(false);
+        //mQueueProgress = new ProgressDialog(this);
+        //mProgressBar = (ProgressBar) findViewById(R.id.progressGetCategory);
+        //mQueueProgress.setCancelable(false);
 
-        getQueueItemDetails();
         getCategories();
+        updateCategoryList();
+        getQueueItemDetails();
 
     }
-    public void getQueueItemDetails(){
-        setTitle(mItemName);
-        Picasso.with(QueueItemDetailActivity.this)
-                .load(mItemLink)
-                .into(mThumbnail);
 
+    private void setupToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    public void getQueueItemDetails() {
+        setTitle(mItemName);
+        mItem.setImageURI(Uri.parse(mItemLink));
         mTxtTitle.setText(mItemName);
-        mTxtPrice.setText("Price: PHP " + Utils.formatFloat(mItemPrice));
-        mTxtPurpose.setText("Purpose: " + mItemPurpose);
+        mTxtPrice.setText("Php " + Utils.formatFloat(mItemPrice));
+        mTxtQuantity.setText(" "+mQuantity);
+        mTxtPurpose.setText(mItemPurpose);
+        if("Rent".equals(mItemPurpose)){
+            mRentImg.setVisibility(View.VISIBLE);
+            mTxtRentDuration.setVisibility(View.VISIBLE);
+            mTxtRentDuration.setText(mRentDuration+"");
+        }
         mTxtDetails.setText(mItemDetail);
+        mTxtOwner.setText(Utils.capitalize(mItemOwner));
+        mTxtDatePosted.setText(Utils.parseDate(mDatePosted));
+
+        if(mCategoryList.length != 0)
+            setCategoryAdapter(mCategories, mCategoryList);
+    }
+
+    public void setCategoryAdapter(Spinner spinner, String[] data){
+        categoryAdapter  = new ArrayAdapter(this, R.layout.spinner_item, data);
+        categoryAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinner.setAdapter(categoryAdapter);
     }
 
     public void addCategory(View view){
@@ -201,10 +269,10 @@ public class QueueItemDetailActivity extends BaseActivity {
 
     public void updateCategoryList(){
         RealmResults<Category> categories = realm.where(Category.class).findAll();
-        mCategories = new String[categories.size()];
+        mCategoryList = new String[categories.size()];
 
         for(int i=0; i<categories.size(); i++){
-            mCategories[i] =  categories.get(i).getCategory_name();
+            mCategoryList[i] =  categories.get(i).getCategory_name();
         }
     }
 
@@ -218,10 +286,10 @@ public class QueueItemDetailActivity extends BaseActivity {
             updateCategoryList();
             new AlertDialog.Builder(QueueItemDetailActivity.this)
                     .setTitle("Categories")
-                    .setItems(mCategories, new DialogInterface.OnClickListener() {
+                    .setItems(mCategoryList, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mTxtCategory.setText(mCategories[which]);
+                            mTxtCategory.setText(mCategoryList[which]);
                         }
                     })
                     .create()
@@ -250,12 +318,21 @@ public class QueueItemDetailActivity extends BaseActivity {
         unregisterReceiver(mReceiver);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private class QueuedDetailBroadcastReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.e(TAG, intent.getStringExtra("response"));
-            mProgressBar.setVisibility(View.GONE);
             String response = intent.getStringExtra("response");
 
             if(intent.getIntExtra("result",0) == -1){

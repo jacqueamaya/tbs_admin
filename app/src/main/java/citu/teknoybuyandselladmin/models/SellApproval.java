@@ -14,6 +14,7 @@ public class SellApproval extends RealmObject{
     private long request_date;
     private long request_expiration;
 
+
     public int getId() {
         return id;
     }

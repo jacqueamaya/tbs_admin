@@ -137,6 +137,7 @@
     <color name="Navy">#000080</color>
     <color name="Black">#000000</color>
     <color name="forNotifs">#f0f0f5</color>
+    <color name="GreyDark">#8C000000</color>
 
     <!--Tabs Color Scheme -->
     <color name="colorPrimary">#FFD700</color>
