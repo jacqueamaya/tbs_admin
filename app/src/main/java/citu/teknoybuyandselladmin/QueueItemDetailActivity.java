@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,7 +39,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 
-public class QueueItemDetailActivity extends BaseActivity {
+public class QueueItemDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "QueueItemDetailActivity";
     private static final String REQUEST_ID = "request_id";
@@ -255,11 +256,6 @@ public class QueueItemDetailActivity extends BaseActivity {
         intent.putExtra("itemId", mItemId);
         startService(intent);
         mProgressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public boolean checkItemClicked(MenuItem menuItem) {
-        return menuItem.getItemId() != R.id.nav_items_queue;
     }
 
     public void getCategories(){
