@@ -52,7 +52,7 @@ public class LoginService extends ConnectionService {
                 Log.e(TAG, response.errorBody().string());
                 notifyFailure(ACTION, response.errorBody().string());
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             notifyFailure(ACTION, e.getMessage());
         }

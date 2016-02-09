@@ -20,7 +20,10 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.picasso.Picasso;
+
+import citu.teknoybuyandselladmin.models.RentedItem;
 import citu.teknoybuyandselladmin.services.ItemReturnedService;
+import io.realm.Realm;
 
 
 public class RentedItemDetailActivity extends AppCompatActivity {
@@ -30,22 +33,6 @@ public class RentedItemDetailActivity extends AppCompatActivity {
     public static final String ITEM_ID = "item_id";
 
     private int mRentId;
-    private int mItemId;
-    private int mItemStarsRequired;
-    private int mItemQuantity;
-    private int mRentDuration;
-
-    private float mPenalty;
-
-    private String mItemName;
-    private String mItemDetail;
-    private String mItemLink;
-    private String mItemCode;
-    private String mRenter;
-    private String mOwner;
-
-    private long mRentDate;
-    private long mRentExpiry;
 
     private TextView mTxtTitle;
     private TextView mTxtPenalty;
@@ -65,7 +52,9 @@ public class RentedItemDetailActivity extends AppCompatActivity {
 
     private ProgressDialog mRentProgress;
     private RentedBroadcastReceiver mReceiver;
+    private Realm realm;
 
+    private RentedItem rentedItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,20 +62,13 @@ public class RentedItemDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rented_item_detail);
         setupToolbar();
 
+        mReceiver = new RentedBroadcastReceiver();
+        realm = Realm.getDefaultInstance();
+
         Intent intent = getIntent();
         mRentId = intent.getIntExtra("rentId", 0);
-        mItemId = intent.getIntExtra("itemId", 0);
-        mItemName = intent.getStringExtra("itemName");
-        mItemDetail = intent.getStringExtra("itemDetail");
-        mPenalty = intent.getFloatExtra("itemPenalty", 0);
-        mItemLink = intent.getStringExtra("itemLink");
-        mItemQuantity = intent.getIntExtra("itemQuantity", 0);
-        mItemCode = intent.getStringExtra("itemCode");
-        mRentDuration = intent.getIntExtra("rentDuration",0);
-        mRenter = intent.getStringExtra("renter");
-        mOwner = intent.getStringExtra("owner");
-        mRentDate = intent.getLongExtra("rentDate", 0);
-        mRentExpiry = intent.getLongExtra("rentExpiry", 0);
+
+        rentedItem = realm.where(RentedItem.class).equalTo("id",mRentId).findFirst();
 
         mTxtTitle = (TextView) findViewById(R.id.txtItem);
         mTxtItemCode = (TextView) findViewById(R.id.txtItemCode);
@@ -102,7 +84,7 @@ public class RentedItemDetailActivity extends AppCompatActivity {
         mBtnReturned = (Button) findViewById(R.id.btnReturned);
         mItem = (SimpleDraweeView) findViewById(R.id.imgItem);
 
-        mReceiver = new RentedBroadcastReceiver();
+
         mRentProgress = new ProgressDialog(this);
         mRentProgress.setCancelable(false);
 
@@ -110,21 +92,18 @@ public class RentedItemDetailActivity extends AppCompatActivity {
     }
 
     public void getRentDetails() {
-        setTitle(mItemName);
-        /*Picasso.with(RentedItemDetailActivity.this)
-                .load(mItemLink)
-                .into(mThumbnail);*/
-        mItem.setImageURI(Uri.parse(mItemLink));
-        mTxtTitle.setText(mItemName);
-        mTxtItemCode.setText(" "+mItemCode);
-        mTxtQuantity.setText(" "+mItemQuantity);
-        mTxtPenalty.setText("Php "+mPenalty);
-        mTxtRentDuration.setText(mRentDuration+" days");
-        mTxtOwner.setText(mOwner);
-        mTxtRenter.setText(mRenter);
-        mTxtRentDate.setText(Utils.parseDate(mRentDate));
-        mTxtRentExpiry.setText(Utils.parseDate(mRentExpiry));
-        mTxtDetails.setText(mItemDetail);
+        setTitle(rentedItem.getItem().getName());
+        mItem.setImageURI(Uri.parse(rentedItem.getItem().getPicture()));
+        mTxtTitle.setText(rentedItem.getItem().getName());
+        mTxtItemCode.setText(" "+rentedItem.getItem_code());
+        mTxtQuantity.setText(" "+rentedItem.getQuantity());
+        mTxtPenalty.setText("Php "+rentedItem.getPenalty());
+        mTxtRentDuration.setText(rentedItem.getItem().getRent_duration()+" days");
+        mTxtOwner.setText(Utils.capitalize(rentedItem.getItem().getOwner().getUser().getUsername()));
+        mTxtRenter.setText(Utils.capitalize(rentedItem.getRenter().getUsername()));
+        mTxtRentDate.setText(Utils.parseDate(rentedItem.getRent_date()));
+        mTxtRentExpiry.setText(Utils.parseDate(rentedItem.getRent_expiration()));
+        mTxtDetails.setText(rentedItem.getItem().getDescription());
 
     }
 
@@ -150,57 +129,11 @@ public class RentedItemDetailActivity extends AppCompatActivity {
     public void setItemReturned() {
         Intent intent = new Intent(this, ItemReturnedService.class);
         intent.putExtra("requestId", mRentId);
-        intent.putExtra("itemId", mItemId);
+        intent.putExtra("itemId", rentedItem.getItem().getId());
         startService(intent);
     }
 
-    public void onNotifyRenter(View view) {
-        Utils.alert(RentedItemDetailActivity.this, "Notify Renter", "Remind renter?", new Utils.Callbacks() {
-            @Override
-            public void ok() {
-                // notifyRenter();
-            }
-        });
-    }
-
-    /*public void notifyRenter(){
-        Log.v(TAG, "Item ITEM_ID: " + mItemId);
-        Log.v(TAG, "Item REQUEST_ID: " + mRentId);
-        Map<String, String> data = new HashMap<>();
-
-        data.put(ITEM_ID, mItemId + "");
-        data.put(RENT_ID, mRentId + "");
-
-        mRentProgress.setIndeterminate(true);
-        mRentProgress.setMessage("Please wait. . .");
-
-        Server.notifyRenter(data, mRentProgress, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                try {
-                    JSONObject json = new JSONObject(responseBody);
-                    if (json.getInt("status") == 200) {
-                        Log.v(TAG, "Successfully claimed");
-                        Toast.makeText(RentedItemDetailActivity.this, "Notification sent", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Log.v(TAG, "failed");
-                        Toast.makeText(RentedItemDetailActivity.this, "Error: Failed to send notification", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.v(TAG, "Request error");
-                Toast.makeText(RentedItemDetailActivity.this, "Error: Failed to send notification", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
-
-    public void clodeActivity(){
+    public void closeActivity(){
         RentedItemDetailActivity.this.finish();
     }
 
@@ -239,7 +172,7 @@ public class RentedItemDetailActivity extends AppCompatActivity {
             } else {
                 if ("return_item".equals(response)) {
                     Log.e(TAG, "Successfully returned item");
-                    clodeActivity();
+                    closeActivity();
                 }
             }
         }

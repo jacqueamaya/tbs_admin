@@ -80,12 +80,39 @@
                                     android:id="@+id/txtItemCode"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:drawableLeft="@drawable/ic_tag_text_outline"
+                                    android:drawableLeft="@drawable/qrcode"
                                     android:gravity="center_vertical"
                                     android:singleLine="true"
                                     android:text="  21"
                                     android:textColor="@color/White"
                                     android:textSize="14sp" />
+
+                                <TextView
+                                    android:id="@+id/txtPrice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:drawableLeft="@drawable/ic_cash_multiple"
+                                    android:gravity="center_vertical"
+                                    android:singleLine="true"
+                                    android:text=" Php 200"
+                                    android:textColor="@color/White"
+                                    android:textSize="14sp"
+                                    android:layout_toRightOf="@id/txtItemCode"
+                                    android:layout_marginLeft="10dp"/>
+
+                                <TextView
+                                    android:id="@+id/txtStarsRequired"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:drawableLeft="@drawable/star"
+                                    android:gravity="center_vertical"
+                                    android:singleLine="true"
+                                    android:text=" 200"
+                                    android:textColor="@color/White"
+                                    android:textSize="14sp"
+                                    android:layout_toRightOf="@id/txtItemCode"
+                                    android:layout_marginLeft="10dp"
+                                    android:visibility="gone"/>
 
                                 <TextView
                                     android:id="@+id/txtQuantity"
@@ -105,7 +132,7 @@
 
                         </LinearLayout>
 
-                        <LinearLayout
+                        <!--<LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
@@ -153,7 +180,7 @@
                                 android:textStyle="normal"
                                 android:visibility="gone" />
 
-                        </LinearLayout>
+                        </LinearLayout>-->
 
                         <RelativeLayout
                             android:layout_width="match_parent"

@@ -81,7 +81,7 @@
                                     android:id="@+id/txtItemCode"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:drawableLeft="@drawable/ic_tag_text_outline"
+                                    android:drawableLeft="@drawable/qrcode"
                                     android:gravity="center_vertical"
                                     android:singleLine="true"
                                     android:text=" 22"
@@ -338,7 +338,8 @@
                                 android:text="Returned"
                                 android:textColor="@color/White"
                                 android:textSize="18sp"
-                                android:textStyle="normal" />
+                                android:textStyle="normal"
+                                android:onClick="onReturned"/>
 
                             <!--<Button
                                 android:id="@+id/btnDeny"

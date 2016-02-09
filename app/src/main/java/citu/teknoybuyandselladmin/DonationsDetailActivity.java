@@ -29,6 +29,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import citu.teknoybuyandselladmin.models.Category;
+import citu.teknoybuyandselladmin.models.DonateApproval;
 import citu.teknoybuyandselladmin.services.AddCategoryService;
 import citu.teknoybuyandselladmin.services.ApproveDonationService;
 import citu.teknoybuyandselladmin.services.DenyDonationService;
@@ -44,16 +45,7 @@ public class DonationsDetailActivity extends AppCompatActivity {
     public static final String CATEGORY_ITEM = "category";
 
     private int mRequestId;
-    private int mItemId;
-    private int mQuantity;
 
-    private long mDatePosted;
-
-    private String mItemOwner;
-    private String mItemName;
-    private String mItemDetail;
-    private String mItemCategory;
-    private String mItemLink;
     private String mCategoryList[];
 
     private SimpleDraweeView mItem;
@@ -77,7 +69,7 @@ public class DonationsDetailActivity extends AppCompatActivity {
     private ProgressDialog donationProgress;
     private ProgressBar mProgressBar;
 
-    private Gson gson = new Gson();
+    private DonateApproval donateApproval;
 
     private DonationDetailBroadcastReceiver mReceiver;
     private Realm realm;
@@ -88,16 +80,13 @@ public class DonationsDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_donations_detail);
         setupToolbar();
 
-        Intent intent = getIntent();
+        mReceiver = new DonationDetailBroadcastReceiver();
+        realm = Realm.getDefaultInstance();
 
+        Intent intent = getIntent();
         mRequestId = intent.getIntExtra("requestId",0);
-        mItemId = intent.getIntExtra("itemId", 0);
-        mItemName = intent.getStringExtra("itemName");
-        mItemDetail = intent.getStringExtra("itemDetail");
-        mItemLink = intent.getStringExtra("itemLink");
-        mItemOwner = intent.getStringExtra("itemOwner");
-        mQuantity = intent.getIntExtra("itemQuantity", 0);
-        mDatePosted = intent.getLongExtra("requestDate", 0);
+
+        donateApproval = realm.where(DonateApproval.class).equalTo("id",mRequestId).findFirst();
 
         mTxtStarsRequired = (EditText) findViewById(R.id.txtStarsRequired);
         mTxtTitle = (TextView) findViewById(R.id.txtItem);
@@ -109,8 +98,7 @@ public class DonationsDetailActivity extends AppCompatActivity {
         mAddCategory = (ImageView) findViewById(R.id.addCategory);
         mItem = (SimpleDraweeView) findViewById(R.id.imgItem);
 
-        mReceiver = new DonationDetailBroadcastReceiver();
-        realm = Realm.getDefaultInstance();
+
         //donationProgress = new ProgressDialog(this);
         //donationProgress.setCancelable(false);
         //mProgressBar = (ProgressBar) findViewById(R.id.progressGetCategoryDonate);
@@ -122,16 +110,13 @@ public class DonationsDetailActivity extends AppCompatActivity {
     }
 
     public void getDonatedItemDetails(){
-        setTitle(mItemName);
-        /*Picasso.with(DonationsDetailActivity.this)
-                .load(mItemLink)
-                .into(thumbnail);*/
-        mItem.setImageURI(Uri.parse(mItemLink));
-        mTxtTitle.setText(mItemName);
-        mTxtOwner.setText(" " + Utils.capitalize(mItemOwner));
-        mTxtQuantity.setText(" " + mQuantity);
-        mTxtDetails.setText(mItemDetail);
-        mTxtDatePosted.setText(Utils.parseDate(mDatePosted));
+        setTitle(donateApproval.getItem().getName());
+        mItem.setImageURI(Uri.parse(donateApproval.getItem().getPicture()));
+        mTxtTitle.setText(donateApproval.getItem().getName());
+        mTxtOwner.setText(" " + Utils.capitalize(donateApproval.getItem().getOwner().getUser().getUsername()));
+        mTxtQuantity.setText(" " + donateApproval.getItem().getQuantity());
+        mTxtDetails.setText(donateApproval.getItem().getDescription());
+        mTxtDatePosted.setText(Utils.parseDate(donateApproval.getRequest_date()));
 
         if(mCategoryList.length != 0)
             setCategoryAdapter(mCategories, mCategoryList);
@@ -207,11 +192,11 @@ public class DonationsDetailActivity extends AppCompatActivity {
     }
 
     public void approveDonation(){
-        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
+        Log.v(TAG, "Item REQUEST_ID: " + donateApproval.getItem().getName());
         int starsRequired = Integer.parseInt(mTxtStarsRequired.getText().toString());
         Intent intent = new Intent(this, ApproveDonationService.class);
         intent.putExtra("requestId", mRequestId);
-        intent.putExtra("itemId", mItemId);
+        intent.putExtra("itemId", donateApproval.getItem().getId());
         intent.putExtra("category", mCategories.getSelectedItem().toString());
         intent.putExtra("starsRequired", starsRequired);
         startService(intent);
@@ -230,10 +215,10 @@ public class DonationsDetailActivity extends AppCompatActivity {
     }
 
     public void denyDonation(){
-        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
+        Log.v(TAG, "Item REQUEST_ID: " + donateApproval.getItem().getId());
         Intent intent  = new Intent(this, DenyDonationService.class);
         intent.putExtra("requestId", mRequestId);
-        intent.putExtra("itemId", mItemId);
+        intent.putExtra("itemId", donateApproval.getItem().getId());
         startService(intent);
         mProgressBar.setVisibility(View.VISIBLE);
     }

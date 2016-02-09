@@ -74,23 +74,6 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
 
             Intent intent = new Intent(context, ReservedDetailActivity.class);
             intent.putExtra("requestId", reservation.getId());
-            intent.putExtra("itemId", reservation.getItem().getId());
-            intent.putExtra("itemName", reservation.getItem().getName());
-            intent.putExtra("itemDetail", reservation.getItem().getDescription());
-            intent.putExtra("payment", reservation.getPayment());
-            intent.putExtra("itemLink", reservation.getItem().getPicture());
-            intent.putExtra("itemStatus", reservation.getStatus());
-            intent.putExtra("starsRequired", reservation.getItem().getStars_required());
-            intent.putExtra("itemOwner", reservation.getItem().getOwner().getUser().getUsername());
-            intent.putExtra("itemReceiver", reservation.getBuyer().getUsername());
-            intent.putExtra("itemCode", reservation.getItem_code());
-            intent.putExtra("itemQuantity", reservation.getQuantity());
-            intent.putExtra("reservedDate", reservation.getReserved_date());
-            intent.putExtra("itemPurpose", reservation.getItem().getPurpose());
-
-            Log.e(TAG,reservation.getItem().getPicture());
-
-
             context.startActivity(intent);
         }
     }
