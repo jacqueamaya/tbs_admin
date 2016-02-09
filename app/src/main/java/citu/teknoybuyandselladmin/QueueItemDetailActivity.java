@@ -31,6 +31,7 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import citu.teknoybuyandselladmin.models.Category;
+import citu.teknoybuyandselladmin.models.SellApproval;
 import citu.teknoybuyandselladmin.services.AddCategoryService;
 import citu.teknoybuyandselladmin.services.ApproveItemService;
 import citu.teknoybuyandselladmin.services.DenyItemService;
@@ -47,20 +48,7 @@ public class QueueItemDetailActivity extends AppCompatActivity {
     public static final String CATEGORY_ITEM = "category";
 
     private int mRequestId;
-    private int mItemId;
-    private int mRentDuration;
-    private int mQuantity;
-
-    private float mItemPrice;
-
-    private long mDatePosted;
-
-    private String mItemOwner;
-    private String mItemName;
-    private String mItemDetail;
-    private String mItemLink;
-    private String mItemCategory;
-    private String mItemPurpose;
+    private String mItemPurpose = "";
     private String mCategoryList[];
 
     private TextView mTxtTitle;
@@ -77,42 +65,32 @@ public class QueueItemDetailActivity extends AppCompatActivity {
 
     private ImageView mAddCategory;
     private ImageView mRentImg;
-    private Button mApprove;
-    private Button mDeny;
 
     private Spinner mCategories;
 
-    private ProgressDialog mQueueProgress;
     private ProgressBar mProgressBar;
     private ArrayAdapter categoryAdapter;
 
     private QueuedDetailBroadcastReceiver mReceiver;
     private Realm realm;
 
-    private Gson gson = new Gson();
+    private SellApproval sellApproval;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_items_on_queue_detail);
-        //setupUI();
         setupToolbar();
+
+        realm = Realm.getDefaultInstance();
+        mReceiver = new QueuedDetailBroadcastReceiver();
 
         Intent intent = getIntent();
         mRequestId = intent.getIntExtra("requestId", 0);
-        mItemId = intent.getIntExtra("itemId", 0);
-        mItemName = intent.getStringExtra("itemName");
-        mItemDetail = intent.getStringExtra("itemDetail");
-        mItemLink = intent.getStringExtra("itemLink");
-        mItemPrice = intent.getFloatExtra("itemPrice", 0);
-        mItemPurpose = intent.getStringExtra("itemPurpose");
-        mItemOwner = intent.getStringExtra("itemOwner");
-        mQuantity = intent.getIntExtra("itemQuantity", 0);
-        mRentDuration = intent.getIntExtra("rentDuration", 0);
-        mDatePosted = intent.getLongExtra("requestDate", 0);
+        sellApproval = realm.where(SellApproval.class).equalTo("id",mRequestId).findFirst();
 
-        if("Rent".equals(mItemPurpose)){
+        if("Rent".equals(sellApproval.getItem().getPurpose())){
             mItemPurpose = " For Rent";
-        } else if("Sell".equals(mItemPurpose)){
+        } else if("Sell".equals(sellApproval.getItem().getPurpose())){
             mItemPurpose = " For Sale";
         }
 
@@ -130,8 +108,7 @@ public class QueueItemDetailActivity extends AppCompatActivity {
         mTxtDatePosted = (TextView) findViewById(R.id.txtDatePosted);
         mCategories = (Spinner) findViewById(R.id.spinnerCategories);
 
-        realm = Realm.getDefaultInstance();
-        mReceiver = new QueuedDetailBroadcastReceiver();
+
         //mQueueProgress = new ProgressDialog(this);
         //mProgressBar = (ProgressBar) findViewById(R.id.progressGetCategory);
         //mQueueProgress.setCancelable(false);
@@ -151,20 +128,20 @@ public class QueueItemDetailActivity extends AppCompatActivity {
     }
 
     public void getQueueItemDetails() {
-        setTitle(mItemName);
-        mItem.setImageURI(Uri.parse(mItemLink));
-        mTxtTitle.setText(mItemName);
-        mTxtPrice.setText("Php " + Utils.formatFloat(mItemPrice));
-        mTxtQuantity.setText(" "+mQuantity);
+        setTitle(sellApproval.getItem().getName());
+        mItem.setImageURI(Uri.parse(sellApproval.getItem().getPicture()));
+        mTxtTitle.setText(sellApproval.getItem().getName());
+        mTxtPrice.setText("Php " + Utils.formatFloat(sellApproval.getItem().getPrice()));
+        mTxtQuantity.setText(" "+sellApproval.getItem().getQuantity());
         mTxtPurpose.setText(mItemPurpose);
-        if("Rent".equals(mItemPurpose)){
+        if("Rent".equals(sellApproval.getItem().getPurpose())){
             mRentImg.setVisibility(View.VISIBLE);
             mTxtRentDuration.setVisibility(View.VISIBLE);
-            mTxtRentDuration.setText(mRentDuration+"");
+            mTxtRentDuration.setText(sellApproval.getItem().getRent_duration()+"");
         }
-        mTxtDetails.setText(mItemDetail);
-        mTxtOwner.setText(Utils.capitalize(mItemOwner));
-        mTxtDatePosted.setText(Utils.parseDate(mDatePosted));
+        mTxtDetails.setText(sellApproval.getItem().getDescription());
+        mTxtOwner.setText(Utils.capitalize(sellApproval.getItem().getOwner().getUser().getUsername()));
+        mTxtDatePosted.setText(Utils.parseDate(sellApproval.getRequest_date()));
 
         if(mCategoryList.length != 0)
             setCategoryAdapter(mCategories, mCategoryList);
@@ -230,10 +207,10 @@ public class QueueItemDetailActivity extends AppCompatActivity {
     }
 
     public void approveItem(){
-        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
+        Log.v(TAG, "Item REQUEST_ID: " + sellApproval.getItem().getId());
         Intent intent = new Intent(this, ApproveItemService.class);
         intent.putExtra("requestId", mRequestId);
-        intent.putExtra("itemId", mItemId);
+        intent.putExtra("itemId", sellApproval.getItem().getId());
         intent.putExtra("category", mCategories.getSelectedItem().toString());
         startService(intent);
         //mProgressBar.setVisibility(View.VISIBLE);
@@ -249,10 +226,10 @@ public class QueueItemDetailActivity extends AppCompatActivity {
     }
 
     public void denyItem(){
-        Log.v(TAG, "Item REQUEST_ID: " + mItemId);
+        Log.v(TAG, "Item REQUEST_ID: " + sellApproval.getItem().getId());
         Intent intent  = new Intent(this, DenyItemService.class);
         intent.putExtra("requestId", mRequestId);
-        intent.putExtra("itemId", mItemId);
+        intent.putExtra("itemId", sellApproval.getItem().getId());
         startService(intent);
         //mProgressBar.setVisibility(View.VISIBLE);
     }
@@ -270,28 +247,6 @@ public class QueueItemDetailActivity extends AppCompatActivity {
             mCategoryList[i] =  categories.get(i).getCategory_name();
         }
     }
-
-    /*public void onSelect(View view) {
-        getCategories();
-        RealmResults<Category> categories = realm.where(Category.class).findAll();
-
-        if(categories.size() == 0){
-            mProgressBar.setVisibility(View.VISIBLE);
-        } else{
-            updateCategoryList();
-            new AlertDialog.Builder(QueueItemDetailActivity.this)
-                    .setTitle("Categories")
-                    .setItems(mCategoryList, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mTxtCategory.setText(mCategoryList[which]);
-                        }
-                    })
-                    .create()
-                    .show();
-        }
-
-    }*/
 
     public void closeActivity(){
         QueueItemDetailActivity.this.finish();

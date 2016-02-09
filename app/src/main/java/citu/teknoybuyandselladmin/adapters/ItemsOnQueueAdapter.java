@@ -75,17 +75,7 @@ public class ItemsOnQueueAdapter extends RecyclerView.Adapter<ItemsOnQueueAdapte
             SellApproval sellApproval = mItemsOnQueue.get(position);
 
             Intent intent = new Intent(context, QueueItemDetailActivity.class);
-            intent.putExtra("requestId", sellApproval.getId());
-            intent.putExtra("itemId", sellApproval.getItem().getId());
-            intent.putExtra("itemName", sellApproval.getItem().getName());
-            intent.putExtra("itemDetail", sellApproval.getItem().getDescription());
-            intent.putExtra("itemLink", sellApproval.getItem().getPicture());
-            intent.putExtra("itemPrice", sellApproval.getItem().getPrice());
-            intent.putExtra("itemPurpose", sellApproval.getItem().getPurpose());
-            intent.putExtra("itemOwner", sellApproval.getItem().getOwner().getUser().getUsername());
-            intent.putExtra("itemQuantity", sellApproval.getItem().getQuantity());
-            intent.putExtra("rentDuration", sellApproval.getItem().getRent_duration());
-            intent.putExtra("requestDate", sellApproval.getRequest_date());
+            intent.putExtra("requestId",sellApproval.getId());
             context.startActivity(intent);
         }
     }
