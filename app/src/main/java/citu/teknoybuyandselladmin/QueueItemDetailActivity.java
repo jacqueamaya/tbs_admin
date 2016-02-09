@@ -60,7 +60,6 @@ public class QueueItemDetailActivity extends AppCompatActivity {
     private String mItemDetail;
     private String mItemLink;
     private String mItemCategory;
-
     private String mItemPurpose;
     private String mCategoryList[];
 
@@ -220,7 +219,7 @@ public class QueueItemDetailActivity extends AppCompatActivity {
         Utils.alert(QueueItemDetailActivity.this, "Approve Item", "Are you sure you want to approve this item?", new Utils.Callbacks() {
             @Override
             public void ok() {
-                if ("".equals(mTxtCategory.getText().toString()) || mTxtCategory.getText().toString() == null) {
+                if ("".equals(mCategories.getSelectedItem().toString()) || mCategories.getSelectedItem().toString() == null) {
                     Utils.alertInfo(QueueItemDetailActivity.this, "Please select a category first");
                 } else {
                     approveItem();
@@ -235,9 +234,9 @@ public class QueueItemDetailActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ApproveItemService.class);
         intent.putExtra("requestId", mRequestId);
         intent.putExtra("itemId", mItemId);
-        intent.putExtra("category", mTxtCategory.getText().toString());
+        intent.putExtra("category", mCategories.getSelectedItem().toString());
         startService(intent);
-        mProgressBar.setVisibility(View.VISIBLE);
+        //mProgressBar.setVisibility(View.VISIBLE);
     }
 
     public void onDeny(View view) {
@@ -255,7 +254,7 @@ public class QueueItemDetailActivity extends AppCompatActivity {
         intent.putExtra("requestId", mRequestId);
         intent.putExtra("itemId", mItemId);
         startService(intent);
-        mProgressBar.setVisibility(View.VISIBLE);
+        //mProgressBar.setVisibility(View.VISIBLE);
     }
 
     public void getCategories(){
@@ -272,7 +271,7 @@ public class QueueItemDetailActivity extends AppCompatActivity {
         }
     }
 
-    public void onSelect(View view) {
+    /*public void onSelect(View view) {
         getCategories();
         RealmResults<Category> categories = realm.where(Category.class).findAll();
 
@@ -292,7 +291,7 @@ public class QueueItemDetailActivity extends AppCompatActivity {
                     .show();
         }
 
-    }
+    }*/
 
     public void closeActivity(){
         QueueItemDetailActivity.this.finish();
@@ -345,12 +344,12 @@ public class QueueItemDetailActivity extends AppCompatActivity {
                     Snackbar.make(mTxtDetails, "Category successfully added", Snackbar.LENGTH_SHORT).show();
                 }else if("approved_item".equals(response)){
                     Log.e(TAG, "approved item");
-                    mProgressBar.setVisibility(View.GONE);
+                    //mProgressBar.setVisibility(View.GONE);
                     Snackbar.make(mTxtDetails, "Item successfully approved", Snackbar.LENGTH_SHORT).show();
                     closeActivity();
                 }else if("disapproved_item".equals(response)){
                     Log.e(TAG, "denied item");
-                    mProgressBar.setVisibility(View.GONE);
+                    //mProgressBar.setVisibility(View.GONE);
                     Snackbar.make(mTxtDetails, "Item successfully denied", Snackbar.LENGTH_SHORT).show();
                     closeActivity();
                 }

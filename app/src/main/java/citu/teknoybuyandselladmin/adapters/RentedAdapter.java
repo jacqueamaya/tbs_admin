@@ -75,14 +75,15 @@ public class RentedAdapter extends RecyclerView.Adapter<RentedAdapter.RentedView
             intent.putExtra("itemId", rentedItem.getItem().getId());
             intent.putExtra("itemName", rentedItem.getItem().getName());
             intent.putExtra("itemDetail", rentedItem.getItem().getDescription());
-            intent.putExtra("itemPrice", rentedItem.getItem().getPrice());
+            intent.putExtra("itemPenalty", rentedItem.getPenalty());
             intent.putExtra("itemLink", rentedItem.getItem().getPicture());
             intent.putExtra("itemQuantity", rentedItem.getQuantity());
             intent.putExtra("itemCode", rentedItem.getItem_code());
+            intent.putExtra("owner", rentedItem.getItem().getOwner().getUser().getUsername());
             intent.putExtra("renter", rentedItem.getRenter().getUsername());
+            intent.putExtra("rentDuration", rentedItem.getItem().getRent_duration());
             intent.putExtra("rentDate", rentedItem.getRent_date());
             intent.putExtra("rentExpiry", rentedItem.getRent_expiration());
-
             context.startActivity(intent);
         }
     }

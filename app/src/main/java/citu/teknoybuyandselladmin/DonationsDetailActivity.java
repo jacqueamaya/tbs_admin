@@ -7,17 +7,25 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import citu.teknoybuyandselladmin.models.Category;
@@ -28,7 +36,7 @@ import citu.teknoybuyandselladmin.services.GetCategoriesService;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class DonationsDetailActivity extends BaseActivity {
+public class DonationsDetailActivity extends AppCompatActivity {
     private static final String REQUEST_ID = "request_id";
     private static final String TAG = "DonationsDetailActivity";
     private static final String ITEM_ID = "item_id";
@@ -37,18 +45,34 @@ public class DonationsDetailActivity extends BaseActivity {
 
     private int mRequestId;
     private int mItemId;
+    private int mQuantity;
 
+    private long mDatePosted;
+
+    private String mItemOwner;
     private String mItemName;
     private String mItemDetail;
-    private String mCategories[];
+    private String mItemCategory;
     private String mItemLink;
+    private String mCategoryList[];
+
+    private SimpleDraweeView mItem;
+    private ImageView mAddCategory;
+    private ImageView mRentImg;
+
+    private EditText mTxtStarsRequired;
 
     private TextView mTxtTitle;
+    private TextView mTxtQuantity;
+    private TextView mTxtOwner;
+    private TextView mTxtDatePosted;
     private TextView mTxtDetails;
-    private TextView mTxtStars;
-    private TextView mTxtCategory;
 
-    private ImageView thumbnail;
+    private Button mApprove;
+    private Button mDeny;
+
+    private Spinner mCategories;
+    private ArrayAdapter categoryAdapter;
 
     private ProgressDialog donationProgress;
     private ProgressBar mProgressBar;
@@ -62,40 +86,70 @@ public class DonationsDetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_donations_detail);
-        setupUI();
+        setupToolbar();
 
         Intent intent = getIntent();
 
         mRequestId = intent.getIntExtra("requestId",0);
-        mItemId = intent.getIntExtra("itemId",0);
+        mItemId = intent.getIntExtra("itemId", 0);
         mItemName = intent.getStringExtra("itemName");
         mItemDetail = intent.getStringExtra("itemDetail");
         mItemLink = intent.getStringExtra("itemLink");
+        mItemOwner = intent.getStringExtra("itemOwner");
+        mQuantity = intent.getIntExtra("itemQuantity", 0);
+        mDatePosted = intent.getLongExtra("requestDate", 0);
 
-        mTxtTitle = (TextView) findViewById(R.id.txtTitle);
-        mTxtDetails = (TextView) findViewById(R.id.txtDetails);
-        mTxtStars = (TextView) findViewById(R.id.txtNumOfStars);
-        mTxtCategory = (TextView) findViewById(R.id.txtCategory);
-        thumbnail = (ImageView) findViewById(R.id.imgThumbnail);
+        mTxtStarsRequired = (EditText) findViewById(R.id.txtStarsRequired);
+        mTxtTitle = (TextView) findViewById(R.id.txtItem);
+        mTxtDetails = (TextView) findViewById(R.id.txtDescription);
+        mTxtOwner = (TextView) findViewById(R.id.txtOwner);
+        mTxtDatePosted = (TextView) findViewById(R.id.txtDatePosted);
+        mTxtQuantity = (TextView) findViewById(R.id.txtQuantity);
+
+        mAddCategory = (ImageView) findViewById(R.id.addCategory);
+        mItem = (SimpleDraweeView) findViewById(R.id.imgItem);
 
         mReceiver = new DonationDetailBroadcastReceiver();
         realm = Realm.getDefaultInstance();
-        donationProgress = new ProgressDialog(this);
-        donationProgress.setCancelable(false);
-        mProgressBar = (ProgressBar) findViewById(R.id.progressGetCategoryDonate);
+        //donationProgress = new ProgressDialog(this);
+        //donationProgress.setCancelable(false);
+        //mProgressBar = (ProgressBar) findViewById(R.id.progressGetCategoryDonate);
 
+        getCategories();
+        updateCategoryList();
         getDonatedItemDetails();
 
     }
 
     public void getDonatedItemDetails(){
         setTitle(mItemName);
-        Picasso.with(DonationsDetailActivity.this)
+        /*Picasso.with(DonationsDetailActivity.this)
                 .load(mItemLink)
-                .into(thumbnail);
+                .into(thumbnail);*/
+        mItem.setImageURI(Uri.parse(mItemLink));
         mTxtTitle.setText(mItemName);
+        mTxtOwner.setText(" " + Utils.capitalize(mItemOwner));
+        mTxtQuantity.setText(" " + mQuantity);
         mTxtDetails.setText(mItemDetail);
+        mTxtDatePosted.setText(Utils.parseDate(mDatePosted));
 
+        if(mCategoryList.length != 0)
+            setCategoryAdapter(mCategories, mCategoryList);
+
+    }
+
+    public void setCategoryAdapter(Spinner spinner, String[] data){
+        categoryAdapter  = new ArrayAdapter(this, R.layout.spinner_item, data);
+        categoryAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinner.setAdapter(categoryAdapter);
+    }
+
+    private void setupToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     public void addCategory(View view){
@@ -142,7 +196,7 @@ public class DonationsDetailActivity extends BaseActivity {
         Utils.alert(DonationsDetailActivity.this, "Approve Item", "Are you sure you want to approve this item?", new Utils.Callbacks() {
             @Override
             public void ok() {
-                if ("".equals(mTxtCategory.getText().toString()) || mTxtCategory.getText().toString() == null || "".equals(mTxtStars.getText().toString()) || mTxtStars.getText().toString() == null) {
+                if ("".equals(mCategories.getSelectedItem().toString()) || mCategories.getSelectedItem().toString() == null || "".equals(mTxtStarsRequired.getText().toString().trim()) || mTxtStarsRequired.getText().toString().trim() == null) {
                     Utils.alertInfo(DonationsDetailActivity.this, "Please select a category first and input the  number of stars required.");
                 } else {
                     approveDonation();
@@ -154,11 +208,11 @@ public class DonationsDetailActivity extends BaseActivity {
 
     public void approveDonation(){
         Log.v(TAG, "Item REQUEST_ID: " + mItemId);
-        int starsRequired = Integer.parseInt(mTxtStars.getText().toString());
+        int starsRequired = Integer.parseInt(mTxtStarsRequired.getText().toString());
         Intent intent = new Intent(this, ApproveDonationService.class);
         intent.putExtra("requestId", mRequestId);
         intent.putExtra("itemId", mItemId);
-        intent.putExtra("category", mTxtCategory.getText().toString());
+        intent.putExtra("category", mCategories.getSelectedItem().toString());
         intent.putExtra("starsRequired", starsRequired);
         startService(intent);
         mProgressBar.setVisibility(View.VISIBLE);
@@ -184,11 +238,6 @@ public class DonationsDetailActivity extends BaseActivity {
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public boolean checkItemClicked(MenuItem menuItem) {
-        return menuItem.getItemId() != R.id.nav_donations;
-    }
-
     public void getCategories(){
         Intent intent = new Intent(this, GetCategoriesService.class);
         startService(intent);
@@ -196,14 +245,14 @@ public class DonationsDetailActivity extends BaseActivity {
 
     public void updateCategoryList(){
         RealmResults<Category> categories = realm.where(Category.class).findAll();
-        mCategories = new String[categories.size()];
+        mCategoryList = new String[categories.size()];
 
         for(int i=0; i<categories.size(); i++){
-            mCategories[i] =  categories.get(i).getCategory_name();
+            mCategoryList[i] =  categories.get(i).getCategory_name();
         }
     }
 
-    public void onSelect(View view) {
+    /*public void onSelect(View view) {
         getCategories();
         RealmResults<Category> categories = realm.where(Category.class).findAll();
 
@@ -222,7 +271,7 @@ public class DonationsDetailActivity extends BaseActivity {
                     })
                     .create()
                     .show();
-        }
+        }*/
         /*Server.getCategories(mProgressBar, new Ajax.Callbacks() {
             @Override
             public void success(String responseBody) {
@@ -248,8 +297,8 @@ public class DonationsDetailActivity extends BaseActivity {
             public void error(int statusCode, String responseBody, String statusText) {
                 Log.e(TAG, "Error: Cannot connect to server");
             }
-        });*/
-    }
+        });
+    }*/
 
     public void closeActivity(){
         DonationsDetailActivity.this.finish();
@@ -269,6 +318,16 @@ public class DonationsDetailActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mReceiver);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class DonationDetailBroadcastReceiver extends BroadcastReceiver {
