@@ -19,6 +19,8 @@ import android.widget.ProgressBar;
 import com.google.gson.Gson;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import java.util.List;
+
 import citu.teknoybuyandselladmin.adapters.ItemsOnQueueAdapter;
 import citu.teknoybuyandselladmin.models.SellApproval;
 import citu.teknoybuyandselladmin.services.ExpirationCheckerService;
@@ -45,7 +47,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
     private String searchQuery = "";
     String lowerCaseSort = "date";
 
-    private Gson gson = new Gson();
+    private List sellApprovals;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
 
         getSellRequests();
         results = realm.where(SellApproval.class).findAll();
+        sellApprovals = results;
 
         if(results.size() == 0){
             mProgressBar.setVisibility(View.VISIBLE);

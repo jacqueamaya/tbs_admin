@@ -121,7 +121,7 @@ public class ReservedItemsActivity extends BaseActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_reserved_items, menu);
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+       /* SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchMenuItem.getActionView();
         int id = searchView.getContext()
@@ -147,7 +147,7 @@ public class ReservedItemsActivity extends BaseActivity {
                 return true;
             }
         });
-
+*/
         return true;
     }
 

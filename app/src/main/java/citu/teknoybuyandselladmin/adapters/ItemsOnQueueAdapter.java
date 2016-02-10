@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.List;
+
 import citu.teknoybuyandselladmin.QueueItemDetailActivity;
 import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.models.Item;
@@ -26,9 +28,9 @@ public class ItemsOnQueueAdapter extends RecyclerView.Adapter<ItemsOnQueueAdapte
 
     private static final String TAG = "ItemsOnQueueAdapter";
 
-    private RealmResults<SellApproval> mItemsOnQueue;
+    private List<SellApproval> mItemsOnQueue;
 
-    public ItemsOnQueueAdapter(RealmResults<SellApproval> itemsOnQueue){
+    public ItemsOnQueueAdapter(List<SellApproval> itemsOnQueue){
         mItemsOnQueue = itemsOnQueue;
     }
 

@@ -93,7 +93,7 @@ public class DonationsActivity extends BaseActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_donations, menu);
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        /*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchMenuItem.getActionView();
         int id = searchView.getContext()
@@ -118,7 +118,7 @@ public class DonationsActivity extends BaseActivity {
                // listAdapter.getFilter().filter(searchQuery);
                 return true;
             }
-        });
+        });*/
 
         return true;
     }
