@@ -137,7 +137,7 @@ public class QueueItemDetailActivity extends AppCompatActivity {
         if("Rent".equals(sellApproval.getItem().getPurpose())){
             mRentImg.setVisibility(View.VISIBLE);
             mTxtRentDuration.setVisibility(View.VISIBLE);
-            mTxtRentDuration.setText(sellApproval.getItem().getRent_duration()+"");
+            mTxtRentDuration.setText(sellApproval.getItem().getRent_duration()+" days");
         }
         mTxtDetails.setText(sellApproval.getItem().getDescription());
         mTxtOwner.setText(Utils.capitalize(sellApproval.getItem().getOwner().getUser().getUsername()));

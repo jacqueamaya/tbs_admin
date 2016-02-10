@@ -94,7 +94,7 @@ public class DonationsDetailActivity extends AppCompatActivity {
         mTxtOwner = (TextView) findViewById(R.id.txtOwner);
         mTxtDatePosted = (TextView) findViewById(R.id.txtDatePosted);
         mTxtQuantity = (TextView) findViewById(R.id.txtQuantity);
-
+        mCategories = (Spinner) findViewById(R.id.spinnerCategories);
         mAddCategory = (ImageView) findViewById(R.id.addCategory);
         mItem = (SimpleDraweeView) findViewById(R.id.imgItem);
 
@@ -320,7 +320,7 @@ public class DonationsDetailActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.e(TAG, intent.getStringExtra("response"));
-            mProgressBar.setVisibility(View.GONE);
+            //mProgressBar.setVisibility(View.GONE);
             String response = intent.getStringExtra("response");
 
             if(intent.getIntExtra("result",0) == -1){

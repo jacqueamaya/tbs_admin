@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import com.google.gson.Gson;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import citu.teknoybuyandselladmin.adapters.ItemsOnQueueAdapter;
@@ -47,8 +48,6 @@ public class ItemsOnQueueActivity extends BaseActivity {
     private String searchQuery = "";
     String lowerCaseSort = "date";
 
-    private List sellApprovals;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +63,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
 
         getSellRequests();
         results = realm.where(SellApproval.class).findAll();
-        sellApprovals = results;
+        //sellApprovals.addAll(results);
 
         if(results.size() == 0){
             mProgressBar.setVisibility(View.VISIBLE);
@@ -131,8 +130,20 @@ public class ItemsOnQueueActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return id == R.id.action_search || super.onOptionsItemSelected(item);
+
+        switch (item.getItemId()) {
+            case R.id.action_sort_by_date:
+                mAdapter.sortItems("date");
+                return true;
+            case R.id.action_sort_by_name:
+                mAdapter.sortItems("name");
+                return true;
+            case R.id.action_sort_by_price:
+                mAdapter.sortItems("price");
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

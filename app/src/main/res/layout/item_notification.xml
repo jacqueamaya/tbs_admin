@@ -8,8 +8,8 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/image"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_gravity="center_vertical"
         android:src="@drawable/notif_user"/>
 
@@ -34,7 +34,7 @@
             android:paddingBottom="20dp"
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
-            android:textSize="10sp"
+            android:textSize="11sp"
             android:text="dfgfdgdcfgdf"/>
 
     </LinearLayout>

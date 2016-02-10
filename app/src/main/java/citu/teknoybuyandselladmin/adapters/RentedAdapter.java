@@ -15,6 +15,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import citu.teknoybuyandselladmin.QueueItemDetailActivity;
 import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.RentedItemDetailActivity;
+import citu.teknoybuyandselladmin.Utils;
 import citu.teknoybuyandselladmin.models.RentedItem;
 import io.realm.RealmResults;
 
@@ -42,6 +43,7 @@ public class RentedAdapter extends RecyclerView.Adapter<RentedAdapter.RentedView
         RentedItem rentedItem = mRented.get(position);
         holder.simpleDraweeView.setImageURI(Uri.parse(rentedItem.getItem().getPicture()));
         holder.textView.setText(rentedItem.getItem().getName());
+        holder.txtDate.setText(Utils.parseDate(rentedItem.getRent_date()));
     }
 
     @Override
@@ -53,11 +55,13 @@ public class RentedAdapter extends RecyclerView.Adapter<RentedAdapter.RentedView
 
         SimpleDraweeView simpleDraweeView;
         TextView textView;
+        TextView txtDate;
 
         public RentedViewHolder(View itemView) {
             super(itemView);
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.image);
             textView = (TextView) itemView.findViewById(R.id.txtItem);
+            txtDate = (TextView) itemView.findViewById(R.id.txtDate);
 
             itemView.setOnClickListener(this);
         }

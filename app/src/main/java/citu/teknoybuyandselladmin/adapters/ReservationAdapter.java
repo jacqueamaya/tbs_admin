@@ -15,6 +15,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import citu.teknoybuyandselladmin.QueueItemDetailActivity;
 import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.ReservedDetailActivity;
+import citu.teknoybuyandselladmin.Utils;
 import citu.teknoybuyandselladmin.models.Reservation;
 import io.realm.RealmResults;
 
@@ -43,6 +44,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         Reservation reservation = mReservation.get(position);
         holder.simpleDraweeView.setImageURI(Uri.parse(reservation.getItem().getPicture()));
         holder.textView.setText(reservation.getItem().getName());
+        holder.txtDate.setText(Utils.parseDate(reservation.getReserved_date()));
     }
 
     @Override
@@ -54,12 +56,14 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
 
         SimpleDraweeView simpleDraweeView;
         TextView textView;
+        TextView txtDate;
 
         public ReservationViewHolder(View itemView) {
             super(itemView);
 
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.image);
             textView = (TextView) itemView.findViewById(R.id.txtItem);
+            txtDate = (TextView) itemView.findViewById(R.id.txtDate);
 
             itemView.setOnClickListener(this);
         }

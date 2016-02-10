@@ -15,6 +15,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import citu.teknoybuyandselladmin.DonationsDetailActivity;
 import citu.teknoybuyandselladmin.QueueItemDetailActivity;
 import citu.teknoybuyandselladmin.R;
+import citu.teknoybuyandselladmin.Utils;
 import citu.teknoybuyandselladmin.models.DonateApproval;
 import io.realm.RealmResults;
 
@@ -42,6 +43,7 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
         DonateApproval donation = mDonations.get(position);
         holder.simpleDraweeView.setImageURI(Uri.parse(donation.getItem().getPicture()));
         holder.textView.setText(donation.getItem().getName());
+        holder.txtDate.setText(Utils.parseDate(donation.getRequest_date()));
         Log.e(TAG,donation.getItem().getDescription());
     }
 
@@ -54,11 +56,13 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
 
         SimpleDraweeView simpleDraweeView;
         TextView textView;
+        TextView txtDate;
 
         public DonationViewHolder(View itemView) {
             super(itemView);
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.image);
             textView = (TextView) itemView.findViewById(R.id.txtItem);
+            txtDate = (TextView) itemView.findViewById(R.id.txtDate);
 
             itemView.setOnClickListener(this);
         }

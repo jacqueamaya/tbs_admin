@@ -12,10 +12,14 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import citu.teknoybuyandselladmin.QueueItemDetailActivity;
 import citu.teknoybuyandselladmin.R;
+import citu.teknoybuyandselladmin.Utils;
 import citu.teknoybuyandselladmin.models.Item;
 import citu.teknoybuyandselladmin.models.SellApproval;
 import io.realm.RealmResults;
@@ -28,9 +32,9 @@ public class ItemsOnQueueAdapter extends RecyclerView.Adapter<ItemsOnQueueAdapte
 
     private static final String TAG = "ItemsOnQueueAdapter";
 
-    private List<SellApproval> mItemsOnQueue;
+    public RealmResults<SellApproval> mItemsOnQueue;
 
-    public ItemsOnQueueAdapter(List<SellApproval> itemsOnQueue){
+    public ItemsOnQueueAdapter(RealmResults<SellApproval> itemsOnQueue){
         mItemsOnQueue = itemsOnQueue;
     }
 
@@ -46,6 +50,7 @@ public class ItemsOnQueueAdapter extends RecyclerView.Adapter<ItemsOnQueueAdapte
         SellApproval sellApproval = mItemsOnQueue.get(position);
         holder.simpleDraweeView.setImageURI(Uri.parse(sellApproval.getItem().getPicture()));
         holder.textView.setText(sellApproval.getItem().getName());
+        holder.txtDate.setText(Utils.parseDate(sellApproval.getRequest_date()));
     }
 
     @Override
@@ -53,17 +58,51 @@ public class ItemsOnQueueAdapter extends RecyclerView.Adapter<ItemsOnQueueAdapte
         return mItemsOnQueue.size();
     }
 
+    public void sortItems(String sortBy) {
+        switch (sortBy) {
+            case "price":
+                //mItemsOnQueue.sort("item");
+                /*Comparator<SellApproval> priceComparator = new Comparator<SellApproval>() {
+                    public int compare(SellApproval obj1, SellApproval obj2) {
+                        return obj1.getItem().getPrice() < obj2.getItem().getPrice() ? -1 : obj1.getItem().getPrice() > obj2.getItem().getPrice() ? 1 : 0;
+                    }
+                };
+                Collections.sort(mItemsOnQueue, priceComparator);*/
+                break;
+            case "name":
+                /*Comparator<SellApproval> nameComparator = new Comparator<SellApproval>() {
+                    public int compare(SellApproval obj1, SellApproval obj2) {
+                        return obj1.getItem().getName().compareTo(obj2.getItem().getName());
+                    }
+                };
+                Collections.sort(mItemsOnQueue, nameComparator);*/
+                break;
+            default:
+                mItemsOnQueue.sort("request_date", Sort.DESCENDING);
+                /*Comparator<SellApproval> dateComparator = new Comparator<SellApproval>() {
+                    public int compare(SellApproval obj1, SellApproval obj2) {
+                        return Utils.parseDate(obj1.getRequest_date()).compareTo(Utils.parseDate(obj2.getRequest_date()));
+                    }
+                };
+                Collections.sort(mItemsOnQueue, Collections.reverseOrder(dateComparator));*/
+                break;
+        }
+        notifyDataSetChanged();
+    }
+
 
     public class ItemsOnQueueViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         SimpleDraweeView simpleDraweeView;
         TextView textView;
+        TextView txtDate;
 
         public ItemsOnQueueViewHolder(View itemView) {
             super(itemView);
 
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.image);
             textView = (TextView) itemView.findViewById(R.id.txtItem);
+            txtDate = (TextView) itemView.findViewById(R.id.txtDate);
 
             itemView.setOnClickListener(this);
         }
