@@ -17,6 +17,9 @@ import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.RentedItemDetailActivity;
 import citu.teknoybuyandselladmin.Utils;
 import citu.teknoybuyandselladmin.models.RentedItem;
+import citu.teknoybuyandselladmin.models.SellApproval;
+import io.realm.Case;
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -26,9 +29,11 @@ public class RentedAdapter extends RecyclerView.Adapter<RentedAdapter.RentedView
 
     private static final String TAG = "RentedAdapter";
     private RealmResults<RentedItem> mRented;
+    private Realm realm;
 
     public RentedAdapter(RealmResults<RentedItem> rented){
         mRented = rented;
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -49,6 +54,12 @@ public class RentedAdapter extends RecyclerView.Adapter<RentedAdapter.RentedView
     @Override
     public int getItemCount() {
         return mRented.size();
+    }
+
+    public void search(String query){
+        RealmResults<RentedItem> results = realm.where(RentedItem.class).contains("item.name",query, Case.INSENSITIVE).findAll();
+        mRented = results;
+        notifyDataSetChanged();
     }
 
     public class RentedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

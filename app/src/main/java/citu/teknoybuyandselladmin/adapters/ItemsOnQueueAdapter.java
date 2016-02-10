@@ -22,6 +22,8 @@ import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.Utils;
 import citu.teknoybuyandselladmin.models.Item;
 import citu.teknoybuyandselladmin.models.SellApproval;
+import io.realm.Case;
+import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -33,9 +35,11 @@ public class ItemsOnQueueAdapter extends RecyclerView.Adapter<ItemsOnQueueAdapte
     private static final String TAG = "ItemsOnQueueAdapter";
 
     public RealmResults<SellApproval> mItemsOnQueue;
+    private Realm realm;
 
     public ItemsOnQueueAdapter(RealmResults<SellApproval> itemsOnQueue){
         mItemsOnQueue = itemsOnQueue;
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -56,6 +60,12 @@ public class ItemsOnQueueAdapter extends RecyclerView.Adapter<ItemsOnQueueAdapte
     @Override
     public int getItemCount() {
         return mItemsOnQueue.size();
+    }
+
+    public void search(String query){
+        RealmResults<SellApproval> results = realm.where(SellApproval.class).contains("item.name",query, Case.INSENSITIVE).findAll();
+        mItemsOnQueue = results;
+        notifyDataSetChanged();
     }
 
     public void sortItems(String sortBy) {

@@ -1,14 +1,17 @@
 package citu.teknoybuyandselladmin;
 
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,11 +46,6 @@ public class ItemsOnQueueActivity extends BaseActivity {
     private RealmResults<SellApproval> results;
     private ItemsOnQueueAdapter mAdapter;
 
-    private String sortBy[];
-
-    private String searchQuery = "";
-    String lowerCaseSort = "date";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +53,6 @@ public class ItemsOnQueueActivity extends BaseActivity {
         setupUI();
 
         realm = Realm.getDefaultInstance();
-        sortBy = getResources().getStringArray(R.array.sort_by);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetSellRequests);
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         mReceiver = new ItemsOnQueueBroadcastReceiver();
@@ -63,7 +60,6 @@ public class ItemsOnQueueActivity extends BaseActivity {
 
         getSellRequests();
         results = realm.where(SellApproval.class).findAll();
-        //sellApprovals.addAll(results);
 
         if(results.size() == 0){
             mProgressBar.setVisibility(View.VISIBLE);
@@ -97,33 +93,23 @@ public class ItemsOnQueueActivity extends BaseActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_items_on_queue, menu);
 
-        /*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchMenuItem.getActionView();
-        int id = searchView.getContext()
-                .getResources()
-                .getIdentifier("android:id/search_src_text", null, null);
-        TextView textView = (TextView) searchView.findViewById(id);
-        textView.setTextColor(Color.BLACK);
-
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setSubmitButtonEnabled(true);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchQuery = query;
-                listAdapter.getFilter().filter(searchQuery);
+                mAdapter.search(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchQuery = newText;
-                listAdapter.getFilter().filter(searchQuery);
+                mAdapter.search(newText);
                 return true;
             }
-        });*/
-
+        });
         return true;
     }
 

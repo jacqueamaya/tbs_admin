@@ -17,6 +17,9 @@ import citu.teknoybuyandselladmin.QueueItemDetailActivity;
 import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.Utils;
 import citu.teknoybuyandselladmin.models.DonateApproval;
+import citu.teknoybuyandselladmin.models.SellApproval;
+import io.realm.Case;
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -26,9 +29,11 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
     private static final String TAG = "DonationAdapter";
 
     private RealmResults<DonateApproval> mDonations;
+    private Realm realm;
 
     public DonationAdapter(RealmResults<DonateApproval> donations){
         mDonations = donations;
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -50,6 +55,12 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
     @Override
     public int getItemCount() {
         return mDonations.size();
+    }
+
+    public void search(String query){
+        RealmResults<DonateApproval> results = realm.where(DonateApproval.class).contains("item.name",query, Case.INSENSITIVE).findAll();
+        mDonations = results;
+        notifyDataSetChanged();
     }
 
     public class DonationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

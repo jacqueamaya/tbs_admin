@@ -17,6 +17,9 @@ import citu.teknoybuyandselladmin.R;
 import citu.teknoybuyandselladmin.ReservedDetailActivity;
 import citu.teknoybuyandselladmin.Utils;
 import citu.teknoybuyandselladmin.models.Reservation;
+import citu.teknoybuyandselladmin.models.SellApproval;
+import io.realm.Case;
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -27,9 +30,11 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     private static final String TAG = "ReservationAdapter";
 
     private RealmResults<Reservation> mReservation;
+    private Realm realm;
 
     public ReservationAdapter(RealmResults<Reservation> reservations){
         mReservation = reservations;
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -50,6 +55,12 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     @Override
     public int getItemCount() {
         return mReservation.size();
+    }
+
+    public void search(String query){
+        RealmResults<Reservation> results = realm.where(Reservation.class).contains("item.name",query, Case.INSENSITIVE).findAll();
+        mReservation = results;
+        notifyDataSetChanged();
     }
 
     public class ReservationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
