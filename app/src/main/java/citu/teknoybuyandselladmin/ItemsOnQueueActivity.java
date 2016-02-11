@@ -116,20 +116,9 @@ public class ItemsOnQueueActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
-        switch (item.getItemId()) {
-            case R.id.action_sort_by_date:
-                mAdapter.sortItems("date");
-                return true;
-            case R.id.action_sort_by_name:
-                mAdapter.sortItems("name");
-                return true;
-            case R.id.action_sort_by_price:
-                mAdapter.sortItems("price");
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_search || super.onOptionsItemSelected(item);
     }
 
     @Override

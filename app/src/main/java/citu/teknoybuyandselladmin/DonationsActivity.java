@@ -37,11 +37,6 @@ public class DonationsActivity extends BaseActivity {
 
     private ProgressBar mProgressBar;
 
-    private String sortBy[];
-
-    private String searchQuery = "";
-    private String lowerCaseSort = "date";
-
     private Realm realm;
     private DonationAdapter mAdapter;
     private SwipeRefreshLayout refreshLayout;
@@ -60,8 +55,6 @@ public class DonationsActivity extends BaseActivity {
         list = (RecyclerView) findViewById(R.id.listViewDonations);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetDonationsRequests);
         mProgressBar.setVisibility(View.GONE);
-
-        sortBy = getResources().getStringArray(R.array.donate_sort_by);
 
         getDonatedItems();
         RealmResults<DonateApproval> results = realm.where(DonateApproval.class).findAll();

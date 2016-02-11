@@ -50,7 +50,7 @@
                             android:scaleType="fitXY"
                             app:roundBottomLeft="false"
                             app:roundBottomRight="false"
-                            app:placeholderImage = "@drawable/rizal_book"/>
+                            app:placeholderImage="@drawable/item_placeholder"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"

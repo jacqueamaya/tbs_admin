@@ -36,15 +36,6 @@ public class RentedItemsActivity extends BaseActivity {
 
     private static final String TAG = "RentedItemsActivity";
     private ProgressBar mProgressBar;
-    private TextView txtCategory;
-
-    private Category categories[];
-    private String categoryNames[];
-    private String sortBy[];
-
-    private String searchQuery = "";
-    private String category = "";
-    private String lowerCaseSort = "date";
 
     private Realm realm;
     private RentedAdapter mAdapter;
@@ -62,11 +53,9 @@ public class RentedItemsActivity extends BaseActivity {
         mReceiver = new RentedBroadcastReceiver();
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         list = (RecyclerView) findViewById(R.id.listViewRented);
-        txtCategory = (TextView) findViewById(R.id.txtCategory);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetReserveRequests);
         mProgressBar.setVisibility(View.GONE);
 
-        sortBy = getResources().getStringArray(R.array.sort_by);
         getRentedItems();
         RealmResults<RentedItem> results = realm.where(RentedItem.class).findAll();
         if(results.size() == 0){
@@ -157,8 +146,6 @@ public class RentedItemsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        txtCategory.setText("Categories");
-
         registerReceiver(mReceiver, new IntentFilter(RentedItemService.class.getCanonicalName()));
         mAdapter.notifyDataSetChanged();
 
@@ -170,30 +157,6 @@ public class RentedItemsActivity extends BaseActivity {
         super.onPause();
         unregisterReceiver(mReceiver);
     }
-
-    /*public void getCategories() {
-        mProgressBar.setVisibility(View.GONE);
-        Server.getCategories(mProgressBar, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                if (!("".equals(responseBody))) {
-                    categories = gson.fromJson(responseBody, Category[].class);
-                    categoryNames = new String[categories.length];
-                    for(int i=0; i<categories.length; i++){
-                        categoryNames[i] =  categories[i].getCategory_name();
-                    }
-                } else {
-                    Toast.makeText(RentedItemsActivity.this, "Empty categories", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                categories = null;
-                Toast.makeText(RentedItemsActivity.this, "Cannot connect to server", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
 
     private class RentedBroadcastReceiver extends BroadcastReceiver {
 

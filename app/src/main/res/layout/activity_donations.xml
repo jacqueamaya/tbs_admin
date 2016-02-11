@@ -24,23 +24,6 @@
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <Spinner
-                    android:id="@+id/spinnerSortBy"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_gravity="end"
-                    android:entries="@array/donate_sort_by"
-                    android:paddingBottom="10dp" />
-
-            </RelativeLayout>
-
         </android.support.design.widget.AppBarLayout>
 
             <RelativeLayout

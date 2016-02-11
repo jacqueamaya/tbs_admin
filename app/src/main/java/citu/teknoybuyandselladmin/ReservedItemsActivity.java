@@ -36,15 +36,6 @@ public class ReservedItemsActivity extends BaseActivity {
 
     private static final String TAG = "ReservedActivity";
     private ProgressBar mProgressBar;
-    private TextView txtCategory;
-
-    private Category categories[];
-    private String categoryNames[];
-    private String sortBy[];
-
-    private String searchQuery = "";
-    private String category = "";
-    private String lowerCaseSort = "date";
 
     private Realm realm;
     private ReservationAdapter mAdapter;
@@ -62,11 +53,8 @@ public class ReservedItemsActivity extends BaseActivity {
         mReceiver = new ReservationBroadcastReceiver();
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         list = (RecyclerView) findViewById(R.id.listViewReserved);
-        txtCategory = (TextView) findViewById(R.id.txtCategory);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetReserveRequests);
         mProgressBar.setVisibility(View.GONE);
-
-        sortBy = getResources().getStringArray(R.array.sort_by);
 
         getReservedItems();
         RealmResults<Reservation> results = realm.where(Reservation.class).findAll();
@@ -96,7 +84,6 @@ public class ReservedItemsActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_reserved_items, menu);
 

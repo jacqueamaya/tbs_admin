@@ -97,7 +97,7 @@ public class RentedItemDetailActivity extends AppCompatActivity {
         mTxtTitle.setText(rentedItem.getItem().getName());
         mTxtItemCode.setText(" "+rentedItem.getItem_code());
         mTxtQuantity.setText(" "+rentedItem.getQuantity());
-        mTxtPenalty.setText("Php "+rentedItem.getPenalty());
+        mTxtPenalty.setText("Php "+ Utils.formatFloat(rentedItem.getPenalty()));
         mTxtRentDuration.setText(rentedItem.getItem().getRent_duration()+" days");
         mTxtOwner.setText(Utils.capitalize(rentedItem.getItem().getOwner().getUser().getUsername()));
         mTxtRenter.setText(Utils.capitalize(rentedItem.getRenter().getUsername()));

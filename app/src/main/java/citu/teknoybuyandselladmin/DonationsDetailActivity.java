@@ -237,54 +237,6 @@ public class DonationsDetailActivity extends AppCompatActivity {
         }
     }
 
-    /*public void onSelect(View view) {
-        getCategories();
-        RealmResults<Category> categories = realm.where(Category.class).findAll();
-
-        if(categories.size() == 0){
-            mProgressBar.setVisibility(View.VISIBLE);
-            Log.e(TAG, "no categories from realm");
-        } else{
-            updateCategoryList();
-            new AlertDialog.Builder(DonationsDetailActivity.this)
-                    .setTitle("Categories")
-                    .setItems(mCategories, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mTxtCategory.setText(mCategories[which]);
-                        }
-                    })
-                    .create()
-                    .show();
-        }*/
-        /*Server.getCategories(mProgressBar, new Ajax.Callbacks() {
-            @Override
-            public void success(String responseBody) {
-                    Category[] categories = gson.fromJson(responseBody, Category[].class);
-                    String categoryNames[] = new String[categories.length];
-                    for(int i=0; i<categories.length; i++){
-                        categoryNames[i] =  categories[i].getCategory_name();
-                    }
-                    final String categoryNamesFinal[] = categoryNames;
-                    new AlertDialog.Builder(DonationsDetailActivity.this)
-                            .setTitle("Categories")
-                            .setItems(categoryNames, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    mTxtCategory.setText(categoryNamesFinal[which]);
-                                }
-                            })
-                            .create()
-                            .show();
-            }
-
-            @Override
-            public void error(int statusCode, String responseBody, String statusText) {
-                Log.e(TAG, "Error: Cannot connect to server");
-            }
-        });
-    }*/
-
     public void closeActivity(){
         DonationsDetailActivity.this.finish();
     }
