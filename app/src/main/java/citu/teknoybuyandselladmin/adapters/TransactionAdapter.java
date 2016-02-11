@@ -34,7 +34,7 @@ public class TransactionAdapter {
             row.setBackgroundResource(R.drawable.border);
 
             TextView id = new TextView(mContext);
-            id.setText(mItems.get(i).getId()+"");
+            id.setText(mItems.get(i).getId() + "");
             id.setGravity(Gravity.CENTER_HORIZONTAL);
             id.setPadding(5, 5, 5, 5);
             id.setTextSize(12);
@@ -42,7 +42,7 @@ public class TransactionAdapter {
             row.addView(id);
 
             TextView type = new TextView(mContext);
-            type.setText(mItems.get(i).getItem().getPurpose());
+            type.setText(mItems.get(i).getTransaction_type());
             type.setGravity(Gravity.CENTER_HORIZONTAL);
             type.setPadding(5, 5, 5, 5);
             type.setTextSize(12);
@@ -59,7 +59,7 @@ public class TransactionAdapter {
 
 
             TextView seller = new TextView(mContext);
-            seller.setText(mItems.get(i).getSeller().getUser().getUsername());
+            seller.setText(mItems.get(i).getSeller());
             seller.setGravity(Gravity.CENTER_HORIZONTAL);
             id.setPadding(5, 5, 5, 5);
             id.setTextSize(12);
@@ -67,13 +67,13 @@ public class TransactionAdapter {
             row.addView(seller);
 
             TextView buyer = new TextView(mContext);
-            buyer.setText(mItems.get(i).getBuyer().getUser().getUsername());
+            buyer.setText(mItems.get(i).getBuyer());
             buyer.setGravity(Gravity.CENTER_HORIZONTAL);
             buyer.setPadding(5, 5, 5, 5);
             id.setTextSize(12);
             buyer.setLayoutParams(new TableRow.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableRow.LayoutParams.FILL_PARENT));
             row.addView(buyer);
-
+            
             TextView date = new TextView(mContext);
             date.setText(Utils.parseDate(mItems.get(i).getDate_claimed()));
             date.setGravity(Gravity.CENTER_HORIZONTAL);
