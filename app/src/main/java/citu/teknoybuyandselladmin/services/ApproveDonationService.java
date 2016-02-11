@@ -33,7 +33,7 @@ public class ApproveDonationService extends ConnectionService {
         String category = intent.getStringExtra("category");
 
 
-        Log.e(TAG,"request id: " + requestId + " itemid: " + itemId + " Category: " + category);
+        Log.e(TAG,"request id: " + requestId + " itemid: " + itemId + " Category: " + category + "Stars: " + starsRequired);
         TbsService service = ServiceManager.getInstance();
 
         try{

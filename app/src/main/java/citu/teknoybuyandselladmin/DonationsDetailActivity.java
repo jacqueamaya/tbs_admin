@@ -200,7 +200,7 @@ public class DonationsDetailActivity extends AppCompatActivity {
         intent.putExtra("category", mCategories.getSelectedItem().toString());
         intent.putExtra("starsRequired", starsRequired);
         startService(intent);
-        mProgressBar.setVisibility(View.VISIBLE);
+        //mProgressBar.setVisibility(View.VISIBLE);
     }
 
     public void onDeny(View view){
@@ -220,7 +220,7 @@ public class DonationsDetailActivity extends AppCompatActivity {
         intent.putExtra("requestId", mRequestId);
         intent.putExtra("itemId", donateApproval.getItem().getId());
         startService(intent);
-        mProgressBar.setVisibility(View.VISIBLE);
+        //mProgressBar.setVisibility(View.VISIBLE);
     }
 
     public void getCategories(){
@@ -337,12 +337,12 @@ public class DonationsDetailActivity extends AppCompatActivity {
                     Snackbar.make(mTxtDetails, "Category successfully added", Snackbar.LENGTH_SHORT).show();
                 }else if("approved_donation".equals(response)){
                     Log.e(TAG, "approved item");
-                    mProgressBar.setVisibility(View.GONE);
+                    //mProgressBar.setVisibility(View.GONE);
                     Snackbar.make(mTxtDetails, "Item successfully approved", Snackbar.LENGTH_SHORT).show();
                     closeActivity();
                 }else if("disapproved_donation".equals(response)){
                     Log.e(TAG, "denied item");
-                    mProgressBar.setVisibility(View.GONE);
+                    //mProgressBar.setVisibility(View.GONE);
                     Snackbar.make(mTxtDetails, "Item successfully denied", Snackbar.LENGTH_SHORT).show();
                     closeActivity();
                 }

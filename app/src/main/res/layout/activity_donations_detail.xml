@@ -240,7 +240,8 @@
                                 android:text="Approve"
                                 android:textColor="@color/White"
                                 android:textSize="18sp"
-                                android:textStyle="normal" />
+                                android:textStyle="normal"
+                                android:onClick="onApprove"/>
 
                             <Button
                                 android:id="@+id/btnDeny"
@@ -252,7 +253,8 @@
                                 android:text="Deny"
                                 android:textColor="#80333c"
                                 android:textSize="18sp"
-                                android:textStyle="normal" />
+                                android:textStyle="normal"
+                                android:onClick="onDeny"/>
                         </LinearLayout>
 
 

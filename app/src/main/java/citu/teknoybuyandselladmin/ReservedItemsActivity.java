@@ -67,7 +67,7 @@ public class ReservedItemsActivity extends BaseActivity {
         mProgressBar.setVisibility(View.GONE);
 
         sortBy = getResources().getStringArray(R.array.sort_by);
-        
+
         getReservedItems();
         RealmResults<Reservation> results = realm.where(Reservation.class).findAll();
         if(results.size() == 0){
