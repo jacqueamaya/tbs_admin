@@ -26,6 +26,9 @@
     <string name="theader_buyer">RECEIVED BY</string>
     <string name="theader_date">DATE</string>
     <string name="theader_item_code">ITEM CODE</string>
+    <string name="theader_total_payment">TOTAL PAYMENT</string>
+    <string name="theader_user_share">USER SHARE</string>
+    <string name="theader_tbs_share">TBS SHARE</string>
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

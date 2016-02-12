@@ -3,16 +3,15 @@ package citu.teknoybuyandselladmin;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.design.widget.Snackbar;
-import android.view.View;
-
-import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.regex.Pattern;
+
+import citu.teknoybuyandselladmin.models.Category;
+import citu.teknoybuyandselladmin.models.DonateApproval;
+import io.realm.Realm;
 
 public final class Utils {
 
@@ -74,7 +73,6 @@ public final class Utils {
     }
 
     public static String formatFloat(float price){
-        //return String.format("%.2f", price);
         NumberFormat numberFormatter = NumberFormat.getNumberInstance(Locale.US);
         numberFormatter.setMinimumFractionDigits(2);
         numberFormatter.setMaximumFractionDigits(2);

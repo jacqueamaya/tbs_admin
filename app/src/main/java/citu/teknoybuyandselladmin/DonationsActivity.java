@@ -36,8 +36,9 @@ public class DonationsActivity extends BaseActivity {
     private static final String TAG = "DonatedActivity";
 
     private ProgressBar mProgressBar;
-
+    private TextView mTxtMessage;
     private Realm realm;
+    private RealmResults<DonateApproval> results;
     private DonationAdapter mAdapter;
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView list;
@@ -51,14 +52,15 @@ public class DonationsActivity extends BaseActivity {
 
         realm = Realm.getDefaultInstance();
         mReceiver = new DonationBroadcastReceiver();
+        mTxtMessage = (TextView) findViewById(R.id.txtMessage);
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         list = (RecyclerView) findViewById(R.id.listViewDonations);
+
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetDonationsRequests);
         mProgressBar.setVisibility(View.GONE);
-
         getDonatedItems();
-        RealmResults<DonateApproval> results = realm.where(DonateApproval.class).findAll();
-        if(results.size() == 0){
+        results = realm.where(DonateApproval.class).findAll();
+        if (results.size() == 0) {
             mProgressBar.setVisibility(View.VISIBLE);
         }
         mAdapter = new DonationAdapter(results);
@@ -111,7 +113,6 @@ public class DonationsActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         return id == R.id.action_search || super.onOptionsItemSelected(item);
     }
 
@@ -135,6 +136,16 @@ public class DonationsActivity extends BaseActivity {
         unregisterReceiver(mReceiver);
     }
 
+    public void showHideErrorMessage() {
+        if(results.isEmpty()) {
+            Log.e(TAG, "No Donations");
+            mTxtMessage.setVisibility(View.VISIBLE);
+            mTxtMessage.setText("No Donations");
+        } else {
+            mTxtMessage.setVisibility(View.GONE);
+        }
+    }
+
     private class DonationBroadcastReceiver extends BroadcastReceiver {
 
         @Override
@@ -142,9 +153,10 @@ public class DonationsActivity extends BaseActivity {
             refreshLayout.setRefreshing(false);
             Log.e(TAG, intent.getStringExtra("response"));
             mProgressBar.setVisibility(View.GONE);
+            showHideErrorMessage();
             mAdapter.notifyDataSetChanged();
 
-            if(intent.getIntExtra("result",0) == -1){
+            if (intent.getIntExtra("result", 0) == -1) {
                 Snackbar.make(list, "No internet connection", Snackbar.LENGTH_SHORT).show();
             }
         }

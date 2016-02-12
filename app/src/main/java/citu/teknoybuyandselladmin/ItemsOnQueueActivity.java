@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -45,6 +46,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
     private Realm realm;
     private RealmResults<SellApproval> results;
     private ItemsOnQueueAdapter mAdapter;
+    private TextView mTxtMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +57,12 @@ public class ItemsOnQueueActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetSellRequests);
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        mTxtMessage = (TextView) findViewById(R.id.txtMessage);
         mReceiver = new ItemsOnQueueBroadcastReceiver();
         mProgressBar.setVisibility(View.GONE);
 
         getSellRequests();
         results = realm.where(SellApproval.class).findAll();
-
         if(results.size() == 0){
             mProgressBar.setVisibility(View.VISIBLE);
         }
@@ -142,6 +144,16 @@ public class ItemsOnQueueActivity extends BaseActivity {
         unregisterReceiver(mReceiver);
     }
 
+    public void showHideErrorMessage() {
+        if(results.isEmpty()) {
+            Log.e(TAG, "No Items on Queue");
+            mTxtMessage.setVisibility(View.VISIBLE);
+            mTxtMessage.setText("No Items on Queue");
+        } else {
+            mTxtMessage.setVisibility(View.GONE);
+        }
+    }
+
     private class ItemsOnQueueBroadcastReceiver extends BroadcastReceiver {
 
         @Override
@@ -149,6 +161,7 @@ public class ItemsOnQueueActivity extends BaseActivity {
             refreshLayout.setRefreshing(false);
             Log.e(TAG, intent.getStringExtra("response"));
             mProgressBar.setVisibility(View.GONE);
+            showHideErrorMessage();
             mAdapter.notifyDataSetChanged();
 
             if(intent.getIntExtra("result",0) == -1){

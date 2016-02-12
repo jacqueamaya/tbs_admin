@@ -38,10 +38,12 @@ public class RentedItemsActivity extends BaseActivity {
     private ProgressBar mProgressBar;
 
     private Realm realm;
+    private RealmResults<RentedItem> results;
     private RentedAdapter mAdapter;
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView list;
     private RentedBroadcastReceiver mReceiver;
+    private TextView mTxtMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +56,11 @@ public class RentedItemsActivity extends BaseActivity {
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         list = (RecyclerView) findViewById(R.id.listViewRented);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetReserveRequests);
+        mTxtMessage = (TextView) findViewById(R.id.txtMessage);
         mProgressBar.setVisibility(View.GONE);
 
         getRentedItems();
-        RealmResults<RentedItem> results = realm.where(RentedItem.class).findAll();
+        results = realm.where(RentedItem.class).findAll();
         if(results.size() == 0){
             mProgressBar.setVisibility(View.VISIBLE);
         }
@@ -75,28 +78,6 @@ public class RentedItemsActivity extends BaseActivity {
                 refreshLayout.setRefreshing(false);
             }
         });
-        //getCategories();
-
-        /*txtCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog displayCategories = new AlertDialog.Builder(RentedItemsActivity.this)
-                        .setTitle("Categories")
-                        .setItems(categoryNames, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                txtCategory.setText(categories[which].getCategory_name());
-                                category = txtCategory.getText().toString();
-                                if (category.equals("All")) {
-                                    category = "";
-                                }
-                                listAdapter.getFilter().filter(category);
-                            }
-                        })
-                        .create();
-                displayCategories.show();
-            }
-        });*/
     }
 
     private void getRentedItems() {
@@ -106,7 +87,6 @@ public class RentedItemsActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_rented_items, menu);
 
@@ -158,6 +138,16 @@ public class RentedItemsActivity extends BaseActivity {
         unregisterReceiver(mReceiver);
     }
 
+    public void showHideErrorMessage() {
+        if(results.isEmpty()) {
+            Log.e(TAG, "No Rented Items");
+            mTxtMessage.setVisibility(View.VISIBLE);
+            mTxtMessage.setText("No Rented Items");
+        } else {
+            mTxtMessage.setVisibility(View.GONE);
+        }
+    }
+
     private class RentedBroadcastReceiver extends BroadcastReceiver {
 
         @Override
@@ -165,6 +155,7 @@ public class RentedItemsActivity extends BaseActivity {
             refreshLayout.setRefreshing(false);
             Log.e(TAG, intent.getStringExtra("response"));
             mProgressBar.setVisibility(View.GONE);
+            showHideErrorMessage();
             mAdapter.notifyDataSetChanged();
 
             if(intent.getIntExtra("result",0) == -1){

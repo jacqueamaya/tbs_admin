@@ -58,6 +58,7 @@ public class TransactionsActivity extends BaseActivity {
             mProgressBar.setVisibility(View.VISIBLE);
         }
         transAdapter = new TransactionAdapter(TransactionsActivity.this, transactions);
+        transAdapter.clear(mTableLayout);
         transAdapter.addRows(mTableLayout);
     }
 
@@ -85,6 +86,15 @@ public class TransactionsActivity extends BaseActivity {
         unregisterReceiver(mReceiver);
     }
 
+    public void showHideErrorMessage() {
+        if(transactions.isEmpty()) {
+            Log.e(TAG, "No Transactions");
+            mTxtMessage.setVisibility(View.VISIBLE);
+            mTxtMessage.setText("No Transaction");
+        } else {
+            mTxtMessage.setVisibility(View.GONE);
+        }
+    }
 
     private class TransactionBroadcastReceiver extends BroadcastReceiver {
 
@@ -94,7 +104,10 @@ public class TransactionsActivity extends BaseActivity {
             mProgressBar.setVisibility(View.GONE);
 
             transactions = realm.where(Transaction.class).findAll();
-            transAdapter.update(transactions);
+            showHideErrorMessage();
+            transAdapter = new TransactionAdapter(TransactionsActivity.this, transactions);
+            transAdapter.clear(mTableLayout);
+            transAdapter.addRows(mTableLayout);
 
             if(intent.getIntExtra("result",0) == -1){
                 Snackbar.make(mTableLayout, "No internet connection", Snackbar.LENGTH_SHORT).show();

@@ -38,10 +38,12 @@ public class ReservedItemsActivity extends BaseActivity {
     private ProgressBar mProgressBar;
 
     private Realm realm;
+    private RealmResults<Reservation> results;
     private ReservationAdapter mAdapter;
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView list;
     private ReservationBroadcastReceiver mReceiver;
+    private TextView mTxtMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +56,11 @@ public class ReservedItemsActivity extends BaseActivity {
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         list = (RecyclerView) findViewById(R.id.listViewReserved);
         mProgressBar = (ProgressBar) findViewById(R.id.progressGetReserveRequests);
+        mTxtMessage = (TextView) findViewById(R.id.txtMessage);
         mProgressBar.setVisibility(View.GONE);
 
         getReservedItems();
-        RealmResults<Reservation> results = realm.where(Reservation.class).findAll();
+        results = realm.where(Reservation.class).findAll();
         if(results.size() == 0){
             mProgressBar.setVisibility(View.VISIBLE);
         }
@@ -134,6 +137,16 @@ public class ReservedItemsActivity extends BaseActivity {
         unregisterReceiver(mReceiver);
     }
 
+    public void showHideErrorMessage() {
+        if(results.isEmpty()) {
+            Log.e(TAG, "No Reserved Items");
+            mTxtMessage.setVisibility(View.VISIBLE);
+            mTxtMessage.setText("No Reserved Items");
+        } else {
+            mTxtMessage.setVisibility(View.GONE);
+        }
+    }
+
     private class ReservationBroadcastReceiver extends BroadcastReceiver {
 
         @Override
@@ -141,6 +154,7 @@ public class ReservedItemsActivity extends BaseActivity {
             refreshLayout.setRefreshing(false);
             Log.e(TAG, intent.getStringExtra("response"));
             mProgressBar.setVisibility(View.GONE);
+            showHideErrorMessage();
             mAdapter.notifyDataSetChanged();
 
             if(intent.getIntExtra("result",0) == -1){
